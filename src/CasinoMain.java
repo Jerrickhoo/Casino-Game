@@ -7,6 +7,7 @@ public class CasinoMain {
         showMainMenu();
         System.out.println("Hello world nigger");
         System.out.println("Hello world nigger mosses");
+        System.out.println("Moses reset");
 
         utilities.closeScanner();
     }
