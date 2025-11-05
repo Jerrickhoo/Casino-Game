@@ -5,10 +5,11 @@ public class CasinoMain {
     public static void main(String[] args) throws Exception {
 
         showMainMenu();
+        System.out.println("Hello world nigs");
 
         utilities.closeScanner();
     }
- 
+
     private static void showMainMenu() {
         while (true) {
             utilities.clearConsole();
