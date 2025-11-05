@@ -6,6 +6,7 @@ public class CasinoMain {
 
         showMainMenu();
         System.out.println("Hello world nigs");
+        System.out.println("Hello Justin this is Moses");
 
         utilities.closeScanner();
     }
