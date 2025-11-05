@@ -5,7 +5,7 @@ public class CasinoMain {
     public static void main(String[] args) throws Exception {
 
         showMainMenu();
-        System.out.println("Hello world nigs");
+        System.out.println("Hello world nigger");
 
         utilities.closeScanner();
     }
