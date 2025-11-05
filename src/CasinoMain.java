@@ -8,7 +8,7 @@ public class CasinoMain {
 
         utilities.closeScanner();
     }
-
+ 
     private static void showMainMenu() {
         while (true) {
             utilities.clearConsole();
