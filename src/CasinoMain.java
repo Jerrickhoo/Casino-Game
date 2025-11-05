@@ -4,12 +4,9 @@ import utilities.utilities;
 public class CasinoMain {
     public static void main(String[] args) throws Exception {
 
+        utilities.showLoadingAnimation("Loading", 3000);
+
         showMainMenu();
-        System.out.println("Hello world nigger");
-        System.out.println("Hello world nigger mosses");
-        System.out.println("Moses reset");
-        System.out.println("Hello gaano kamo way ko may makita nga sharescreen");
-        System.out.println("im a pimp named slickback");
 
         utilities.closeScanner();
     }

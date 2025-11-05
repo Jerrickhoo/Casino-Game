@@ -108,6 +108,29 @@ public class utilities {
         System.out.println("] Complete!");
     }
 
+    public static void showLoadingAnimation(String message, int durationMs) {
+        String[] frames = { "-", "\\", "|", "/" };
+        int totalFrames = (durationMs / 100); // Update every 100ms
+
+        // Hide the cursor and save position
+        System.out.print(message + " ");
+
+        try {
+            for (int i = 0; i < totalFrames; i++) {
+                String frame = frames[i % frames.length];
+                System.out.print("\r" + message + " " + frame); // \r moves cursor to start of line
+                Thread.sleep(100);
+            }
+            // Clear the animation and show completion
+            System.out.print("\r" + message + " Done!     \n");
+
+        } catch (InterruptedException e) {
+            // In case of interruption, ensure we still clear the line
+            System.out.print("\r" + message + " Done!     \n");
+            Thread.currentThread().interrupt();
+        }
+    }
+
     // * ==================== CONSOLE OPERATIONS ====================
     public static void clearConsole() {
         try {
