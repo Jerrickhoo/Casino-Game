@@ -8,6 +8,7 @@ public class CasinoMain {
         System.out.println("Hello world nigger");
         System.out.println("Hello world nigger mosses");
         System.out.println("Moses reset");
+        System.out.println("Hello gaano kamo way ko may makita nga sharescreen");
 
         utilities.closeScanner();
     }
