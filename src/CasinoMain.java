@@ -4,7 +4,6 @@ import utilities.utilities;
 public class CasinoMain {
     public static void main(String[] args) throws Exception {
 
-        utilities.showLoadingAnimation("Loading", 3000);
 
         showMainMenu();
 
