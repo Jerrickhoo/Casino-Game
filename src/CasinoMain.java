@@ -6,7 +6,6 @@ public class CasinoMain {
     private static PlayerDatabase playerDB;
     private static Player currentPlayer;
 
-
     public static void main(String[] args) throws Exception {
         // Initialize database
         playerDB = new PlayerDatabase();
@@ -198,7 +197,7 @@ public class CasinoMain {
             for (int i = 0; i < Math.min(10, leaderboard.size()); i++) {
                 Player player = leaderboard.get(i);
                 String rank = (i == 0) ? "🥇 " : (i == 1) ? "🥈 " : (i == 2) ? "🥉 " : "  ";
-                System.out.printf("                 │ %-4s │ %-18s │ %-13s │\n",
+                System.out.printf("                 │ %-4s  │ %-18s │ %-13s │\n",
                         rank + (i + 1),
                         player.getUsername(),
                         utilities.formatCurrency(player.getBalance()));
