@@ -1,0 +1,231 @@
+package Core;
+
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import utilities.utilities;
+
+public class PlayerDatabase {
+    private Map<String, Player> players;
+    private static final String DATA_DIR = "../src/data";
+    private String playersFile = DATA_DIR + "/players.txt";
+    private String transactionsFile = DATA_DIR + "/transactions.log";
+
+    public PlayerDatabase() {
+        this.players = new HashMap<>();
+        // Ensure data directory exists
+        File dataDir = new File(DATA_DIR);
+        if (!dataDir.exists()) {
+            dataDir.mkdirs();
+        }
+        loadPlayers();
+    }
+
+    /**
+     * Load players from text file
+     */
+    private void loadPlayers() {
+        File file = new File(playersFile);
+        if (!file.exists()) {
+            System.out.println("📁 No existing player database. Starting fresh.");
+            return;
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            int loadedCount = 0;
+
+            while ((line = reader.readLine()) != null) {
+                if (line.trim().isEmpty())
+                    continue;
+
+                Player player = Player.fromFileString(line);
+                if (player != null) {
+                    players.put(player.getUsername(), player);
+                    loadedCount++;
+                }
+            }
+
+            System.out.println("✅ Loaded " + loadedCount + " players");
+
+        } catch (IOException e) {
+            System.out.println("❌ Error loading players: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Save all players to text file
+     */
+    public void savePlayers() {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(playersFile))) {
+            for (Player player : players.values()) {
+                writer.println(player.toFileString());
+            }
+        } catch (IOException e) {
+            System.out.println("❌ Error saving players: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Add a new player
+     */
+    public boolean addPlayer(Player player) {
+        if (players.containsKey(player.getUsername())) {
+            return false;
+        }
+
+        players.put(player.getUsername(), player);
+        logTransaction(player.getUsername(), "SYSTEM", "ACCOUNT_CREATION",
+                player.getBalance(), player.getBalance());
+        savePlayers();
+        return true;
+    }
+
+    /**
+     * Get player by username
+     */
+    public Player getPlayer(String username) {
+        return players.get(username);
+    }
+
+    /**
+     * Update player (auto-saves to file)
+     */
+    public void updatePlayer(Player player) {
+        players.put(player.getUsername(), player);
+        savePlayers(); // Auto-save on every update
+    }
+
+    /**
+     * Check if player exists
+     */
+    public boolean playerExists(String username) {
+        return players.containsKey(username);
+    }
+
+    /**
+     * Get all players
+     */
+    public List<Player> getAllPlayers() {
+        return new ArrayList<>(players.values());
+    }
+
+    /**
+     * Get leaderboard sorted by balance (bubble sort)
+     */
+    public List<Player> getLeaderboard() {
+        List<Player> leaderboard = getAllPlayers();
+
+        // Bubble sort by balance (highest first)
+        for (int i = 0; i < leaderboard.size() - 1; i++) {
+            for (int j = 0; j < leaderboard.size() - i - 1; j++) {
+                if (leaderboard.get(j).getBalance() < leaderboard.get(j + 1).getBalance()) {
+                    // Swap players
+                    Player temp = leaderboard.get(j);
+                    leaderboard.set(j, leaderboard.get(j + 1));
+                    leaderboard.set(j + 1, temp);
+                }
+            }
+        }
+
+        return leaderboard;
+    }
+
+    /**
+     * Display formatted leaderboard
+     */
+    public void displayLeaderboard() {
+        List<Player> leaderboard = getLeaderboard();
+
+        System.out.println("🏆 CASINO LEADERBOARD");
+        System.out.println("════════════════════════════");
+
+        if (leaderboard.isEmpty()) {
+            System.out.println("No players yet. Be the first to join!");
+            return;
+        }
+
+        System.out.printf("%-4s %-15s %-12s %-12s%n", "Rank", "Player", "Balance", "Games");
+        System.out.println("════════════════════════════");
+
+        for (int i = 0; i < Math.min(10, leaderboard.size()); i++) {
+            Player player = leaderboard.get(i);
+            String medal = "";
+            if (i == 0)
+                medal = "🥇 ";
+            else if (i == 1)
+                medal = "🥈 ";
+            else if (i == 2)
+                medal = "🥉 ";
+
+            System.out.printf("%-4s %-15s %-12s %-12d%n",
+                    medal + (i + 1),
+                    player.getUsername(),
+                    utilities.formatCurrency(player.getBalance()),
+                    player.getGamesPlayed());
+        }
+    }
+
+    /**
+     * Log transaction to transactions.log
+     * Format: 2024-01-15 10:30:15 | username | game | action | amount |
+     * balance_after
+     */
+    public void logTransaction(String username, String game, String action, double amount, double balanceAfter) {
+        String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+        String logEntry = String.format("%s | %s | %s | %s | %.2f | %.2f",
+                timestamp, username, game, action, amount, balanceAfter);
+
+        try (PrintWriter writer = new PrintWriter(new FileWriter(transactionsFile, true))) {
+            writer.println(logEntry);
+        } catch (IOException e) {
+            System.out.println("❌ Error logging transaction: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Display recent transactions
+     */
+    public void displayRecentTransactions(int count) {
+        File file = new File(transactionsFile);
+        if (!file.exists()) {
+            System.out.println("No transactions yet.");
+            return;
+        }
+
+        List<String> transactions = new ArrayList<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (!line.trim().isEmpty()) {
+                    transactions.add(line);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading transactions: " + e.getMessage());
+            return;
+        }
+
+        System.out.println("📋 RECENT TRANSACTIONS");
+        System.out.println("════════════════════════════");
+
+        if (transactions.isEmpty()) {
+            System.out.println("No transactions yet.");
+            return;
+        }
+
+        // Show most recent transactions first
+        int startIndex = Math.max(0, transactions.size() - count);
+        for (int i = transactions.size() - 1; i >= startIndex; i--) {
+            System.out.println(transactions.get(i));
+        }
+    }
+
+    /**
+     * Get player count
+     */
+    public int getPlayerCount() {
+        return players.size();
+    }
+}
