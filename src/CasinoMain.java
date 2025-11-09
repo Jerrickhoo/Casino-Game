@@ -1,6 +1,8 @@
 import utilities.utilities;
 import Core.Player;
 import Core.PlayerDatabase;
+import games.SlotMachine.SlotMachine;
+
 
 public class CasinoMain {
     private static PlayerDatabase playerDB;
@@ -270,7 +272,9 @@ public class CasinoMain {
                     // playBlackjack();
                     break;
                 case 3:
-                    // playSlots();
+                    SlotMachine slotGame = new SlotMachine(currentPlayer.getBalance());
+                    double newBalance = slotGame.start();
+                    currentPlayer.setBalance(newBalance);
                     break;
                 case 4:
                     // playChuckALuck();
