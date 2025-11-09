@@ -6,7 +6,6 @@ public class CasinoMain {
     private static PlayerDatabase playerDB;
     private static Player currentPlayer;
 
-
     public static void main(String[] args) throws Exception {
         // Initialize database
         playerDB = new PlayerDatabase();
@@ -20,15 +19,20 @@ public class CasinoMain {
         while (true) {
             utilities.clearConsole();
             System.out.println("\n\n");
-            System.out.println("            ╔══════════════════════════════════════════════════════════╗");
-            System.out.println("            ║     _____           _                 _____              ║");
-            System.out.println("            ║    /  __ \\         (_)               |  __ \\             ║");
-            System.out.println("            ║    | /  \\/ __ _ ___ _ _ __   ___    | |  \\/ __ _ _ __    ║");
-            System.out.println("            ║    | |    / _` / __| | '_ \\ / _ \\   | | __ / _` | '_ \\   ║");
-            System.out.println("            ║    | \\__/\\ (_| \\__ \\ | | | | (_) |  | |_\\ \\ (_| | | | |  ║");
-            System.out.println("            ║     \\____/\\__,_|___/_|_| |_|\\___/    \\____/\\__,_|_| |_|  ║");
-            System.out.println("            ║                                                          ║");
-            System.out.println("            ╚══════════════════════════════════════════════════════════╝");
+            System.out.println("            ╔════════════════════════════════════════════════════════════════════════════════╗");
+            System.out.println("            ║                  ██████  █████  ███████ ██ ███    ██   ████                    ║");
+            System.out.println("            ║                 ██      ██   ██ ██      ██ ████   ██ ██    ██                  ║");
+            System.out.println("            ║                 ██      ███████ ███████ ██ ██ ██  ██ ██    ██                  ║");
+            System.out.println("            ║                 ██      ██   ██      ██ ██ ██  ██ ██ ██    ██                  ║");
+            System.out.println("            ║                  ██████ ██   ██ ███████ ██ ██   ████   ████                    ║");
+            System.out.println("            ║                                                                                ║");
+            System.out.println("            ║                       ██████     █████     ██  ██   ██████                     ║");
+            System.out.println("            ║                      ██         ██   ██  ██  ██  ██ ██                         ║");
+            System.out.println("            ║                      ██   ████  ███████  ██  ██  ██ ████                       ║");
+            System.out.println("            ║                      ██     ██  ██   ██  ██      ██ ██                         ║");
+            System.out.println("            ║                       ██████    ██   ██  ██      ██ ██████                     ║");
+            System.out.println("            ║                                                                                ║");
+            System.out.println("            ╚════════════════════════════════════════════════════════════════════════════════╝");
             System.out.println("");
 
             if (currentPlayer != null) {
@@ -38,27 +42,40 @@ public class CasinoMain {
                 System.out.println("            ║                  BALANCE: "
                         + String.format("%-25s", utilities.formatCurrency(currentPlayer.getBalance())) + "║");
                 System.out.println("            ╚══════════════════════════════════════════════════════════╝");
-                System.out.println("");
+                System.out.println("                                                                       ");
             }
 
-            System.out.println("            ╔══════════════════════╗ ╔══════════════════════╗");
-            System.out.println("            ║     1. LOGIN         ║ ║    2. REGISTER       ║");
-            System.out.println("            ║    ┌─────────┐       ║ ║     ┌───────┐        ║");
-            System.out.println("            ║    │   A  K  │       ║ ║     │   /\\  │        ║");
-            System.out.println("            ║    │   Q  J  │       ║ ║     │  /__\\ │        ║");
-            System.out.println("            ║    └─────────┘       ║ ║     └───────┘        ║");
-            System.out.println("            ╚══════════════════════╝ ╚══════════════════════╝");
-            System.out.println("");
-            System.out.println("            ╔══════════════════════╗ ╔══════════════════════╗");
-            System.out.println("            ║   3. LEADERBOARD     ║ ║      4. EXIT         ║");
-            System.out.println("            ║      ┌─────┐         ║ ║       ┌────┐         ║");
-            System.out.println("            ║      │ [#1]│         ║ ║       │ XX │         ║");
-            System.out.println("            ║      │ TOP │         ║ ║       │Exit│         ║");
-            System.out.println("            ║      └─────┘         ║ ║       └────┘         ║");
-            System.out.println("            ╚══════════════════════╝ ╚══════════════════════╝");
-            System.out.println("");
-            System.out.println("            ╔══════════════════════════════════════════════════════════╗");
-            System.out.print("                 Enter your choice (1-4): ");
+            System.out.println("                       ╔════════════════════════════╗ ╔═══════════════════════════╗");
+            System.out.println("                       ║         1. LOGIN           ║ ║        2. REGISTER        ║");
+            System.out.println("                       ║    ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄   ║ ║   ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄   ║");
+            System.out.println("                       ║    █                   █   ║ ║   █                   █   ║");
+            System.out.println("                       ║    █    █▀▀▀▀▀▀▀▀▀▀█   █   ║ ║   █    █▀▀▀▀▀▀▀▀▀▀█   █   ║");
+            System.out.println("                       ║    █    █  ACCESS  █   █   ║ ║   █    █  SIGN UP █   █   ║");
+            System.out.println("                       ║    █    █▄▄▄▄▄▄▄▄▄▄█   █   ║ ║   █    █▄▄▄▄▄▄▄▄▄▄█   █   ║");
+            System.out.println("                       ║    █                   █   ║ ║   █                   █   ║");
+            System.out.println("                       ║    █  ┌─────────────┐  █   ║ ║   █  ┌─────────────┐  █   ║");
+            System.out.println("                       ║    █  │ USER: █████ │  █   ║ ║   █  │  NEW PLAYER │  █   ║");
+            System.out.println("                       ║    █                   █   ║ ║   █  │   ACCOUNT   │  █   ║");
+            System.out.println("                       ║    █  │ PASS: █████ │  █   ║ ║   █  └─────────────┘  █   ║");
+            System.out.println("                       ║    █  └─────────────┘  █   ║ ║   █                   █   ║");
+            System.out.println("                       ║    █▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█   ║ ║   █▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█   ║");
+            System.out.println("                       ╚════════════════════════════╝ ╚═══════════════════════════╝");
+            System.out.println("                                                                                  ");
+            System.out.println("                       ╔═══════════════════════════╗ ╔═══════════════════════════╗");
+            System.out.println("                       ║      3. LEADERBOARD       ║ ║         4. EXIT           ║");
+            System.out.println("                       ║   ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄   ║ ║   ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄   ║");
+            System.out.println("                       ║   █                   █   ║ ║   █                   █   ║");
+            System.out.println("                       ║   █    ▄▄▄▄▄▄▄▄▄▄▄    █   ║ ║   █     █▀▀▀▀▀▀▀█     █   ║");
+            System.out.println("                       ║   █    █ LEADER  █    █   ║ ║   █     █ QUIT  █     █   ║");
+            System.out.println("                       ║   █    ▀▀▀▀▀▀▀▀▀▀▀    █   ║ ║   █     █▄▄▄▄▄▄▄█     █   ║");
+            System.out.println("                       ║   █   █ 1 █ 2 █ 3 █   █   ║ ║   █   ┌───────────┐   █   ║");
+            System.out.println("                       ║   █   ███ ███ ███ █   █   ║ ║   █   │   GOOD    │   █   ║");
+            System.out.println("                       ║   █   TOP PLAYERS     █   ║ ║   █   │   BYE!    │   █   ║");
+            System.out.println("                       ║   █▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█   ║ ║   █▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█   ║");
+            System.out.println("                       ╚═══════════════════════════╝ ╚═══════════════════════════╝");
+            System.out.println("                                                                                  ");
+            System.out.println("                       ╔═════════════════════════════════════════════════════════╗");
+            System.out.print("                            Enter your choice (1-4): ");
 
             int choice = utilities.readInt(1, 4);
 
@@ -98,6 +115,7 @@ public class CasinoMain {
         Player player = playerDB.getPlayer(username);
         if (player != null && player.verifyPassword(password)) {
             currentPlayer = player;
+            utilities.clearConsole();
             System.out.println("");
             System.out.println("            ╔══════════════════════════════════════════════════════════╗");
             System.out.println("            ║                   ✅ LOGIN SUCCESSFUL!                    ║");
@@ -105,14 +123,14 @@ public class CasinoMain {
                     "            ║                   Welcome back, " + String.format("%-25s", player.getUsername())
                             + "║");
             System.out.println("            ╚══════════════════════════════════════════════════════════╝");
-            utilities.pause(2000);
+            utilities.pause(3000);
             showGameMenu();
         } else {
             System.out.println("");
             System.out.println("            ╔══════════════════════════════════════════════════════════╗");
             System.out.println("            ║               ❌ INVALID CREDENTIALS!                     ║");
             System.out.println("            ╚══════════════════════════════════════════════════════════╝");
-            utilities.pause(2000);
+            utilities.waitForUserInput("             Press Enter to continue...");
         }
     }
 
@@ -132,7 +150,7 @@ public class CasinoMain {
             System.out.println("            ╔══════════════════════════════════════════════════════════╗");
             System.out.println("            ║    ❌ Username must be 3-20 chars (no : allowed)         ║");
             System.out.println("            ╚══════════════════════════════════════════════════════════╝");
-            utilities.pause(2000);
+            utilities.waitForUserInput("             Press Enter to continue...");
             return;
         }
 
@@ -141,7 +159,7 @@ public class CasinoMain {
             System.out.println("            ╔══════════════════════════════════════════════════════════╗");
             System.out.println("            ║               ❌ USERNAME ALREADY EXISTS!                 ║");
             System.out.println("            ╚══════════════════════════════════════════════════════════╝");
-            utilities.pause(2000);
+            utilities.waitForUserInput("             Press Enter to continue...");
             return;
         }
 
@@ -153,7 +171,7 @@ public class CasinoMain {
             System.out.println("            ╔══════════════════════════════════════════════════════════╗");
             System.out.println("            ║     ❌ Password must be 4-30 chars (no : allowed)        ║");
             System.out.println("            ╚══════════════════════════════════════════════════════════╝");
-            utilities.pause(2000);
+            utilities.waitForUserInput("             Press Enter to continue...");
             return;
         }
 
@@ -166,14 +184,14 @@ public class CasinoMain {
             System.out.println("            ║        Starting balance: "
                     + String.format("%-25s", utilities.formatCurrency(1000.0)) + "       ║");
             System.out.println("            ╚══════════════════════════════════════════════════════════╝");
-            utilities.pause(2000);
+            utilities.pause(3000);
             showGameMenu();
         } else {
             System.out.println("");
             System.out.println("            ╔══════════════════════════════════════════════════════════╗");
             System.out.println("            ║               ❌ REGISTRATION FAILED!                    ║");
             System.out.println("            ╚══════════════════════════════════════════════════════════╝");
-            utilities.pause(2000);
+            utilities.waitForUserInput("             Press Enter to continue...");
         }
     }
 
@@ -197,7 +215,7 @@ public class CasinoMain {
 
             for (int i = 0; i < Math.min(10, leaderboard.size()); i++) {
                 Player player = leaderboard.get(i);
-                String rank = (i == 0) ? "🥇 " : (i == 1) ? "🥈 " : (i == 2) ? "🥉 " : "  ";
+                String rank = (i == 0) ? " " : (i == 1) ? " " : (i == 2) ? " " : " ";
                 System.out.printf("                 │ %-4s │ %-18s │ %-13s │\n",
                         rank + (i + 1),
                         player.getUsername(),
@@ -209,16 +227,17 @@ public class CasinoMain {
         System.out.println("");
         System.out.println("            ╔══════════════════════════════════════════════════════════╗");
         System.out.print("                 Press Enter to continue... ");
-        utilities.readString();
+        utilities.waitForUserInput("");
     }
 
     private static void saveAndExit() {
+        utilities.clearConsole();
         System.out.println("");
         System.out.println("            ╔══════════════════════════════════════════════════════════╗");
-        System.out.println("            ║               🎰 Thanks for playing!                    ║");
-        System.out.println("            ║               Data saved successfully!                  ║");
+        System.out.println("            ║               🎰 Thanks for playing!                      ║");
+        System.out.println("            ║               Data saved successfully!                   ║");
         System.out.println("            ╚══════════════════════════════════════════════════════════╝");
-        utilities.pause(1000);
+        utilities.pause(3000);
     }
 
     private static void showGameMenu() {
@@ -228,7 +247,8 @@ public class CasinoMain {
             System.out.println("            ╔══════════════════════════════════════════════════════════╗");
             System.out.println("            ║                     GAME SELECTION                       ║");
             System.out.println("            ╠══════════════════════════════════════════════════════════╣");
-            System.out.println("            ║ Player: " + String.format("%-40s", currentPlayer.getUsername()) + "         ║");
+            System.out.println(
+                    "            ║ Player: " + String.format("%-40s", currentPlayer.getUsername()) + "         ║");
             System.out.println("            ║ Balance: "
                     + String.format("%-39s", utilities.formatCurrency(currentPlayer.getBalance())) + "         ║");
             System.out.println("            ╚══════════════════════════════════════════════════════════╝");
@@ -280,9 +300,10 @@ public class CasinoMain {
                     break;
                 case 6:
                     currentPlayer = null;
+                    utilities.clearConsole();
                     System.out.println("");
                     System.out.println("            ╔══════════════════════════════════════════════════════════╗");
-                    System.out.println("            ║                  ✅ Logged out successfully!            ║");
+                    System.out.println("            ║                  ✅ Logged out successfully!              ║");
                     System.out.println("            ╚══════════════════════════════════════════════════════════╝");
                     utilities.pause(1500);
                     return;
@@ -294,7 +315,7 @@ public class CasinoMain {
         utilities.clearConsole();
         System.out.println("\n\n");
         System.out.println("            ╔══════════════════════════════════════════════════════════╗");
-        System.out.println("            ║                    PLAYER STATISTICS                    ║");
+        System.out.println("            ║                    PLAYER STATISTICS                     ║");
         System.out.println("            ╚══════════════════════════════════════════════════════════╝");
         System.out.println("");
 
@@ -306,6 +327,6 @@ public class CasinoMain {
         System.out.println("");
         System.out.println("            ╔══════════════════════════════════════════════════════════╗");
         System.out.print("                 Press Enter to continue... ");
-        utilities.readString();
+        utilities.waitForUserInput("");
     }
 }
