@@ -2,6 +2,7 @@ import utilities.utilities;
 import Core.Player;
 import Core.PlayerDatabase;
 import games.SlotMachine.SlotMachine;
+import games.Lucky9.Lucky9;
 
 public class CasinoMain {
     private static PlayerDatabase playerDB;
@@ -289,7 +290,7 @@ public class CasinoMain {
 
             switch (choice) {
                 case 1:
-                    // playLucky9();
+                    Lucky9.play(currentPlayer, playerDB);
                     break;
                 case 2:
                     // playBlackjack();
