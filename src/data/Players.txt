@@ -1,7 +1,7 @@
 mosses:nigga:1000.00:MOS4620:0
 qwer:qwer:1000.00:QWE7592:0
 asdkfjh:asdfkjh:1000.00:ASD9247:0
-yer:yerrr:1000.00:YER8063:0
+yer:yerrr:2100.00:YER8063:0
 yas:yasss:1000.00:YAS8037:0
 mjherms:joshaquino:1000.00:MJH5053:0
 bruh:hmmm:1000.00:BRU5564:0
@@ -9,6 +9,5 @@ Moses:12313:1000.00:MOS1572:0
 nigga:nigger:1000.00:NIG1808:0
 qwerqwer:qwer:1000.00:QWE9143:0
 asdf:asdf:1000.00:ASD1498:0
-jaja:nigga:1000.00:JAJ7887:0
-adflkj:adsf:1000.00:ADF3925:0
 jaja:nigga:1000.00:JAJ7887:2
+adflkj:adsf:1000.00:ADF3925:0

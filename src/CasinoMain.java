@@ -12,7 +12,7 @@ public class CasinoMain {
         // Initialize database
         playerDB = new PlayerDatabase();
 
-        utilities.startUpGameAnimation(true); // put it false if animation annoying
+        utilities.startUpGameAnimation(false); // put it false if animation annoying
 
         showMainMenu();
 
@@ -263,12 +263,20 @@ public class CasinoMain {
             System.out.println("            ╚══════════════════════╝ ╚══════════════════════╝");
             System.out.println("");
             System.out.println("            ╔══════════════════════╗ ╔══════════════════════╗");
-            System.out.println("            ║   5. PLAYER STATS    ║ ║   6. LOGOUT          ║");
+            System.out.println("            ║   5. PLAYER STATS    ║ ║   6. Cash In         ║");
             System.out.println("            ║     ┌─────────┐      ║ ║     ┌─────────┐      ║");
-            System.out.println("            ║     │  📊      │      ║ ║     │   🚪     │      ║");
-            System.out.println("            ║     │ STATS   │      ║ ║     │ EXIT    │      ║");
+            System.out.println("            ║     │   📊     │      ║ ║     │   💸     │      ║");
+            System.out.println("            ║     │  STATS  │      ║ ║     │ Money :>│      ║");
             System.out.println("            ║     └─────────┘      ║ ║     └─────────┘      ║");
             System.out.println("            ╚══════════════════════╝ ╚══════════════════════╝");
+            System.out.println("");
+            System.out.println("                        ╔══════════════════════╗");
+            System.out.println("                        ║   7. LOGOUT          ║");
+            System.out.println("                        ║     ┌─────────┐      ║");
+            System.out.println("                        ║     │    🚪    │      ║");
+            System.out.println("                        ║     │   EXIT  │      ║");
+            System.out.println("                        ║     └─────────┘      ║");
+            System.out.println("                        ╚══════════════════════╝");
             System.out.println("");
             System.out.println("            ╔══════════════════════════════════════════════════════════╗");
             System.out.print("                 Enter your choice (1-6): ");
@@ -294,6 +302,27 @@ public class CasinoMain {
                     showPlayerStats();
                     break;
                 case 6:
+                    utilities.clearConsole();
+                    System.out.println("\n\n");
+                    System.out.println("            ╔═════════════════════════════════════════════════════════════════════════════╗");
+                    System.out.println("            ║                                    CASH IN                                  ║");
+                    System.out.println("            ╚═════════════════════════════════════════════════════════════════════════════╝");
+                    utilities.qrCodeCashIn();
+                    utilities.waitForUserInput("\n\n                 Press Enter to continue...");
+                    utilities.clearConsole();
+                    System.out.println("");
+                    System.out.print("                 Enter amount to add: ");
+                    double amount = utilities.readDouble(1); // min 1
+                    if (playerDB.cashIn(currentPlayer, amount)) {
+                        System.out.println("");
+                        System.out.println("                 ✅ Cash in successful. New Balance: " + utilities.formatCurrency(currentPlayer.getBalance()));
+                    } else {
+                        System.out.println("");
+                        System.out.println("                 ❌ Invalid amount.");
+                    }
+                    utilities.waitForUserInput("                 Press Enter to continue...");
+                    break;
+                case 7:
                     currentPlayer = null;
                     utilities.clearConsole();
                     System.out.println("");

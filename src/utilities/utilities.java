@@ -509,6 +509,37 @@ public class utilities {
     }
 }
 
+public static void qrCodeCashIn() {
+        System.out.println("            ╔═════════════════════════════════════════════════════════════════════════════╗");
+        System.out.println("            ║                                                                             ║");
+        System.out.println("            ║             ██████████████       ██    ██████    ██████████████             ║");
+        System.out.println("            ║             ██          ██  ██   ██  ██  ██      ██          ██             ║");
+        System.out.println("            ║             ██  ██████  ██       ██  ██          ██  ██████  ██             ║");
+        System.out.println("            ║             ██  ██████  ██         ██        ██  ██  ██████  ██             ║");
+        System.out.println("            ║             ██  ██████  ██    ████       ██████  ██  ██████  ██             ║");
+        System.out.println("            ║             ██          ██          ██    ██  ██ ██          ██             ║");
+        System.out.println("            ║             ██████████████      ██  ██           ██████████████             ║");
+        System.out.println("            ║                               ████         ██         ████                  ║");
+        System.out.println("            ║             ████        ████████████                  ██                    ║");
+        System.out.println("            ║             ██████████████████         ████       ██        ██              ║");
+        System.out.println("            ║             ██  ██                ██   ██     ██████  ████████              ║");
+        System.out.println("            ║             ██             ██  ██        ██     ██                          ║");
+        System.out.println("            ║                    ████████████████      ██                                 ║");
+        System.out.println("            ║                ████████                  ████               ██              ║");
+        System.out.println("            ║             ██████████████    ██████            ████████████                ║");
+        System.out.println("            ║             ██          ██    ██      ████      ██      ██                  ║");
+        System.out.println("            ║             ██  ██████  ██  ██        ██        ██  ██  ██                  ║");
+        System.out.println("            ║             ██  ██████  ██            ██        ██      ██                  ║");
+        System.out.println("            ║             ██  ██████  ██      ██      ██     ████████████                 ║");
+        System.out.println("            ║             ██          ██    ██  ██  ██        ██      ████                ║");
+        System.out.println("            ║             ██████████████    ████              ████    ██████              ║");
+        System.out.println("            ║                                                                             ║");
+        System.out.println("            ║                                                                             ║");
+        System.out.println("            ║                  S C A N   T O   C A S H   I N   M O N E Y                  ║");
+        System.out.println("            ╚═════════════════════════════════════════════════════════════════════════════╝");
+        utilities.pause(1000);
+    }
+
     
 
     public static void showLoadingAnimation(String message, int durationMs) {
