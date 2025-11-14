@@ -46,7 +46,9 @@ public class PlayerDatabase {
                 }
             }
 
-            System.out.println("✅ Loaded " + loadedCount + " players");
+            System.out.print("✅ Loaded " + loadedCount + " players");
+            utilities.showLoadingAnimation("", 1500);
+            utilities.clearConsole();
 
         } catch (IOException e) {
             System.out.println("❌ Error loading players: " + e.getMessage());
