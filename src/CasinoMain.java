@@ -23,20 +23,34 @@ public class CasinoMain {
         while (true) {
             utilities.clearConsole();
             System.out.println("\n\n");
-            System.out.println("            ╔════════════════════════════════════════════════════════════════════════════════╗");
-            System.out.println("            ║                  ██████  █████  ███████ ██ ███    ██   ████                    ║");
-            System.out.println("            ║                 ██      ██   ██ ██      ██ ████   ██ ██    ██                  ║");
-            System.out.println("            ║                 ██      ███████ ███████ ██ ██ ██  ██ ██    ██                  ║");
-            System.out.println("            ║                 ██      ██   ██      ██ ██ ██  ██ ██ ██    ██                  ║");
-            System.out.println("            ║                  ██████ ██   ██ ███████ ██ ██   ████   ████                    ║");
-            System.out.println("            ║                                                                                ║");
-            System.out.println("            ║                       ██████     █████     ██  ██   ██████                     ║");
-            System.out.println("            ║                      ██         ██   ██  ██  ██  ██ ██                         ║");
-            System.out.println("            ║                      ██   ████  ███████  ██  ██  ██ ████                       ║");
-            System.out.println("            ║                      ██     ██  ██   ██  ██      ██ ██                         ║");
-            System.out.println("            ║                       ██████    ██   ██  ██      ██ ██████                     ║");
-            System.out.println("            ║                                                                                ║");
-            System.out.println("            ╚════════════════════════════════════════════════════════════════════════════════╝");
+            System.out.println(
+                    "            ╔════════════════════════════════════════════════════════════════════════════════╗");
+            System.out.println(
+                    "            ║                  ██████  █████  ███████ ██ ███    ██   ████                    ║");
+            System.out.println(
+                    "            ║                 ██      ██   ██ ██      ██ ████   ██ ██    ██                  ║");
+            System.out.println(
+                    "            ║                 ██      ███████ ███████ ██ ██ ██  ██ ██    ██                  ║");
+            System.out.println(
+                    "            ║                 ██      ██   ██      ██ ██ ██  ██ ██ ██    ██                  ║");
+            System.out.println(
+                    "            ║                  ██████ ██   ██ ███████ ██ ██   ████   ████                    ║");
+            System.out.println(
+                    "            ║                                                                                ║");
+            System.out.println(
+                    "            ║                       ██████     █████     ██  ██   ██████                     ║");
+            System.out.println(
+                    "            ║                      ██         ██   ██  ██  ██  ██ ██                         ║");
+            System.out.println(
+                    "            ║                      ██   ████  ███████  ██  ██  ██ ████                       ║");
+            System.out.println(
+                    "            ║                      ██     ██  ██   ██  ██      ██ ██                         ║");
+            System.out.println(
+                    "            ║                       ██████    ██   ██  ██      ██ ██████                     ║");
+            System.out.println(
+                    "            ║                                                                                ║");
+            System.out.println(
+                    "            ╚════════════════════════════════════════════════════════════════════════════════╝");
             System.out.println("");
 
             System.out.println("                       ╔════════════════════════════╗ ╔═══════════════════════════╗");
@@ -112,10 +126,14 @@ public class CasinoMain {
             utilities.clearConsole();
             utilities.loginAnimation(true);
             System.out.println("\n");
-            System.out.println("                                          ╔══════════════════════════════════════════════════════════╗");
-            System.out.println("                                          ║                   ✅ LOGIN SUCCESSFUL!                    ║");
-            System.out.println("                                          ║                   Welcome back, " + String.format("%-25s", player.getUsername()) + "║");
-            System.out.println("                                          ╚══════════════════════════════════════════════════════════╝");
+            System.out.println(
+                    "                                          ╔══════════════════════════════════════════════════════════╗");
+            System.out.println(
+                    "                                          ║                   ✅ LOGIN SUCCESSFUL!                    ║");
+            System.out.println("                                          ║                   Welcome back, "
+                    + String.format("%-25s", player.getUsername()) + "║");
+            System.out.println(
+                    "                                          ╚══════════════════════════════════════════════════════════╝");
             utilities.pause(3000);
             showGameMenu();
         } else {
@@ -285,15 +303,15 @@ public class CasinoMain {
 
             switch (choice) {
                 case 1:
-                    Lucky9.play(currentPlayer, playerDB);
+                    // Use Game polymorphism: start the Lucky9 game with current player + DB
+                    new Lucky9().startGame(currentPlayer, playerDB);
                     break;
                 case 2:
                     // playBlackjack();
                     break;
                 case 3:
-                    SlotMachine slotGame = new SlotMachine(currentPlayer.getBalance());
-                    double newBalance = slotGame.start();
-                    currentPlayer.setBalance(newBalance);
+                    // Start slot machine via Game API (slot will update player via playerDB)
+                    new SlotMachine(currentPlayer.getBalance()).startGame(currentPlayer, playerDB);
                     break;
                 case 4:
                     // playChuckALuck();
@@ -304,9 +322,12 @@ public class CasinoMain {
                 case 6:
                     utilities.clearConsole();
                     System.out.println("\n\n");
-                    System.out.println("            ╔═════════════════════════════════════════════════════════════════════════════╗");
-                    System.out.println("            ║                                    CASH IN                                  ║");
-                    System.out.println("            ╚═════════════════════════════════════════════════════════════════════════════╝");
+                    System.out.println(
+                            "            ╔═════════════════════════════════════════════════════════════════════════════╗");
+                    System.out.println(
+                            "            ║                                    CASH IN                                  ║");
+                    System.out.println(
+                            "            ╚═════════════════════════════════════════════════════════════════════════════╝");
                     utilities.qrCodeCashIn();
                     utilities.waitForUserInput("\n\n                 Press Enter to continue...");
                     utilities.clearConsole();
@@ -315,7 +336,8 @@ public class CasinoMain {
                     double amount = utilities.readDouble(1); // min 1
                     if (playerDB.cashIn(currentPlayer, amount)) {
                         System.out.println("");
-                        System.out.println("                 ✅ Cash in successful. New Balance: " + utilities.formatCurrency(currentPlayer.getBalance()));
+                        System.out.println("                 ✅ Cash in successful. New Balance: "
+                                + utilities.formatCurrency(currentPlayer.getBalance()));
                     } else {
                         System.out.println("");
                         System.out.println("                 ❌ Invalid amount.");

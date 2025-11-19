@@ -4,6 +4,7 @@ import java.util.Random;
 import Core.Player;
 import Core.PlayerDatabase;
 import utilities.utilities;
+import games.Game;
 
 /**
  * Lucky9 game
@@ -15,16 +16,18 @@ import utilities.utilities;
  * This class provides a static helper `play` that CasinoMain can call,
  * and an instance-style constructor + start() for other uses.
  */
-public class Lucky9 {
+public class Lucky9 extends Game {
 	private final Random rng = new Random();
 
 	// Allow instance usage similar to SlotMachine.start()
 	private double balance;
 
 	public Lucky9() {
+		super();
 	}
 
 	public Lucky9(double playerBalance) {
+		super();
 		this.balance = playerBalance;
 	}
 
@@ -73,7 +76,8 @@ public class Lucky9 {
 				System.out.println("            ╔══════════════════════════════════════════════════════════╗");
 				System.out.println("            ║                        LUCKY 9                          ║");
 				System.out.println("            ╠══════════════════════════════════════════════════════════╣");
-				System.out.println("            ║               Bet Placed: " + String.format("%-20s", utilities.formatCurrency(bet)) + "           ║");
+				System.out.println("            ║               Bet Placed: "
+						+ String.format("%-20s", utilities.formatCurrency(bet)) + "           ║");
 				System.out.println("            ╚══════════════════════════════════════════════════════════╝");
 				System.out.println("");
 
@@ -94,7 +98,8 @@ public class Lucky9 {
 				if (payout > 0) {
 					balance += payout;
 					System.out.println("            ╔══════════════════════════════════════════════════════════╗");
-					System.out.println("            ║              YOU WON " + String.format("%-33s", utilities.formatCurrency(payout)) + "   ║");
+					System.out.println("            ║              YOU WON "
+							+ String.format("%-33s", utilities.formatCurrency(payout)) + "   ║");
 					System.out.println("            ╚══════════════════════════════════════════════════════════╝");
 				} else if (payout == 0 && playerValue == dealerValue) {
 					balance += bet;
@@ -103,7 +108,8 @@ public class Lucky9 {
 					System.out.println("            ╚══════════════════════════════════════════════════════════╝");
 				} else {
 					System.out.println("            ╔══════════════════════════════════════════════════════════╗");
-					System.out.println("            ║             ❌ YOU LOST " + String.format("%-33s", utilities.formatCurrency(bet)) + "║");
+					System.out.println("            ║             ❌ YOU LOST "
+							+ String.format("%-33s", utilities.formatCurrency(bet)) + "║");
 					System.out.println("            ╚══════════════════════════════════════════════════════════╝");
 				}
 
@@ -154,7 +160,8 @@ public class Lucky9 {
 			int choice = utilities.readInt(1, 2);
 			if (choice == 1) {
 				if (currentPlayer.getBalance() <= 0) {
-					System.out.println("\n                 ❌ You have no funds to bet. Win some at other games or register more funds.");
+					System.out.println(
+							"\n                 ❌ You have no funds to bet. Win some at other games or register more funds.");
 					utilities.waitForUserInput("\n                 Press Enter to continue...");
 					continue;
 				}
@@ -168,7 +175,8 @@ public class Lucky9 {
 				System.out.println("            ╔══════════════════════════════════════════════════════════╗");
 				System.out.println("            ║                        LUCKY 9                           ║");
 				System.out.println("            ╠══════════════════════════════════════════════════════════╣");
-				System.out.println("            ║               Bet Placed: " + String.format("%-20s", utilities.formatCurrency(bet)) + "          ║");
+				System.out.println("            ║               Bet Placed: "
+						+ String.format("%-20s", utilities.formatCurrency(bet)) + "          ║");
 				System.out.println("            ╚══════════════════════════════════════════════════════════╝");
 				System.out.println("");
 
@@ -192,26 +200,32 @@ public class Lucky9 {
 				System.out.println("");
 				if (payout > 0) {
 					currentPlayer.setBalance(currentPlayer.getBalance() + payout);
-					playerDB.logTransaction(currentPlayer.getUsername(), "Lucky9", "WIN", payout, currentPlayer.getBalance());
+					playerDB.logTransaction(currentPlayer.getUsername(), "Lucky9", "WIN", payout,
+							currentPlayer.getBalance());
 					System.out.println("            ╔══════════════════════════════════════════════════════════╗");
-					System.out.println("            ║              YOU WON " + String.format("%-33s", utilities.formatCurrency(payout)) + "║");
+					System.out.println("            ║              YOU WON "
+							+ String.format("%-33s", utilities.formatCurrency(payout)) + "║");
 					System.out.println("            ╚══════════════════════════════════════════════════════════╝");
 				} else if (payout == 0 && playerValue == dealerValue) {
 					// push
 					currentPlayer.setBalance(currentPlayer.getBalance() + bet);
-					playerDB.logTransaction(currentPlayer.getUsername(), "Lucky9", "PUSH", bet, currentPlayer.getBalance());
+					playerDB.logTransaction(currentPlayer.getUsername(), "Lucky9", "PUSH", bet,
+							currentPlayer.getBalance());
 					System.out.println("            ╔══════════════════════════════════════════════════════════╗");
 					System.out.println("            ║                 PUSH — BET RETURNED                      ║");
 					System.out.println("            ╚══════════════════════════════════════════════════════════╝");
 				} else {
-					playerDB.logTransaction(currentPlayer.getUsername(), "Lucky9", "LOSS", bet, currentPlayer.getBalance());
+					playerDB.logTransaction(currentPlayer.getUsername(), "Lucky9", "LOSS", bet,
+							currentPlayer.getBalance());
 					System.out.println("            ╔══════════════════════════════════════════════════════════╗");
-					System.out.println("            ║              YOU LOST " + String.format("%-33s", utilities.formatCurrency(bet)) + "  ║");
+					System.out.println("            ║              YOU LOST "
+							+ String.format("%-33s", utilities.formatCurrency(bet)) + "  ║");
 					System.out.println("            ╚══════════════════════════════════════════════════════════╝");
 				}
 
 				System.out.println("");
-				System.out.println("                 New Balance: " + utilities.formatCurrency(currentPlayer.getBalance()));
+				System.out.println(
+						"                 New Balance: " + utilities.formatCurrency(currentPlayer.getBalance()));
 				System.out.println("");
 
 				currentPlayer.updateGamesPlayed();
@@ -267,24 +281,28 @@ public class Lucky9 {
 		System.out.println();
 		System.out.println("            ╔════════════════════════════════════════════════════════════╗");
 		System.out.print("            ║  Player: ");
-		for (int v : player) System.out.print("[" + v + "] ");
+		for (int v : player)
+			System.out.print("[" + v + "] ");
 		System.out.println("  => " + pValue + "                                ║");
 
 		System.out.print("            ║  Dealer : ");
-		for (int v : dealer) System.out.print("[" + v + "] ");
+		for (int v : dealer)
+			System.out.print("[" + v + "] ");
 		System.out.println("  => " + dValue + "                               ║");
 		System.out.println("            ╚════════════════════════════════════════════════════════════╝");
 	}
 
 	/**
 	 * Resolve payout rules:
-	 * - If playerValue > dealerValue => win pays 2x (i.e., get bet*2 back: original bet was already deducted so payout = bet*2)
+	 * - If playerValue > dealerValue => win pays 2x (i.e., get bet*2 back: original
+	 * bet was already deducted so payout = bet*2)
 	 * - If equal => push (return bet)
 	 * - If playerValue < dealerValue => lose (no payout)
 	 * - Special: if player's handValue == 9 => jackpot pays 3x (payout = bet * 3)
 	 */
 	private double resolvePayout(double bet, int playerValue, int dealerValue, int[] playerCards) {
-		// Special exact 9 (jackpot) — only if player's value is 9 (regardless of dealer)
+		// Special exact 9 (jackpot) — only if player's value is 9 (regardless of
+		// dealer)
 		if (playerValue == 9) {
 			// Big payout
 			return bet * 3.0;
@@ -302,5 +320,48 @@ public class Lucky9 {
 
 		// loss
 		return -1.0; // indicate loss
+	}
+
+	// --- Implement abstract Game methods (lightweight wrappers) ---
+	@Override
+	public void startGame(Player player, PlayerDatabase playerDB) {
+		// Use the existing playWithPlayer flow when a player + DB are provided
+		playWithPlayer(player, playerDB);
+	}
+
+	@Override
+	public void playRound() {
+		// Not used directly by CasinoMain; rounds are played inside
+		// start()/playWithPlayer()
+	}
+
+	@Override
+	public double calculatePayout() {
+		// Not applicable as a single-call; returns 0 as placeholder
+		return 0;
+	}
+
+	@Override
+	public void displayRules() {
+		utilities.clearConsole();
+		System.out.println("Lucky9 Rules: Draw 3 digits (1-9). Closest to 9 wins. Exact 9 => jackpot x3.");
+	}
+
+	@Override
+	public String getGameName() {
+		return "Lucky9";
+	}
+
+	@Override
+	public void updateBalance(double amount) {
+		this.balance += amount;
+		if (this.player != null) {
+			this.player.setBalance(this.balance);
+		}
+	}
+
+	@Override
+	public void saveGameState() {
+		// No-op here; per-player save happens in playWithPlayer via PlayerDatabase
 	}
 }

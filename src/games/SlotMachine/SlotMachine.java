@@ -2,12 +2,16 @@ package games.SlotMachine;
 
 import java.util.Random;
 import java.util.Scanner;
+import games.Game;
+import Core.Player;
+import Core.PlayerDatabase;
 
-public class SlotMachine {
+public class SlotMachine extends Game {
     private int balance;
     private final Scanner scanner = new Scanner(System.in);
 
     public SlotMachine(double playerBalance) {
+        super();
         this.balance = (int) playerBalance;
     }
 
@@ -64,7 +68,7 @@ public class SlotMachine {
     }
 
     private String[] spinRow() {
-        String[] numbers = {"1", "2", "3", "4", "5", "6", "7", "8", "9"};
+        String[] numbers = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
         String[] row = new String[3];
         Random random = new Random();
 
@@ -80,10 +84,55 @@ public class SlotMachine {
         System.out.println("---------------------");
     }
 
-private int getPayout(String[] row, int bet) {
-    if (row[0].equals(row[1]) && row[0].equals(row[2])) {
-        return bet * 3;
+    private int getPayout(String[] row, int bet) {
+        if (row[0].equals(row[1]) && row[0].equals(row[2])) {
+            return bet * 3;
+        }
+        return 0;
     }
-    return 0;
+
+    // --- Implement abstract Game methods (minimal wrappers) ---
+    @Override
+    public void startGame(Player player, PlayerDatabase playerDB) {
+        // Create a slot instance initialized with the player's balance,
+        // run the existing start loop, then persist the updated balance.
+        SlotMachine slot = new SlotMachine(player.getBalance());
+        double newBalance = slot.start();
+        player.setBalance(newBalance);
+        if (playerDB != null)
+            playerDB.updatePlayer(player);
+    }
+
+    @Override
+    public void playRound() {
+        playGame();
+    }
+
+    @Override
+    public double calculatePayout() {
+        // SlotMachine's payout is computed per spin; not tracked here
+        return 0;
+    }
+
+    @Override
+    public void displayRules() {
+        System.out.println("Slot Machine: match 3 symbols to win. Triple match pays 3x.");
+    }
+
+    @Override
+    public String getGameName() {
+        return "SlotMachine";
+    }
+
+    @Override
+    public void updateBalance(double amount) {
+        this.balance += (int) amount;
+        if (this.player != null)
+            this.player.setBalance(this.balance);
+    }
+
+    @Override
+    public void saveGameState() {
+        // No-op; CasinoMain/playerDB handles persistence
     }
 }
