@@ -40,6 +40,4 @@ public abstract class Game {
     // Update internal balance and (if linked) the player object
     public abstract void updateBalance(double amount);
 
-    // Persist any game-specific state (optional)
-    public abstract void saveGameState();
 }

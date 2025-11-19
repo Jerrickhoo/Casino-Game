@@ -43,8 +43,4 @@ public class ChuckALuck extends Game {
             this.player.setBalance(this.balance);
     }
 
-    @Override
-    public void saveGameState() {
-        // no-op
-    }
 }

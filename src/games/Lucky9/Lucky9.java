@@ -360,8 +360,4 @@ public class Lucky9 extends Game {
 		}
 	}
 
-	@Override
-	public void saveGameState() {
-		// No-op here; per-player save happens in playWithPlayer via PlayerDatabase
-	}
 }

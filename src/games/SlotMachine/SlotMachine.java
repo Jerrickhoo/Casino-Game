@@ -131,8 +131,4 @@ public class SlotMachine extends Game {
             this.player.setBalance(this.balance);
     }
 
-    @Override
-    public void saveGameState() {
-        // No-op; CasinoMain/playerDB handles persistence
-    }
 }

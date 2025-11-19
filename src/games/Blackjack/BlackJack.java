@@ -43,8 +43,4 @@ public class BlackJack extends Game {
             this.player.setBalance(this.balance);
     }
 
-    @Override
-    public void saveGameState() {
-        // no-op
-    }
 }
