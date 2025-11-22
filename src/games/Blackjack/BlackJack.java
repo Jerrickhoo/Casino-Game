@@ -1,21 +1,31 @@
 package games.Blackjack;
 
-import utilities.utilities;
+import games.Game;
+import Core.Player;
+import Core.PlayerDatabase;
+import utilities.InputValidator;
+import utilities.ConsoleDisplay;
+import utilities.Formatter;
+import ui.AnimationDisplay;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public class BlackJack {
+public class BlackJack extends Game {
     private double balance;
 
     public BlackJack(double startingBalance) {
         this.balance = startingBalance;
     }
 
+    public BlackJack() {
+        super();
+    }
+
     public double start() {
-        utilities.clearConsole();
+        ConsoleDisplay.clearConsole();
         showWelcomeScreen();
 
         System.out.println();
@@ -24,31 +34,31 @@ public class BlackJack {
         System.out.println("                    ║              [2] Return to Casino Menu                 ║");
         System.out.println("                    ╚════════════════════════════════════════════════════════╝");
         System.out.print("                    Choose: ");
-        int menuChoice = utilities.readInt(1, 2);
+        int menuChoice = InputValidator.readInt(1, 2);
 
         if (menuChoice == 2) {
             return balance;
         }
 
-        utilities.pause(700);
+        ConsoleDisplay.pause(700);
 
         while (balance > 0) {
-            utilities.clearConsole();
+            ConsoleDisplay.clearConsole();
             showGameHeader();
 
-            System.out.println("                    Current Balance: " + utilities.formatCurrency(balance));
+            System.out.println("                    Current Balance: " + Formatter.formatCurrency(balance));
             System.out.print(
-                    "                    Place your bet (min $1, max " + utilities.formatCurrency(balance) + "): ");
-            double bet = utilities.readDouble(1, balance);
+                    "                    Place your bet (min $1, max " + Formatter.formatCurrency(balance) + "): ");
+            double bet = InputValidator.readDouble(1, balance);
 
             playRound(bet);
 
             if (balance <= 0) {
-                utilities.clearConsole();
+                ConsoleDisplay.clearConsole();
                 System.out.println("\n                    ╔════════════════════════════════════════╗");
                 System.out.println("                    ║     YOU'RE OUT OF CHIPS! GAME OVER      ║");
                 System.out.println("                    ╚════════════════════════════════════════╝");
-                utilities.waitForUserInput("                    \nPress Enter to return to casino...");
+                InputValidator.waitForUserInput("                    \nPress Enter to return to casino...");
                 break;
             }
 
@@ -58,7 +68,7 @@ public class BlackJack {
             System.out.println("                    ║  [2] Return to Casino                  ║");
             System.out.println("                    ╚════════════════════════════════════════╝");
             System.out.print("                    Choose: ");
-            int choice = utilities.readInt(1, 2);
+            int choice = InputValidator.readInt(1, 2);
             if (choice == 2)
                 break;
         }
@@ -66,9 +76,62 @@ public class BlackJack {
         return balance;
     }
 
+    // -- Implement abstract Game methods --
+
+    @Override
+    public void startGame(Player player, PlayerDatabase playerDB) {
+        this.player = player;
+        if (player != null) {
+            this.balance = player.getBalance();
+        }
+
+        double finalBalance = start();
+
+        if (player != null) {
+            player.setBalance(finalBalance);
+            player.updateGamesPlayed();
+            if (playerDB != null) {
+                playerDB.updatePlayer(player);
+                playerDB.logTransaction(player.getUsername(), getGameName(), "PLAY_SESSION_END", finalBalance,
+                        finalBalance);
+            }
+        }
+    }
+
+    @Override
+    public void playRound() {
+        // Ask for a bet and play a round using existing method
+        double bet = InputValidator.readDouble(1, this.balance);
+        playRound(bet);
+    }
+
+    @Override
+    public double calculatePayout() {
+        // Not tracked per-round here; return current balance
+        return this.balance;
+    }
+
+    @Override
+    public void displayRules() {
+        showWelcomeScreen();
+    }
+
+    @Override
+    public String getGameName() {
+        return "Blackjack";
+    }
+
+    @Override
+    public void updateBalance(double amount) {
+        this.balance += amount;
+        if (this.player != null) {
+            this.player.setBalance(this.balance);
+        }
+    }
+
     private void playRound(double bet) {
-        utilities.clearConsole();
-        utilities.showProgressBar("                    Shuffling deck", 500);
+        ConsoleDisplay.clearConsole();
+        Formatter.showProgressBar("                    Shuffling deck", 500);
 
         Deck deck = new Deck();
         deck.shuffle();
@@ -82,9 +145,9 @@ public class BlackJack {
         player.add(deck.draw());
         dealer.add(deck.draw());
 
-        utilities.clearConsole();
+        ConsoleDisplay.clearConsole();
         showGameHeader();
-        System.out.println("                    Bet: " + utilities.formatCurrency(bet));
+        System.out.println("                    Bet: " + Formatter.formatCurrency(bet));
         System.out.println("                    ═══════════════════════════════════════════");
         System.out.println("                    ┌────────────────────────────────────────┐");
         System.out.println("                    │          DEALER'S HAND                 │");
@@ -104,19 +167,19 @@ public class BlackJack {
             revealHands(dealer, player);
             if (playerBJ && dealerBJ) {
                 System.out.println("                    \n  ✓ Both have Blackjack - PUSH");
-                System.out.println("                      Bet returned: " + utilities.formatCurrency(bet));
+                System.out.println("                      Bet returned: " + Formatter.formatCurrency(bet));
             } else if (playerBJ) {
                 double payout = bet * 1.5;
                 balance += payout;
                 System.out.println("                    \n  ✓ BLACKJACK! YOU WIN!");
-                System.out.println("                      Winnings: " + utilities.formatCurrency(payout));
+                System.out.println("                      Winnings: " + Formatter.formatCurrency(payout));
                 showWinAnimation();
             } else {
                 balance -= bet;
                 System.out.println("                    \n  ✗ Dealer has Blackjack - YOU LOSE");
-                System.out.println("                      Amount lost: " + utilities.formatCurrency(bet));
+                System.out.println("                      Amount lost: " + Formatter.formatCurrency(bet));
             }
-            utilities.waitForUserInput("                    Press Enter to continue...");
+            InputValidator.waitForUserInput("                    Press Enter to continue...");
             return;
         }
 
@@ -129,7 +192,7 @@ public class BlackJack {
             System.out.println("                    │  [1] SPLIT         [2] NO SPLIT       │");
             System.out.println("                    └────────────────────────────────────────┘");
             System.out.print("                    Choose: ");
-            int splitChoice = utilities.readInt(1, 2);
+            int splitChoice = InputValidator.readInt(1, 2);
             if (splitChoice == 1) {
                 performedSplit = true;
                 Card c0 = player.cards.get(0);
@@ -141,7 +204,7 @@ public class BlackJack {
                 handA.add(deck.draw());
                 handB.add(deck.draw());
                 System.out.println("                    Split created. Playing Hand A then Hand B.");
-                utilities.pause(800);
+                ConsoleDisplay.pause(800);
             }
         }
 
@@ -152,10 +215,10 @@ public class BlackJack {
             playPlayerHand(deck, dealer, handB, bet, "Hand B");
 
             // Dealer plays once
-            utilities.showLoadingAnimation("                    Dealer is thinking", 1000);
+            AnimationDisplay.showLoadingAnimation("                    Dealer is thinking", 1000);
             revealHands(dealer, null);
             while (dealer.getValue() < 17) {
-                utilities.pause(600);
+                ConsoleDisplay.pause(600);
                 Card c = deck.draw();
                 System.out.println("                      Dealer draws: " + c);
                 dealer.add(c);
@@ -165,7 +228,7 @@ public class BlackJack {
             // Resolve both hands
             resolveHandOutcome(handA, dealer, bet);
             resolveHandOutcome(handB, dealer, bet);
-            utilities.waitForUserInput("                    Press Enter to continue...");
+            InputValidator.waitForUserInput("                    Press Enter to continue...");
             return;
         }
 
@@ -175,9 +238,9 @@ public class BlackJack {
         boolean firstDecision = true;
 
         while (true) {
-            utilities.clearConsole();
+            ConsoleDisplay.clearConsole();
             showGameHeader();
-            System.out.println("                    Bet: " + utilities.formatCurrency(currentBet));
+            System.out.println("                    Bet: " + Formatter.formatCurrency(currentBet));
             System.out.println("                    ═══════════════════════════════════════════");
             System.out.println("                    ┌────────────────────────────────────────┐");
             System.out.println("                    │          DEALER'S HAND                 │");
@@ -195,12 +258,12 @@ public class BlackJack {
                 System.out.println("                    │  [1] HIT  [2] STAND  [3] DOUBLE      │");
                 System.out.println("                    └────────────────────────────────────────┘");
                 System.out.print("                    Choose: ");
-                int choice = utilities.readInt(1, 3);
+                int choice = InputValidator.readInt(1, 3);
                 if (choice == 1) {
                     Card drawn = deck.draw();
                     player.add(drawn);
                     System.out.println("                      You draw: " + drawn);
-                    utilities.pause(600);
+                    ConsoleDisplay.pause(600);
                     if (player.getValue() > 21) {
                         System.out.println("                      You: " + player + "  (" + player.getValue() + ")");
                         System.out.println("                      You busted!");
@@ -212,14 +275,14 @@ public class BlackJack {
                 } else { // Double
                     if (balance < currentBet * 2) {
                         System.out.println("                      Insufficient funds to double!");
-                        utilities.pause(700);
+                        ConsoleDisplay.pause(700);
                         continue;
                     }
                     currentBet *= 2;
                     Card drawn = deck.draw();
                     player.add(drawn);
                     System.out.println("                      You doubled and drew: " + drawn);
-                    utilities.pause(700);
+                    ConsoleDisplay.pause(700);
                     if (player.getValue() > 21) {
                         System.out.println("                      You: " + player + "  (" + player.getValue() + ")");
                         System.out.println("                      You busted!");
@@ -232,12 +295,12 @@ public class BlackJack {
                 System.out.println("                    │      [1] HIT           [2] STAND      │");
                 System.out.println("                    └────────────────────────────────────────┘");
                 System.out.print("                    Choose: ");
-                int choice = utilities.readInt(1, 2);
+                int choice = InputValidator.readInt(1, 2);
                 if (choice == 1) {
                     Card drawn = deck.draw();
                     player.add(drawn);
                     System.out.println("                      You draw: " + drawn);
-                    utilities.pause(600);
+                    ConsoleDisplay.pause(600);
                     if (player.getValue() > 21) {
                         System.out.println("                      You: " + player + "  (" + player.getValue() + ")");
                         System.out.println("                      You busted!");
@@ -253,10 +316,10 @@ public class BlackJack {
 
         // Dealer turn
         if (!playerBusted) {
-            utilities.showLoadingAnimation("                    Dealer is thinking", 1000);
+            AnimationDisplay.showLoadingAnimation("                    Dealer is thinking", 1000);
             revealHands(dealer, player);
             while (dealer.getValue() < 17) {
-                utilities.pause(600);
+                ConsoleDisplay.pause(600);
                 Card c = deck.draw();
                 System.out.println("                      Dealer draws: " + c);
                 dealer.add(c);
@@ -271,29 +334,29 @@ public class BlackJack {
         if (playerBusted) {
             balance -= currentBet;
             System.out.println("                      ✗ YOU BUSTED - YOU LOSE");
-            System.out.println("                        Amount lost: " + utilities.formatCurrency(currentBet));
+            System.out.println("                        Amount lost: " + Formatter.formatCurrency(currentBet));
         } else if (dealerVal > 21) {
             balance += currentBet;
             System.out.println("                      ✓ DEALER BUSTED - YOU WIN!");
-            System.out.println("                        Winnings: " + utilities.formatCurrency(currentBet));
+            System.out.println("                        Winnings: " + Formatter.formatCurrency(currentBet));
             showWinAnimation();
         } else if (playerVal > dealerVal) {
             balance += currentBet;
             System.out.println("                      ✓ YOU WIN!");
-            System.out.println("                        Winnings: " + utilities.formatCurrency(currentBet));
+            System.out.println("                        Winnings: " + Formatter.formatCurrency(currentBet));
             showWinAnimation();
         } else if (playerVal == dealerVal) {
             System.out.println("                      = PUSH - Bet returned");
-            System.out.println("                        Amount returned: " + utilities.formatCurrency(currentBet));
+            System.out.println("                        Amount returned: " + Formatter.formatCurrency(currentBet));
         } else {
             balance -= currentBet;
             System.out.println("                      ✗ DEALER WINS - YOU LOSE");
-            System.out.println("                        Amount lost: " + utilities.formatCurrency(currentBet));
+            System.out.println("                        Amount lost: " + Formatter.formatCurrency(currentBet));
         }
         System.out.println("                    ═══════════════════════════════════════════");
-        System.out.println("                      New Balance: " + utilities.formatCurrency(balance));
+        System.out.println("                      New Balance: " + Formatter.formatCurrency(balance));
 
-        utilities.waitForUserInput("                    Press Enter to continue...");
+        InputValidator.waitForUserInput("                    Press Enter to continue...");
     }
 
     // Play a single hand with Hit/Stand/Double (for split hands)
@@ -303,9 +366,9 @@ public class BlackJack {
         boolean firstDecision = true;
 
         while (true) {
-            utilities.clearConsole();
+            ConsoleDisplay.clearConsole();
             showGameHeader();
-            System.out.println("                    " + label + " | Bet: " + utilities.formatCurrency(handBet));
+            System.out.println("                    " + label + " | Bet: " + Formatter.formatCurrency(handBet));
             System.out.println("                    ═══════════════════════════════════════════");
             System.out.println("                    Dealer: " + dealer.showFirstCard());
             System.out.println("                    " + label + ": " + hand + "  (" + hand.getValue() + ")");
@@ -316,12 +379,12 @@ public class BlackJack {
                 System.out.println("                    │  [1] HIT  [2] STAND  [3] DOUBLE      │");
                 System.out.println("                    └────────────────────────────────────────┘");
                 System.out.print("                    Choose: ");
-                int choice = utilities.readInt(1, 3);
+                int choice = InputValidator.readInt(1, 3);
                 if (choice == 1) {
                     Card drawn = deck.draw();
                     hand.add(drawn);
                     System.out.println("                      You draw: " + drawn);
-                    utilities.pause(600);
+                    ConsoleDisplay.pause(600);
                     if (hand.getValue() > 21) {
                         System.out.println("                      BUST! " + hand.getValue());
                         busted = true;
@@ -332,14 +395,14 @@ public class BlackJack {
                 } else { // Double
                     if (balance < handBet * 2) {
                         System.out.println("                      Insufficient funds to double!");
-                        utilities.pause(700);
+                        ConsoleDisplay.pause(700);
                         continue;
                     }
                     handBet *= 2;
                     Card drawn = deck.draw();
                     hand.add(drawn);
                     System.out.println("                      You doubled and drew: " + drawn);
-                    utilities.pause(700);
+                    ConsoleDisplay.pause(700);
                     if (hand.getValue() > 21) {
                         System.out.println("                      BUST after double! " + hand.getValue());
                         busted = true;
@@ -351,12 +414,12 @@ public class BlackJack {
                 System.out.println("                    │      [1] HIT           [2] STAND      │");
                 System.out.println("                    └────────────────────────────────────────┘");
                 System.out.print("                    Choose: ");
-                int choice = utilities.readInt(1, 2);
+                int choice = InputValidator.readInt(1, 2);
                 if (choice == 1) {
                     Card drawn = deck.draw();
                     hand.add(drawn);
                     System.out.println("                      You draw: " + drawn);
-                    utilities.pause(600);
+                    ConsoleDisplay.pause(600);
                     if (hand.getValue() > 21) {
                         System.out.println("                      BUST! " + hand.getValue());
                         busted = true;
@@ -370,6 +433,8 @@ public class BlackJack {
         }
 
         hand.lastBet = handBet;
+        if (busted) {
+            /* read variable to avoid unused-value warning */ }
     }
 
     // Resolve outcome for a single hand
@@ -380,20 +445,20 @@ public class BlackJack {
 
         if (pVal > 21) {
             balance -= useBet;
-            System.out.println("                      ✗ Hand busted. Lost " + utilities.formatCurrency(useBet));
+            System.out.println("                      ✗ Hand busted. Lost " + Formatter.formatCurrency(useBet));
         } else if (dVal > 21) {
             balance += useBet;
-            System.out.println("                      ✓ Dealer busted. Win " + utilities.formatCurrency(useBet));
+            System.out.println("                      ✓ Dealer busted. Win " + Formatter.formatCurrency(useBet));
             showWinAnimation();
         } else if (pVal > dVal) {
             balance += useBet;
-            System.out.println("                      ✓ Hand beats dealer! Win " + utilities.formatCurrency(useBet));
+            System.out.println("                      ✓ Hand beats dealer! Win " + Formatter.formatCurrency(useBet));
             showWinAnimation();
         } else if (pVal == dVal) {
-            System.out.println("                      = Push. Bet returned: " + utilities.formatCurrency(useBet));
+            System.out.println("                      = Push. Bet returned: " + Formatter.formatCurrency(useBet));
         } else {
             balance -= useBet;
-            System.out.println("                      ✗ Dealer wins. Lost " + utilities.formatCurrency(useBet));
+            System.out.println("                      ✗ Dealer wins. Lost " + Formatter.formatCurrency(useBet));
         }
     }
 

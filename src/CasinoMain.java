@@ -310,10 +310,8 @@ public class CasinoMain {
                     new Lucky9().startGame(currentPlayer, playerDB);
                     break;
                 case 2:
-                    // Launch Blackjack and update player balance
-                    games.Blackjack.BlackJack bj = new games.Blackjack.BlackJack(currentPlayer.getBalance());
-                    double updatedBalance = bj.start();
-                    currentPlayer.setBalance(updatedBalance);
+                    // Launch Blackjack via Game polymorphism (BlackJack will update player + DB)
+                    new games.Blackjack.BlackJack().startGame(currentPlayer, playerDB);
                     break;
                 case 3:
                     // Start slot machine via Game API (slot will update player via playerDB)
