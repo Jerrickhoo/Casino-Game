@@ -3,7 +3,9 @@ package games.Lucky9;
 import java.util.Random;
 import Core.Player;
 import Core.PlayerDatabase;
-import utilities.utilities;
+import utilities.InputValidator;
+import utilities.ConsoleDisplay;
+import utilities.Formatter;
 import games.Game;
 
 /**
@@ -36,7 +38,7 @@ public class Lucky9 extends Game {
 	 */
 	public double start() {
 		while (true) {
-			utilities.clearConsole();
+			ConsoleDisplay.clearConsole();
 			System.out.println("\n\n");
 			System.out.println("            ╔══════════════════════════════════════════════════════════╗");
 			System.out.println("            ║                        LUCKY 9                          ║");
@@ -44,7 +46,7 @@ public class Lucky9 extends Game {
 			System.out.println("            ║                Get as close to 9 as possible!            ║");
 			System.out.println("            ╚══════════════════════════════════════════════════════════╝");
 			System.out.println("");
-			System.out.println("                 Current Balance: " + utilities.formatCurrency(balance));
+			System.out.println("                 Current Balance: " + Formatter.formatCurrency(balance));
 			System.out.println("");
 			System.out.println("            ╔══════════════════════╗ ╔══════════════════════╗");
 			System.out.println("            ║      1. PLAY         ║ ║    2. EXIT GAME      ║");
@@ -58,26 +60,26 @@ public class Lucky9 extends Game {
 			System.out.println("            ╚══════════════════════╝ ╚══════════════════════╝");
 			System.out.print("\n                 Choose (1-2): ");
 
-			int choice = utilities.readInt(1, 2);
+			int choice = InputValidator.readInt(1, 2);
 			if (choice == 1) {
 				if (balance <= 0) {
 					System.out.println("\n                 ❌ You have no funds to bet. Deposit more to play.");
-					utilities.waitForUserInput("\n                 Press Enter to continue...");
+					InputValidator.waitForUserInput("\n                 Press Enter to continue...");
 					continue;
 				}
 
 				System.out.print("\n                 Enter bet amount: ");
-				double bet = utilities.readDouble(1, balance);
+				double bet = InputValidator.readDouble(1, balance);
 				balance -= bet;
 
 				// Clear screen after bet is placed
-				utilities.clearConsole();
+				ConsoleDisplay.clearConsole();
 				System.out.println("\n");
 				System.out.println("            ╔══════════════════════════════════════════════════════════╗");
 				System.out.println("            ║                        LUCKY 9                          ║");
 				System.out.println("            ╠══════════════════════════════════════════════════════════╣");
 				System.out.println("            ║               Bet Placed: "
-						+ String.format("%-20s", utilities.formatCurrency(bet)) + "           ║");
+						+ String.format("%-20s", Formatter.formatCurrency(bet)) + "           ║");
 				System.out.println("            ╚══════════════════════════════════════════════════════════╝");
 				System.out.println("");
 
@@ -99,7 +101,7 @@ public class Lucky9 extends Game {
 					balance += payout;
 					System.out.println("            ╔══════════════════════════════════════════════════════════╗");
 					System.out.println("            ║              YOU WON "
-							+ String.format("%-33s", utilities.formatCurrency(payout)) + "   ║");
+							+ String.format("%-33s", Formatter.formatCurrency(payout)) + "   ║");
 					System.out.println("            ╚══════════════════════════════════════════════════════════╝");
 				} else if (payout == 0 && playerValue == dealerValue) {
 					balance += bet;
@@ -109,17 +111,17 @@ public class Lucky9 extends Game {
 				} else {
 					System.out.println("            ╔══════════════════════════════════════════════════════════╗");
 					System.out.println("            ║             ❌ YOU LOST "
-							+ String.format("%-33s", utilities.formatCurrency(bet)) + "║");
+							+ String.format("%-33s", Formatter.formatCurrency(bet)) + "║");
 					System.out.println("            ╚══════════════════════════════════════════════════════════╝");
 				}
 
 				System.out.println("");
-				System.out.println("                 New Balance: " + utilities.formatCurrency(balance));
+				System.out.println("                 New Balance: " + Formatter.formatCurrency(balance));
 				System.out.println("");
 
-				utilities.waitForUserInput("                 Press Enter to continue...");
+				InputValidator.waitForUserInput("                 Press Enter to continue...");
 			} else {
-				utilities.pause(1000, "Returning to Casino menu...");
+				ConsoleDisplay.pause(1000, "Returning to Casino menu...");
 				return balance;
 			}
 		}
@@ -134,7 +136,7 @@ public class Lucky9 extends Game {
 	// Play loop when provided player + db
 	private void playWithPlayer(Player currentPlayer, PlayerDatabase playerDB) {
 		while (true) {
-			utilities.clearConsole();
+			ConsoleDisplay.clearConsole();
 			System.out.println("\n\n");
 			System.out.println("            ╔══════════════════════════════════════════════════════════╗");
 			System.out.println("            ║                        LUCKY 9                           ║");
@@ -143,7 +145,7 @@ public class Lucky9 extends Game {
 			System.out.println("            ╚══════════════════════════════════════════════════════════╝");
 			System.out.println("");
 			System.out.println("                 Player: " + String.format("%-30s", currentPlayer.getUsername()));
-			System.out.println("                 Balance: " + utilities.formatCurrency(currentPlayer.getBalance()));
+			System.out.println("                 Balance: " + Formatter.formatCurrency(currentPlayer.getBalance()));
 			System.out.println("");
 			System.out.println("            ╔══════════════════════╗ ╔══════════════════════╗");
 			System.out.println("            ║      1. PLAY         ║ ║    2. EXIT GAME      ║");
@@ -157,26 +159,26 @@ public class Lucky9 extends Game {
 			System.out.println("            ╚══════════════════════╝ ╚══════════════════════╝");
 			System.out.print("\n                 Choose (1-2): ");
 
-			int choice = utilities.readInt(1, 2);
+			int choice = InputValidator.readInt(1, 2);
 			if (choice == 1) {
 				if (currentPlayer.getBalance() <= 0) {
 					System.out.println(
 							"\n                 ❌ You have no funds to bet. Win some at other games or register more funds.");
-					utilities.waitForUserInput("\n                 Press Enter to continue...");
+					InputValidator.waitForUserInput("\n                 Press Enter to continue...");
 					continue;
 				}
 
 				System.out.print("\n                 Enter bet amount: ");
-				double bet = utilities.readDouble(1, currentPlayer.getBalance());
+				double bet = InputValidator.readDouble(1, currentPlayer.getBalance());
 
 				// Clear screen after bet is placed
-				utilities.clearConsole();
+				ConsoleDisplay.clearConsole();
 				System.out.println("\n");
 				System.out.println("            ╔══════════════════════════════════════════════════════════╗");
 				System.out.println("            ║                        LUCKY 9                           ║");
 				System.out.println("            ╠══════════════════════════════════════════════════════════╣");
 				System.out.println("            ║               Bet Placed: "
-						+ String.format("%-20s", utilities.formatCurrency(bet)) + "          ║");
+						+ String.format("%-20s", Formatter.formatCurrency(bet)) + "          ║");
 				System.out.println("            ╚══════════════════════════════════════════════════════════╝");
 				System.out.println("");
 
@@ -204,7 +206,7 @@ public class Lucky9 extends Game {
 							currentPlayer.getBalance());
 					System.out.println("            ╔══════════════════════════════════════════════════════════╗");
 					System.out.println("            ║              YOU WON "
-							+ String.format("%-33s", utilities.formatCurrency(payout)) + "║");
+							+ String.format("%-33s", Formatter.formatCurrency(payout)) + "║");
 					System.out.println("            ╚══════════════════════════════════════════════════════════╝");
 				} else if (payout == 0 && playerValue == dealerValue) {
 					// push
@@ -219,19 +221,19 @@ public class Lucky9 extends Game {
 							currentPlayer.getBalance());
 					System.out.println("            ╔══════════════════════════════════════════════════════════╗");
 					System.out.println("            ║              YOU LOST "
-							+ String.format("%-33s", utilities.formatCurrency(bet)) + "  ║");
+							+ String.format("%-33s", Formatter.formatCurrency(bet)) + "  ║");
 					System.out.println("            ╚══════════════════════════════════════════════════════════╝");
 				}
 
 				System.out.println("");
 				System.out.println(
-						"                 New Balance: " + utilities.formatCurrency(currentPlayer.getBalance()));
+						"                 New Balance: " + Formatter.formatCurrency(currentPlayer.getBalance()));
 				System.out.println("");
 
 				currentPlayer.updateGamesPlayed();
 				playerDB.updatePlayer(currentPlayer);
 
-				utilities.waitForUserInput("                 Press Enter to continue...");
+				InputValidator.waitForUserInput("                 Press Enter to continue...");
 
 			} else {
 				// Exit to games menu
@@ -343,7 +345,7 @@ public class Lucky9 extends Game {
 
 	@Override
 	public void displayRules() {
-		utilities.clearConsole();
+		ConsoleDisplay.clearConsole();
 		System.out.println("Lucky9 Rules: Draw 3 digits (1-9). Closest to 9 wins. Exact 9 => jackpot x3.");
 	}
 
