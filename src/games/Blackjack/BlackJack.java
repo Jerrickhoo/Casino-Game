@@ -17,14 +17,28 @@ public class BlackJack {
     public double start() {
         utilities.clearConsole();
         showWelcomeScreen();
-        utilities.pause(1500);
+
+        System.out.println();
+        System.out.println("                    ╔════════════════════════════════════════════════════════╗");
+        System.out.println("                    ║              [1] Continue to Game                      ║");
+        System.out.println("                    ║              [2] Return to Casino Menu                 ║");
+        System.out.println("                    ╚════════════════════════════════════════════════════════╝");
+        System.out.print("                    Choose: ");
+        int menuChoice = utilities.readInt(1, 2);
+
+        if (menuChoice == 2) {
+            return balance;
+        }
+
+        utilities.pause(700);
 
         while (balance > 0) {
             utilities.clearConsole();
             showGameHeader();
 
             System.out.println("                    Current Balance: " + utilities.formatCurrency(balance));
-            System.out.print("                    Place your bet (min $1, max " + utilities.formatCurrency(balance) + "): ");
+            System.out.print(
+                    "                    Place your bet (min $1, max " + utilities.formatCurrency(balance) + "): ");
             double bet = utilities.readDouble(1, balance);
 
             playRound(bet);
@@ -45,7 +59,8 @@ public class BlackJack {
             System.out.println("                    ╚════════════════════════════════════════╝");
             System.out.print("                    Choose: ");
             int choice = utilities.readInt(1, 2);
-            if (choice == 2) break;
+            if (choice == 2)
+                break;
         }
 
         return balance;
@@ -135,7 +150,7 @@ public class BlackJack {
             playPlayerHand(deck, dealer, handA, bet, "Hand A");
             // Play Hand B
             playPlayerHand(deck, dealer, handB, bet, "Hand B");
-            
+
             // Dealer plays once
             utilities.showLoadingAnimation("                    Dealer is thinking", 1000);
             revealHands(dealer, null);
@@ -146,7 +161,7 @@ public class BlackJack {
                 dealer.add(c);
             }
             System.out.println("                      Dealer final: " + dealer + "  (" + dealer.getValue() + ")");
-            
+
             // Resolve both hands
             resolveHandOutcome(handA, dealer, bet);
             resolveHandOutcome(handB, dealer, bet);
@@ -409,21 +424,34 @@ public class BlackJack {
         System.out.println("\n\n");
         System.out.println("                    ╔════════════════════════════════════════════════════════╗");
         System.out.println("                    ║            WELCOME TO BLACKJACK!                      ║");
-        System.out.println("                    ║                                                        ║");
-        System.out.println("                    ║            OBJECTIVE:                                  ║");
-        System.out.println("                    ║            Beat the dealer without going over 21      ║");
-        System.out.println("                    ║                                                        ║");
-        System.out.println("                    ║            FEATURES:                                   ║");
-        System.out.println("                    ║            • HIT - Draw another card                   ║");
-        System.out.println("                    ║            • STAND - End your turn                     ║");
-        System.out.println("                    ║            • DOUBLE - Double bet, get 1 card          ║");
-        System.out.println("                    ║            • SPLIT - Split equal cards (costs 2x bet) ║");
-        System.out.println("                    ║                                                        ║");
-        System.out.println("                    ║            • Face cards = 10 points                    ║");
-        System.out.println("                    ║            • Ace = 1 or 11 points                      ║");
-        System.out.println("                    ║            • Blackjack (21 on 2 cards) = 1.5x payout  ║");
         System.out.println("                    ╚════════════════════════════════════════════════════════╝");
-        System.out.println("\n");
+        System.out.println();
+        System.out.println("                    ┌────────────────────────────────────────────────────────┐");
+        System.out.println("                    │                    OBJECTIVE:                          │");
+        System.out.println("                    │  Beat the dealer without going over 21 points         │");
+        System.out.println("                    └────────────────────────────────────────────────────────┘");
+        System.out.println();
+        System.out.println("                    ┌────────────────────────────────────────────────────────┐");
+        System.out.println("                    │                     GAME RULES:                        │");
+        System.out.println("                    │                                                        │");
+        System.out.println("                    │  • Each card is worth its face value                   │");
+        System.out.println("                    │  • Face cards (J, Q, K) = 10 points                   │");
+        System.out.println("                    │  • Ace = 1 or 11 points (automatic)                   │");
+        System.out.println("                    │  • Blackjack (21 on 2 cards) = 1.5x payout           │");
+        System.out.println("                    │  • Bust (over 21) = Automatic loss                    │");
+        System.out.println("                    │  • Dealer must HIT on 16 or less                      │");
+        System.out.println("                    │  • Dealer must STAND on 17 or more                    │");
+        System.out.println("                    └────────────────────────────────────────────────────────┘");
+        System.out.println();
+        System.out.println("                    ┌────────────────────────────────────────────────────────┐");
+        System.out.println("                    │                    YOUR OPTIONS:                       │");
+        System.out.println("                    │                                                        │");
+        System.out.println("                    │  [1] HIT - Draw another card                          │");
+        System.out.println("                    │  [2] STAND - Keep your hand and end your turn         │");
+        System.out.println("                    │  [3] DOUBLE - Double your bet and get 1 card          │");
+        System.out.println("                    │  [1] SPLIT - Split equal cards (costs 2x bet)         │");
+        System.out.println("                    └────────────────────────────────────────────────────────┘");
+        System.out.println();
     }
 
     private void showWinAnimation() {
@@ -441,8 +469,10 @@ public class BlackJack {
         }
 
         int value() {
-            if ("J".equals(rank) || "Q".equals(rank) || "K".equals(rank)) return 10;
-            if ("A".equals(rank)) return 11;
+            if ("J".equals(rank) || "Q".equals(rank) || "K".equals(rank))
+                return 10;
+            if ("A".equals(rank))
+                return 11;
             return Integer.parseInt(rank);
         }
 
@@ -457,8 +487,8 @@ public class BlackJack {
         private final Random rng = new Random();
 
         Deck() {
-            String[] suits = {"♠", "♥", "♦", "♣"};
-            String[] ranks = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+            String[] suits = { "♠", "♥", "♦", "♣" };
+            String[] ranks = { "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" };
             for (String s : suits) {
                 for (String r : ranks) {
                     cards.add(new Card(r, s));
@@ -471,7 +501,8 @@ public class BlackJack {
         }
 
         Card draw() {
-            if (cards.isEmpty()) throw new IllegalStateException("Deck empty");
+            if (cards.isEmpty())
+                throw new IllegalStateException("Deck empty");
             return cards.remove(cards.size() - 1);
         }
     }
@@ -489,7 +520,8 @@ public class BlackJack {
             int aces = 0;
             for (Card c : cards) {
                 total += c.value();
-                if ("A".equals(c.rank)) aces++;
+                if ("A".equals(c.rank))
+                    aces++;
             }
             while (total > 21 && aces > 0) {
                 total -= 10;
@@ -503,12 +535,14 @@ public class BlackJack {
         }
 
         boolean canSplit() {
-            if (cards.size() != 2) return false;
+            if (cards.size() != 2)
+                return false;
             return cards.get(0).rank.equals(cards.get(1).rank);
         }
 
         String showFirstCard() {
-            if (cards.isEmpty()) return "";
+            if (cards.isEmpty())
+                return "";
             return cards.get(0).toString() + " [?]";
         }
 
@@ -516,54 +550,11 @@ public class BlackJack {
         public String toString() {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < cards.size(); i++) {
-                if (i > 0) sb.append(" ");
+                if (i > 0)
+                    sb.append(" ");
                 sb.append(cards.get(i));
             }
             return sb.toString();
         }
     }
-}
-import games.Game;
-
-/**
- * Minimal BlackJack stub adapted to Game base class.
- */
-public class BlackJack extends Game {
-
-    public BlackJack() {
-        super();
-    }
-
-    @Override
-    public void startGame(Core.Player player, Core.PlayerDatabase playerDB) {
-        System.out.println("BlackJack starting (not yet implemented).");
-    }
-
-    @Override
-    public void playRound() {
-        // TODO: implement round logic
-    }
-
-    @Override
-    public double calculatePayout() {
-        return 0;
-    }
-
-    @Override
-    public void displayRules() {
-        System.out.println("Blackjack rules: get 21 without busting.");
-    }
-
-    @Override
-    public String getGameName() {
-        return "BlackJack";
-    }
-
-    @Override
-    public void updateBalance(double amount) {
-        this.balance += amount;
-        if (this.player != null)
-            this.player.setBalance(this.balance);
-    }
-
 }
