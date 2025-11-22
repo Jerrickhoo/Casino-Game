@@ -46,7 +46,9 @@ public class PlayerDatabase {
                 }
             }
 
-            System.out.println("✅ Loaded " + loadedCount + " players");
+            System.out.print("✅ Loaded " + loadedCount + " players");
+            utilities.showLoadingAnimation("", 1500);
+            utilities.clearConsole();
 
         } catch (IOException e) {
             System.out.println("❌ Error loading players: " + e.getMessage());
@@ -228,4 +230,18 @@ public class PlayerDatabase {
     public int getPlayerCount() {
         return players.size();
     }
+
+        public boolean cashIn(Player player, double amount) {
+        if (player == null || amount <= 0) {
+            return false;
+        }
+        // Update balance
+        player.setBalance(player.getBalance() + amount);
+        // Log and persist
+        logTransaction(player.getUsername(), "SYSTEM", "CASH_IN", amount, player.getBalance());
+        updatePlayer(player); // saves players
+        return true;
+    }
+
+
 }
