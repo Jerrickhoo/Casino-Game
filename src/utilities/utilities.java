@@ -92,6 +92,16 @@ public class utilities {
         }
     }
 
+    public static void waitForUserInput() {
+        System.out.print("Press Enter to continue...");
+        scanner.nextLine();
+    }
+
+    public static void waitForUserInput(String message) {
+        System.out.print(message);
+        scanner.nextLine();
+    }
+
     // * ==================== FORMATTING METHODS ====================
     public static String formatCurrency(double amount) {
         return String.format("$%,.2f", amount);
