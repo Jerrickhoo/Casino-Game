@@ -3,7 +3,9 @@ package Core;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import utilities.utilities;
+import utilities.Formatter;
+import utilities.ConsoleDisplay;
+import ui.AnimationDisplay;
 
 public class PlayerDatabase {
     private Map<String, Player> players;
@@ -46,7 +48,9 @@ public class PlayerDatabase {
                 }
             }
 
-            System.out.println("✅ Loaded " + loadedCount + " players");
+            System.out.print("✅ Loaded " + loadedCount + " players");
+            AnimationDisplay.showLoadingAnimation("", 1500);
+            ConsoleDisplay.clearConsole();
 
         } catch (IOException e) {
             System.out.println("❌ Error loading players: " + e.getMessage());
@@ -161,7 +165,7 @@ public class PlayerDatabase {
             System.out.printf("%-4s %-15s %-12s %-12d%n",
                     medal + (i + 1),
                     player.getUsername(),
-                    utilities.formatCurrency(player.getBalance()),
+                    Formatter.formatCurrency(player.getBalance()),
                     player.getGamesPlayed());
         }
     }
@@ -228,4 +232,52 @@ public class PlayerDatabase {
     public int getPlayerCount() {
         return players.size();
     }
+
+    public boolean cashIn(Player player, double amount) {
+        if (player == null || amount <= 0) {
+            return false;
+        }
+        // Update balance
+        player.setBalance(player.getBalance() + amount);
+        // Log and persist
+        logTransaction(player.getUsername(), "SYSTEM", "CASH_IN", amount, player.getBalance());
+        updatePlayer(player); // saves players
+        return true;
+    }
+
+    /**
+     * Cash out a specific amount from player's balance. Returns true if successful.
+     */
+    public boolean cashOut(Player player, double amount) {
+        if (player == null || amount <= 0) {
+            return false;
+        }
+        double balance = player.getBalance();
+        if (amount > balance) {
+            return false;
+        }
+
+        // Deduct and persist
+        player.setBalance(balance - amount);
+        logTransaction(player.getUsername(), "SYSTEM", "CASH_OUT", amount, player.getBalance());
+        updatePlayer(player);
+        return true;
+    }
+
+    /**
+     * Cash out the player's entire balance and return the amount paid out.
+     */
+    public double cashOutAll(Player player) {
+        if (player == null)
+            return 0.0;
+        double amount = player.getBalance();
+        if (amount <= 0)
+            return 0.0;
+
+        player.setBalance(0.0);
+        logTransaction(player.getUsername(), "SYSTEM", "CASH_OUT_ALL", amount, player.getBalance());
+        updatePlayer(player);
+        return amount;
+    }
+
 }

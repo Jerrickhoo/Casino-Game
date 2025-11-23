@@ -1,6 +1,6 @@
 package Core;
 
-import utilities.utilities;
+import utilities.Formatter;
 
 public class Player {
     private String username;
@@ -83,7 +83,7 @@ public class Player {
                         "🆔 ID: %s\n" +
                         "💰 Balance: %s\n" +
                         "🎮 Games Played: %d",
-                username, playerId, utilities.formatCurrency(balance), gamesPlayed);
+                username, playerId, Formatter.formatCurrency(balance), gamesPlayed);
     }
 
     // Check if player can afford a bet

@@ -2,10 +2,9 @@ package utilities;
 
 import java.util.Scanner;
 
-public class utilities {
+public class InputValidator {
     private static final Scanner scanner = new Scanner(System.in);
 
-    // * ==================== INPUT VALIDATION ====================
     public static int readInt(int min) {
         while (true) {
             try {
@@ -102,95 +101,28 @@ public class utilities {
         scanner.nextLine();
     }
 
-    // * ==================== FORMATTING METHODS ====================
-    public static String formatCurrency(double amount) {
-        return String.format("$%,.2f", amount);
-    }
-
-    // * ==================== Animations ====================
-    public static void showProgressBar(String message, int durationMs) {
-        System.out.print(message + " [");
-        int bars = 20;
-        for (int i = 0; i < bars; i++) {
-            System.out.print("=");
-            pause(durationMs / bars);
-        }
-        System.out.println("] Complete!");
-    }
-
-    public static void showLoadingAnimation(String message, int durationMs) {
-        String[] frames = { "-", "\\", "|", "/" };
-        int totalFrames = (durationMs / 100); // Update every 100ms
-
-        // Hide the cursor and save position
-        System.out.print(message + " ");
-
-        try {
-            for (int i = 0; i < totalFrames; i++) {
-                String frame = frames[i % frames.length];
-                System.out.print("\r" + message + " " + frame); // \r moves cursor to start of line
-                Thread.sleep(100);
-            }
-            // Clear the animation and show completion
-            System.out.print("\r" + message + " Done!     \n");
-
-        } catch (InterruptedException e) {
-            // In case of interruption, ensure we still clear the line
-            System.out.print("\r" + message + " Done!     \n");
-            Thread.currentThread().interrupt();
-        }
-    }
-
-    // * ==================== CONSOLE OPERATIONS ====================
-    public static void clearConsole() {
-        try {
-            String operatingSystem = System.getProperty("os.name").toLowerCase();
-
-            if (operatingSystem.contains("windows")) {
-                // For Windows
-                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
-            } else {
-                // For Unix-based systems (macOS, Linux)
-                System.out.print("\033[H\033[2J");
-                System.out.flush();
-            }
-        } catch (Exception e) {
-            // If clearing fails, print several newlines as a fallback
-            for (int i = 0; i < 50; i++) {
-                System.out.println();
-            }
-        }
-    }
-
-    public static void pause(long milliseconds, String message) {
-        if (milliseconds <= 0) {
-            // Wait for Enter key
-            System.out.print(message != null ? message : "Press Enter to continue...");
-            scanner.nextLine();
-        } else {
-            // Show message if provided
-            if (message != null) {
-                System.out.println(message);
-            }
-            // Wait for specified duration
+    /**
+     * Read a double value, but allow "exit" command to cancel.
+     * Returns Double.MIN_VALUE if user enters "exit" (special sentinel value).
+     */
+    public static double readDoubleOrExit(double min) {
+        while (true) {
             try {
-                Thread.sleep(milliseconds);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
+                String input = scanner.nextLine().trim().toLowerCase();
+                if (input.equals("exit")) {
+                    return Double.MIN_VALUE; // sentinel value for exit
+                }
+                double value = Double.parseDouble(input);
+                if (value >= min) {
+                    return value;
+                } else {
+                    System.out.print(
+                            "Please enter a number greater than or equal to " + min + " (or 'exit' to cancel): ");
+                }
+            } catch (NumberFormatException e) {
+                System.out.print("Invalid input. Please enter a valid number (or 'exit' to cancel): ");
             }
         }
-    }
-
-    public static void pause(long milliseconds) {
-        pause(milliseconds, null);
-    }
-
-    public static void pause(String message) {
-        pause(0, message);
-    }
-
-    public static void pause() {
-        pause(0, null);
     }
 
     public static void closeScanner() {
