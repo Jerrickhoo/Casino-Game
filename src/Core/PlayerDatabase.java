@@ -8,6 +8,7 @@ import utilities.ConsoleDisplay;
 import ui.AnimationDisplay;
 
 public class PlayerDatabase {
+    // SortKey is defined as a package-level enum in Core.SortKey
     private Map<String, Player> players;
     private static final String DATA_DIR = "../src/data";
     private String playersFile = DATA_DIR + "/players.txt";
@@ -115,31 +116,58 @@ public class PlayerDatabase {
     }
 
     /**
-     * Get leaderboard sorted by balance (bubble sort)
+     * Get leaderboard sorted using a specified key and order.
+     * This replaces the older bubble-sort implementation with a Comparator based
+     * sort.
      */
-    public List<Player> getLeaderboard() {
+    public List<Player> getLeaderboard(SortKey key, boolean ascending) {
         List<Player> leaderboard = getAllPlayers();
 
-        // Bubble sort by balance (highest first)
-        for (int i = 0; i < leaderboard.size() - 1; i++) {
-            for (int j = 0; j < leaderboard.size() - i - 1; j++) {
-                if (leaderboard.get(j).getBalance() < leaderboard.get(j + 1).getBalance()) {
-                    // Swap players
-                    Player temp = leaderboard.get(j);
-                    leaderboard.set(j, leaderboard.get(j + 1));
-                    leaderboard.set(j + 1, temp);
-                }
-            }
+        Comparator<Player> comparator;
+        switch (key) {
+            case PLAYER_ID:
+                comparator = Comparator.comparing(Player::getPlayerId, Comparator.nullsLast(String::compareTo));
+                break;
+            case NAME:
+                comparator = Comparator.comparing(Player::getUsername,
+                        Comparator.nullsLast(String::compareToIgnoreCase));
+                break;
+            case GAMES_PLAYED:
+                comparator = Comparator.comparingInt(Player::getGamesPlayed);
+                break;
+            case BALANCE:
+            default:
+                comparator = Comparator.comparingDouble(Player::getBalance);
+                break;
         }
 
+        if (!ascending) {
+            comparator = comparator.reversed();
+        }
+
+        leaderboard.sort(comparator);
         return leaderboard;
     }
 
     /**
-     * Display formatted leaderboard
+     * Backwards compatible method: default to balance DESC (previous behavior)
+     */
+    public List<Player> getLeaderboard() {
+        return getLeaderboard(SortKey.BALANCE, false);
+    }
+
+    /**
+     * Display formatted leaderboard (default: balance DESC)
      */
     public void displayLeaderboard() {
-        List<Player> leaderboard = getLeaderboard();
+        displayLeaderboard(SortKey.BALANCE, false);
+    }
+
+    /**
+     * Display formatted leaderboard using specified sort key and order
+     */
+    public void displayLeaderboard(SortKey key, boolean ascending) {
+        List<Player> leaderboard = getLeaderboard(key, ascending);
 
         System.out.println("🏆 CASINO LEADERBOARD");
         System.out.println("════════════════════════════");

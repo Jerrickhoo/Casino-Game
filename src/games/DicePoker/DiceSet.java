@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import utilities.utilities;
+// import utilities.utilities;
 
 public class DiceSet {
     private Die[] dice = new Die[5];
@@ -55,7 +55,7 @@ public class DiceSet {
         for (int idx : rerollIndices) {
             dice[idx].roll();
         }
-        utilities.clearConsole();
+        // utilities.clearConsole();
         System.out.println("After reroll:");
         showHand();
     }
