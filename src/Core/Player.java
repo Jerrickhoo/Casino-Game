@@ -28,11 +28,11 @@ public class Player {
         this.gamesPlayed = gamesPlayed;
     }
 
-    // Generate simple player ID (username + timestamp)
+    // Generate player ID in format: IDyyyyMMddHHmm (e.g., ID202503231530)
     private String generatePlayerId() {
-        String timestamp = String.valueOf(System.currentTimeMillis());
-        return username.substring(0, Math.min(3, username.length())).toUpperCase() +
-                timestamp.substring(timestamp.length() - 4);
+        java.time.format.DateTimeFormatter fmt = java.time.format.DateTimeFormatter.ofPattern("yyyyMMddHHmm");
+        String datetime = java.time.LocalDateTime.now().format(fmt);
+        return "ID" + datetime;
     }
 
     // Convert to file format: username:password:balance:playerId:gamesPlayed

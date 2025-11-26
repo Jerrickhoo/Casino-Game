@@ -226,13 +226,13 @@ public class CasinoMain {
         // Let the user re-sort or return to previous menu repeatedly
         while (true) {
             System.out.println();
-            System.out.println("            ╔═════════════════════════════════════╗");
-            System.out.println("            ║    Options:                         ║");
-            System.out.println("            ║      1. Sort by other value         ║");
-            System.out.println("            ║      2. Return to previous menu     ║");
-            System.out.println("            ╚═════════════════════════════════════╝");
-            System.out.println("            ╔═════════════════════════════════════╗");
-            System.out.print("                 Choose option (1-2):                ");
+            System.out.println("                         ╔═════════════════════════════════════╗");
+            System.out.println("                         ║    Options:                         ║");
+            System.out.println("                         ║      1. Sort by other value         ║");
+            System.out.println("                         ║      2. Return to previous menu     ║");
+            System.out.println("                         ╚═════════════════════════════════════╝");
+            System.out.println("                         ╔═════════════════════════════════════╗");
+            System.out.print("                              Choose option (1-2): ");
             int next = InputValidator.readInt(1, 2);
 
             if (next == 2)
@@ -240,20 +240,26 @@ public class CasinoMain {
 
             // Ask how they'd like to sort
             ConsoleDisplay.clearConsole();
-            System.out.println("            ╔═════════════════════════════════════╗");
-            System.out.println("\n          ║       Sort by:                       ");
-            System.out.println("            ║       1. Balance                     ");
-            System.out.println("            ║       2. Player ID                   ");
-            System.out.println("            ║       3. Name");
-            System.out.println("            ║       4. Games Played");
-            System.out.print("                 Choose sort option (1-4): ");
+            System.out.println("                         ╔═════════════════════════════════════╗");
+            System.out.println("                         ║       Sort by:                      ║");
+            System.out.println("                         ║       1. Balance                    ║");
+            System.out.println("                         ║       2. Player ID                  ║");
+            System.out.println("                         ║       3. Name                       ║");
+            System.out.println("                         ║       4. Games Played               ║");
+            System.out.println("                         ╚═════════════════════════════════════╝");
+            System.out.println("                         ╔═════════════════════════════════════╗");
+            System.out.print("                              Choose sort option (1-4): ");
             int sortOption = InputValidator.readInt(1, 4);
 
             ConsoleDisplay.clearConsole();
-            System.out.println("\n                 Order:");
-            System.out.println("                   1. Descending (high -> low / Z -> A)");
-            System.out.println("                   2. Ascending  (low -> high / A -> Z)");
-            System.out.print("                 Choose order (1-2): ");
+            System.out.println();
+            System.out.println("                         ╔═══════════════════════════════════════════╗");
+            System.out.println("                         ║      Order:                               ║");
+            System.out.println("                         ║      1. Descending (high -> low / Z -> A) ║");
+            System.out.println("                         ║      2. Ascending  (low -> high / A -> Z) ║");
+            System.out.println("                         ╚═══════════════════════════════════════════╝");
+            System.out.println("                         ╔═══════════════════════════════════════════╗");
+            System.out.print("                              Choose order (1-2): ");
             int orderOption = InputValidator.readInt(1, 2);
 
             // Map to sort key enum
@@ -278,6 +284,7 @@ public class CasinoMain {
 
             boolean ascending = (orderOption == 2);
             leaderboard = playerDB.getLeaderboard(key, ascending);
+            ConsoleDisplay.clearConsole();
             System.out.println("\n\n");
             System.out.println("                 ╔══════════════════════════════════════════════════════════╗");
             System.out.println("                 ║                     TOP PLAYERS                          ║");
