@@ -395,8 +395,8 @@ public class CasinoMain {
                     new games.Blackjack.BlackJack().startGame(currentPlayer, playerDB);
                     break;
                 case 3:
-                    // Start slot machine via Game API (slot will update player via playerDB)
-                    new SlotMachine(currentPlayer.getBalance()).startGame(currentPlayer, playerDB);
+                    SlotMachine slotGame = new SlotMachine(currentPlayer, playerDB);
+                    slotGame.startGame(currentPlayer, playerDB);
                     break;
                 case 4:
                     // playChuckALuck();

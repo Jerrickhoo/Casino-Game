@@ -32,3 +32,11 @@
 2025-11-22 18:04:15 | yer | SYSTEM | CASH_IN | 90.00 | 2190.00
 2025-11-27 07:34:27 | yer | SYSTEM | ACCOUNT_CREATION | 1000.00 | 1000.00
 2025-11-27 07:37:21 | yer | SYSTEM | ACCOUNT_CREATION | 1000.00 | 1000.00
+2025-11-27 18:37:47 | mjherms | SYSTEM | ACCOUNT_CREATION | 1000.00 | 1000.00
+2025-11-28 00:53:19 | mjherms | Moseslot Slot Machine | SPIN_RESULT | 500.00 | 1500.00
+2025-11-28 00:53:36 | mjherms | Moseslot Slot Machine | SPIN_RESULT | -300.00 | 900.00
+2025-11-28 00:53:36 | mjherms | Moseslot Slot Machine | SPIN_RESULT | 0.00 | 900.00
+2025-11-28 00:53:43 | mjherms | Moseslot Slot Machine | SPIN_RESULT | -100.00 | 700.00
+2025-11-28 00:53:43 | mjherms | Moseslot Slot Machine | SPIN_RESULT | 0.00 | 700.00
+2025-11-28 00:53:49 | mjherms | Moseslot Slot Machine | SPIN_RESULT | -500.00 | 0.00
+2025-11-28 00:53:49 | mjherms | Moseslot Slot Machine | SPIN_RESULT | 0.00 | 0.00
