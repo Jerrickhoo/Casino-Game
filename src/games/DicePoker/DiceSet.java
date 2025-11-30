@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import utilities.utilities;
+import utilities.ConsoleDisplay;
+ 
 
 public class DiceSet {
     private Die[] dice = new Die[5];
@@ -48,14 +49,13 @@ public class DiceSet {
                 System.out.println("Invalid input. Try again.");
                 continue;
             }
-            rerollIndices.add(input - 1); // store 0-based index
+            rerollIndices.add(input - 1); 
         }
 
         // reroll the selected dice
-        for (int idx : rerollIndices) {
-            dice[idx].roll();
+        for (int i : rerollIndices) {
+            dice[i].roll();
         }
-        utilities.clearConsole();
         System.out.println("After reroll:");
         showHand();
     }
