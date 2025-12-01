@@ -7,6 +7,7 @@ import Core.Player;
 import Core.PlayerDatabase;
 import Core.SortKey;
 import games.SlotMachine.SlotMachine;
+import games.DicePoker.DicePoker;
 import games.Lucky9.Lucky9;
 
 public class CasinoMain {
@@ -399,7 +400,8 @@ public class CasinoMain {
                     slotGame.startGame(currentPlayer, playerDB);
                     break;
                 case 4:
-                    // playChuckALuck();
+                    DicePoker diceGame = new DicePoker();
+                    diceGame.startGame(currentPlayer, playerDB);
                     break;
                 case 5:
                     showPlayerStats();
