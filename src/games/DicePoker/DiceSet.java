@@ -1,103 +1,130 @@
 package games.DicePoker;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
+import java.util.Random;
+import java.util.stream.Collectors;
 
-import utilities.ConsoleDisplay;
- 
+import utilities.Formatter;
 
+/**
+ * Represents a set of five dice and evaluation logic.
+ * This class does NOT read console input. It only provides methods
+ * to roll dice, reroll given indices, display them and evaluate the hand.
+ */
 public class DiceSet {
-    private Die[] dice = new Die[5];
+    private final int[] dice = new int[5];
+    private final Random rand = new Random();
 
     public DiceSet() {
+        // empty
+    }
+
+    public void rollAll() {
+        for (int i = 0; i < dice.length; i++)
+            dice[i] = roll();
+    }
+
+    public int roll() {
+        return rand.nextInt(6) + 1;
+    }
+
+    /**
+     * Reroll dice at the given zero-based indices. Duplicates in the list are
+     * ignored.
+     */
+    public void reroll(List<Integer> zeroBasedIndices) {
+        if (zeroBasedIndices == null || zeroBasedIndices.isEmpty())
+            return;
+        // ensure unique and within range
+        List<Integer> uniq = zeroBasedIndices.stream()
+                .filter(i -> i >= 0 && i < dice.length)
+                .distinct()
+                .collect(Collectors.toList());
+        for (int i : uniq) {
+            dice[i] = roll();
+        }
+    }
+
+    public void showHand() {
+        System.out.println("Here are the values of your hand:");
         for (int i = 0; i < dice.length; i++) {
-            dice[i] = new Die();
+            System.out.println((i + 1) + ". " + Formatter.numToRoman(dice[i]) + " (" + dice[i] + ")");
         }
     }
 
-    public Die[] getDice() {
-        return dice;
-    }
-
-    public void rollAll(){
-        for(Die d: dice){
-            d.roll();
-        }
-    }
-
-    public void showHand(){
-       
-        int i=1;
-        System.out.println("Here are the values of your hand: ");
-        for(Die d: dice){
-            System.out.println(i + ". " + d.numToRoman());
-            i++;
-        }
-    }
-
-    public void reroll() {
-        
-        Scanner scan = new Scanner(System.in);
-        
-        List<Integer> rerollIndices = new ArrayList<>();
-        while (true) {
-            System.out.print("Enter 1-5 to reroll a die, 0 to stop: ");
-            int input = scan.nextInt();
-            if (input == 0) break;
-            if (input < 1 || input > 5) {
-                System.out.println("Invalid input. Try again.");
-                continue;
-            }
-            rerollIndices.add(input - 1); 
+    /**
+     * Evaluate and return only the rank. For tie-breaking use
+     * {@link #getSortedDescending()} or
+     * extend this class to return a score object.
+     */
+    public DiceRank evaluateHand() {
+        int[] counts = new int[7]; // 0 unused, 1..6
+        for (int d : dice) {
+            if (d >= 1 && d <= 6)
+                counts[d]++;
         }
 
-        // reroll the selected dice
-        for (int i : rerollIndices) {
-            dice[i].roll();
-        }
-        System.out.println("After reroll:");
-        showHand();
-    }
-
-    public String evaluateHand() {
-        int[] counts = new int[7]; // index 1-6
-
-        // Count occurrences of each die value
-        for (Die d : dice) {
-            counts[d.getValue()]++;
-        }
-
-        boolean three = false;
+        boolean isFive = false, isFour = false, isThree = false;
         int pairs = 0;
-
-        for (int c : counts) {
-            if (c == 5) return "Five of a Kind";
-            if (c == 4) return "Four of a Kind";
-            if (c == 3) three = true;
-            if (c == 2) pairs++;
+        for (int v = 1; v <= 6; v++) {
+            int c = counts[v];
+            if (c == 5)
+                isFive = true;
+            if (c == 4)
+                isFour = true;
+            if (c == 3)
+                isThree = true;
+            if (c == 2)
+                pairs++;
         }
 
-        if (three && pairs == 1) return "Full House";
-        if (three) return "Three of a Kind";
-        if (pairs == 2) return "Two Pair";
-        if (pairs == 1) return "Pair";
-
-        return "No Combination";
+        if (isFive)
+            return DiceRank.FIVE_OF_A_KIND;
+        if (isFour)
+            return DiceRank.FOUR_OF_A_KIND;
+        if (isThree && pairs == 1)
+            return DiceRank.FULL_HOUSE;
+        if (checkStraight(counts))
+            return DiceRank.STRAIGHT;
+        if (isThree)
+            return DiceRank.THREE_OF_A_KIND;
+        if (pairs == 2)
+            return DiceRank.TWO_PAIR;
+        if (pairs == 1)
+            return DiceRank.PAIR;
+        return DiceRank.NO_COMBINATION;
     }
 
-    public int getHandRank() {
-        String hand = evaluateHand();
-        switch (hand) {
-            case "Five of a Kind": return 7;
-            case "Four of a Kind": return 6;
-            case "Full House": return 5;
-            case "Three of a Kind": return 4;
-            case "Two Pair": return 3;
-            case "Pair": return 2;
-            default: return 1; // No Combination
+    private boolean checkStraight(int[] counts) {
+        // small straight 1-5 or big straight 2-6
+        boolean oneToFive = true;
+        for (int v = 1; v <= 5; v++)
+            if (counts[v] != 1)
+                oneToFive = false;
+        boolean twoToSix = true;
+        for (int v = 2; v <= 6; v++)
+            if (counts[v] != 1)
+                twoToSix = false;
+        return oneToFive || twoToSix;
+    }
+
+    /**
+     * Return a copy of dice sorted descending for tie-breaking.
+     */
+    public int[] getSortedDescending() {
+        int[] copy = Arrays.copyOf(dice, dice.length);
+        Arrays.sort(copy);
+        // reverse
+        for (int i = 0; i < copy.length / 2; i++) {
+            int tmp = copy[i];
+            copy[i] = copy[copy.length - 1 - i];
+            copy[copy.length - 1 - i] = tmp;
         }
+        return copy;
     }
 
-
+    public int[] getRawDice() {
+        return Arrays.copyOf(dice, dice.length);
+    }
 }
