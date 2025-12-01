@@ -517,6 +517,7 @@ public class BlackJack extends Game {
         System.out.println("                    │  [1] SPLIT - Split equal cards (costs 2x bet)         │");
         System.out.println("                    └────────────────────────────────────────────────────────┘");
         System.out.println();
+        InputValidator.waitForUserInput();
     }
 
     private void showWinAnimation() {
