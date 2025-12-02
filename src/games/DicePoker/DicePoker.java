@@ -1,182 +1,339 @@
 package games.DicePoker;
 
-import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import Core.Player;
 import Core.PlayerDatabase;
 import games.Game;
+import utilities.InputValidator;
 
+/**
+ * Top-level game orchestrator for Dice Poker. This class coordinates
+ * rounds, reads player choices (via InputValidator), and compares hands.
+ * It no longer performs dice-hand evaluation directly — that lives in DiceSet.
+ */
 public class DicePoker extends Game {
-    private double balance;
-    private int[] diceSet = new int[5];
-    private Random random = new Random();
-
-
-    public DicePoker(double playerBalance){
-        this.balance = playerBalance;
-    }
-
-    public DicePoker(){
+    public DicePoker() {
         super();
     }
 
+    public DicePoker(Player player) {
+        super(player);
+    }
+
+    // simple bot balance tracked locally for betting rounds
+    private double botBalance = 100.0;
+
+    @Override
     public void startGame(Player player, PlayerDatabase playerDB) {
+        System.out.println("Starting Dice Poker. Type 'exit' anytime to return to lobby.");
 
-        int i = 1;
-        
-        while(i == 1){
-        
-            DiceSet playerSet = new DiceSet();
-            DiceSet botSet = new DiceSet();
-            //int pot = 0;
-            
-            //betting(pot, playerAcc);
-            playerSet.rollAll();
-            playerSet.showHand();
-            playerSet.reroll();
-
-            System.out.println("\nBot Hand:");
-            botSet.rollAll();
-            botSet.showHand();
-
-            
-
-            System.out.println(playerSet.evaluateHand());
-            System.out.println(botSet.evaluateHand());
-
-            int playerRank = playerSet.getHandRank();
-            int botRank = botSet.getHandRank();
-            if(playerRank > botRank){
-                System.out.println("Player Wins!");
-            }else if(botRank > playerRank){
-                System.out.println("Opponent Wins!");
-            }else{
-                System.out.println("Tie");
+        boolean keepPlaying = true;
+        while (keepPlaying) {
+            if (player == null) {
+                System.out.println("No player account provided. Returning to lobby.");
+                return;
             }
-            
-            Scanner scan = new Scanner(System.in);
-            System.out.println("Enter 1");
-            i = scan.nextInt();
-            
-        } 
-    }
 
-    public void rollAll() {
-        for (int i = 0; i < diceSet.length; i++) {
-            diceSet[i] = roll();
-        }
-    }
+            // show balances
+            System.out.println("Your balance: " + utilities.Formatter.formatCurrency(player.getBalance()));
+            System.out.println("Opponent balance: " + utilities.Formatter.formatCurrency(botBalance));
 
-    public int roll() {
-        return random.nextInt(6) + 1;
-    }
+            // ask for ante / bet amount
+            System.out.print("Enter your bet amount (minimum 1.0): ");
+            double bet = InputValidator.readDouble(1.0, player.getBalance());
 
-    public void reroll() {
-        
-        Scanner scan = new Scanner(System.in);
-        
-        List<Integer> rerollIndices = new ArrayList<>();
-        while (true) {
-            System.out.print("Enter 1-5 to reroll a die, 0 to stop: ");
-            int input = scan.nextInt();
-            if (input == 0) break;
-            if (input < 1 || input > 5) {
-                System.out.println("Invalid input. Try again.");
+            // initialize pot and deduct ante from both
+            double pot = 0.0;
+            player.setBalance(player.getBalance() - bet);
+            double botAnte = Math.min(bet, botBalance);
+            botBalance -= botAnte;
+            pot += bet + botAnte;
+
+            System.out.println("Pot initialized at: " + utilities.Formatter.formatCurrency(pot));
+            // create hands
+            DiceSet playerHand = new DiceSet();
+            DiceSet botHand = new DiceSet();
+
+            // initial roll for both
+            playerHand.rollAll();
+            botHand.rollAll();
+
+            System.out.println("Your initial roll:");
+            playerHand.showHand();
+
+            // Run a full betting round (pre-reroll)
+            BettingResult pre = runBettingRound(player, playerHand, botHand, pot);
+            pot = pre.pot;
+            if (pre.folded) {
+                // fold resolved: award pot to winner
+                if (pre.foldWinner == 1) {
+                    // player wins
+                    player.setBalance(player.getBalance() + pot);
+                    System.out
+                            .println("Opponent folded. You win the pot of " + utilities.Formatter.formatCurrency(pot));
+                } else if (pre.foldWinner == -1) {
+                    botBalance += pot;
+                    System.out
+                            .println("You folded. Opponent wins the pot of " + utilities.Formatter.formatCurrency(pot));
+                }
+                System.out.print("Play again? (Y/N): ");
+                keepPlaying = InputValidator.readYesNo();
                 continue;
             }
-            rerollIndices.add(input - 1); 
-        }
 
-        // reroll the selected dice
-        for (int i : rerollIndices) {
-            diceSet[i] = roll();
+            // apply exactly one reroll phase for player and bot
+            System.out.print("Enter dice positions to reroll (1-5, space-separated), or 0 to keep: ");
+            String line = InputValidator.readString();
+            List<Integer> sel = parseSelectionLine(line);
+            playerHand.reroll(sel);
+
+            // bot decides what to reroll using its AI and then rerolls
+            List<Integer> botSel = DiceBotAI.selectReroll(botHand);
+            botHand.reroll(botSel);
+
+            System.out.println("After your reroll:");
+            playerHand.showHand();
+
+            // evaluate
+            DiceRank pRank = playerHand.evaluateHand();
+            DiceRank bRank = botHand.evaluateHand();
+
+            System.out.println("\nOpponent's hand:");
+            botHand.showHand();
+
+            System.out.println("You: " + pRank + "  Opponent: " + bRank);
+            int cmp = pRank.compareTo(bRank);
+            int winner = 0; // 1=player, -1=bot, 0=tie
+            if (cmp > 0) {
+                System.out.println("Player Wins!");
+                winner = 1;
+            } else if (cmp < 0) {
+                System.out.println("Opponent Wins!");
+                winner = -1;
+            } else {
+                // tie-breaker: compare sorted dice descending
+                int[] pSorted = playerHand.getSortedDescending();
+                int[] bSorted = botHand.getSortedDescending();
+                boolean tie = true;
+                for (int i = 0; i < pSorted.length; i++) {
+                    if (pSorted[i] > bSorted[i]) {
+                        System.out.println("Player Wins (tie-break)");
+                        winner = 1;
+                        tie = false;
+                        break;
+                    }
+                    if (pSorted[i] < bSorted[i]) {
+                        System.out.println("Opponent Wins (tie-break)");
+                        winner = -1;
+                        tie = false;
+                        break;
+                    }
+                }
+                if (tie) {
+                    System.out.println("Tie");
+                    winner = 0;
+                }
+            }
+
+            // award pot
+            if (winner == 1) {
+                player.setBalance(player.getBalance() + pot);
+                System.out.println("You win " + utilities.Formatter.formatCurrency(pot) + "! New balance: "
+                        + utilities.Formatter.formatCurrency(player.getBalance()));
+            } else if (winner == -1) {
+                botBalance += pot;
+                System.out.println("Opponent wins the pot of " + utilities.Formatter.formatCurrency(pot)
+                        + ". Opponent balance: " + utilities.Formatter.formatCurrency(botBalance));
+            } else {
+                double half = Math.floor(pot * 100.0 / 2.0) / 100.0; // split cents evenly
+                player.setBalance(player.getBalance() + half);
+                botBalance += (pot - half);
+                System.out.println("Pot split. You get " + utilities.Formatter.formatCurrency(half) + ". New balance: "
+                        + utilities.Formatter.formatCurrency(player.getBalance()));
+            }
+
+            System.out.print("Play again? (Y/N): ");
+            keepPlaying = InputValidator.readYesNo();
         }
-        System.out.println("After reroll:");
-        showHand();
     }
 
-    public void showHand() {
-        System.out.println("Here are the values of your hand: ");
-        for (int i = 0; i < diceSet.length; i++) {
-            System.out.println((i + 1) + ". " + numToRoman(diceSet[i]));
+    private List<Integer> parseSelectionLine(String line) {
+        List<Integer> sel = new ArrayList<>();
+        if (line == null)
+            return sel;
+        String[] parts = line.trim().split("\\s+");
+        for (String p : parts) {
+            try {
+                int v = Integer.parseInt(p);
+                if (v == 0)
+                    return new ArrayList<>(); // keep all
+                if (v >= 1 && v <= 5)
+                    sel.add(v - 1);
+            } catch (NumberFormatException e) {
+                // ignore invalid token
+            }
+        }
+        return sel;
+    }
+
+    // Helper result for betting rounds
+    private static class BettingResult {
+        double pot;
+        boolean folded;
+        // foldWinner: 1 = player wins (bot folded), -1 = bot wins (player folded), 0 =
+        // none
+        int foldWinner;
+
+        BettingResult(double pot, boolean folded, int foldWinner) {
+            this.pot = pot;
+            this.folded = folded;
+            this.foldWinner = foldWinner;
         }
     }
 
-    public String numToRoman(int num){
-        if(num == 1){
-            return "I";
-        }else if(num == 2){
-            return "II";
-        }else if(num == 3){
-            return "III";
-        }else if(num == 4){
-            return "IV";
-        }else if(num == 5){
-            return "V";
-        }else if(num == 6){
-            return "VI";
-        }else{
-            return "";
+    /**
+     * Run a two-player betting round between the human player and the bot.
+     * Both players have already posted ante (included in pot). This method
+     * allows multiple raises (capped) and returns the updated pot and whether
+     * someone folded.
+     */
+    private BettingResult runBettingRound(Player player, DiceSet playerHand, DiceSet botHand, double pot) {
+        double playerContrib = 0.0;
+        double botContrib = 0.0;
+        int raises = 0;
+        final int maxRaises = 3;
+
+        boolean playerDone = false;
+        boolean botDone = false;
+        boolean playerTurn = true; // player acts first
+
+        while (true) {
+            if (playerTurn) {
+                double toCall = botContrib - playerContrib;
+                if (toCall <= 0) {
+                    // can check or bet
+                    System.out.println("Your action: 1) Check 2) Bet/Raise");
+                    int choice = InputValidator.readInt(1, 2);
+                    if (choice == 1) {
+                        playerDone = true;
+                    } else {
+                        // raise amount
+                        System.out.print("Enter raise amount: ");
+                        double amt = InputValidator.readDouble(1.0, player.getBalance());
+                        // pay amt
+                        double pay = Math.min(amt, player.getBalance());
+                        player.setBalance(player.getBalance() - pay);
+                        playerContrib += pay;
+                        pot += pay;
+                        raises++;
+                        // after raise, other side must respond
+                        botDone = false;
+                        playerDone = true;
+                    }
+                } else {
+                    // must call, raise, or fold
+                    System.out.println(
+                            "Your action: 1) Call " + utilities.Formatter.formatCurrency(toCall) + " 2) Raise 3) Fold");
+                    int choice = InputValidator.readInt(1, 3);
+                    if (choice == 1) {
+                        double pay = Math.min(toCall, player.getBalance());
+                        player.setBalance(player.getBalance() - pay);
+                        playerContrib += pay;
+                        pot += pay;
+                        playerDone = true;
+                    } else if (choice == 2) {
+                        // raise additional
+                        System.out.print("Enter raise amount (additional over call): ");
+                        double extra = InputValidator.readDouble(1.0, player.getBalance());
+                        double pay = Math.min(player.getBalance(), toCall + extra);
+                        player.setBalance(player.getBalance() - pay);
+                        playerContrib += pay;
+                        pot += pay;
+                        raises++;
+                        botDone = false;
+                        playerDone = true;
+                    } else {
+                        // fold -> bot wins
+                        return new BettingResult(pot, true, -1);
+                    }
+                }
+            } else {
+                // bot's turn
+                double toCall = playerContrib - botContrib;
+                DiceRank botRank = botHand.evaluateHand();
+                double botDecision = DiceBotAI.decideBet(toCall, pot, botBalance, botRank, player.getBalance(),
+                        maxRaises - raises);
+                if (toCall <= 0) {
+                    // toCall==0, botDecision>0 => raise, 0 => check
+                    if (botDecision > 0 && raises < maxRaises) {
+                        double raise = Math.min(botDecision, botBalance);
+                        botBalance -= raise;
+                        botContrib += raise;
+                        pot += raise;
+                        raises++;
+                        playerDone = false;
+                        botDone = true;
+                        System.out.println("Opponent bets " + utilities.Formatter.formatCurrency(raise));
+                    } else {
+                        botDone = true;
+                        System.out.println("Opponent checks.");
+                    }
+                } else {
+                    // toCall > 0
+                    if (botDecision < 0) {
+                        // fold
+                        System.out.println("Opponent folds.");
+                        return new BettingResult(pot, true, 1);
+                    } else if (botDecision == 0) {
+                        // call
+                        double pay = Math.min(toCall, botBalance);
+                        botBalance -= pay;
+                        botContrib += pay;
+                        pot += pay;
+                        botDone = true;
+                        System.out.println("Opponent calls " + utilities.Formatter.formatCurrency(pay));
+                    } else {
+                        // raise: botDecision is extra over call
+                        double pay = Math.min(botBalance, toCall + botDecision);
+                        botBalance -= pay;
+                        botContrib += pay;
+                        pot += pay;
+                        raises++;
+                        playerDone = false;
+                        botDone = true;
+                        System.out.println("Opponent raises to add " + utilities.Formatter.formatCurrency(pay));
+                    }
+                }
+            }
+
+            // check termination: both have acted and no outstanding call
+            double outstanding = Math.abs(playerContrib - botContrib);
+            if (playerDone && botDone && outstanding == 0)
+                break;
+
+            // switch turn
+            playerTurn = !playerTurn;
         }
-    }
 
-    public String evaluateHand() {
-        int[] counts = new int[7]; // index 1-6
-
-        // Count occurrences of each die value
-        for (int d : diceSet) {
-            counts[d]++;
-        }
-
-        boolean three = false;
-        int pairs = 0;
-
-        for (int c : counts) {
-            if (c == 5) return "Five of a Kind";
-            if (c == 4) return "Four of a Kind";
-            if (c == 3) three = true;
-            if (c == 2) pairs++;
-        }
-
-        if (three && pairs == 1) return "Full House";
-        if (three) return "Three of a Kind";
-        if (pairs == 2) return "Two Pair";
-        if (pairs == 1) return "Pair";
-
-        return "No Combination";
-    }
-
-    public int getHandRank() {
-        String hand = evaluateHand();
-        switch (hand) {
-            case "Five of a Kind": return 7;
-            case "Four of a Kind": return 6;
-            case "Full House": return 5;
-            case "Three of a Kind": return 4;
-            case "Two Pair": return 3;
-            case "Pair": return 2;
-            default: return 1; // No Combination
-        }
-    }
-
-
-    public void playRound(){
-
+        return new BettingResult(pot, false, 0);
     }
 
     @Override
+    public void playRound() {
+        /* not used */ }
+
+    @Override
     public double calculatePayout() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'calculatePayout'");
+        return 0; // placeholder — integrate with betting system later
     }
 
     @Override
     public void displayRules() {
-        System.out.println("Welcome to Dice Poker!");
-
+        System.out.println("Dice Poker rules: Roll five dice, optionally reroll once, best hand wins.");
+        System.out.println(
+                "Combinations: Five_of_a_Kind, Four_of_a_Kind, Full_House, Straight(1-5 or 2-6), Three_of_a_Kind, Two_Pair, Pair, No_Combination");
     }
 
     @Override
@@ -186,40 +343,5 @@ public class DicePoker extends Game {
 
     @Override
     public void updateBalance(double amount) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateBalance'");
-    }
-
-
-    public static void betting(int pot, Player playerAcc){
-        Random random = new Random();
-        Scanner scan = new Scanner(System.in);
-        int botBet;
-        String call;
-    
-        System.out.println("Enter Bet Amount: ");
-        int bet = scan.nextInt();
-
-        int raise = random.nextInt(2);
-
-        if(raise == 1){
-          System.out.println("Opponent raised 3");
-          botBet = bet + 3;
-
-          System.out.println("Call? (y/n): ");
-          call = scan.nextLine();
-          if(call == "y"){
-            bet = bet + 3;
-            playerAcc.setBalance(playerAcc.getBalance() - bet);
-          }
-          
-        } else{
-            playerAcc.setBalance(playerAcc.getBalance() - bet);
-            botBet = bet;
-        }
-
-        pot = botBet + bet;
-        
-
-    }
+        /* stub */ }
 }
