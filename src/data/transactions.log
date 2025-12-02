@@ -48,3 +48,11 @@
 2025-12-01 23:57:30 | Gian | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 2440.00
 2025-12-01 23:57:52 | Gian | Moses Bonanza Slot Machine | SPIN_RESULT | -40.00 | 2360.00
 2025-12-01 23:57:52 | Gian | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 2360.00
+2025-12-02 13:52:01 | Marque | SYSTEM | ACCOUNT_CREATION | 1000.00 | 1000.00
+2025-12-02 13:54:51 | Marque | Blackjack | PLAY_SESSION_END | 0.00 | 0.00
+2025-12-02 13:54:59 | Marque | Blackjack | PLAY_SESSION_END | 0.00 | 0.00
+2025-12-02 13:55:22 | Marque | SYSTEM | CASH_IN | 5000.00 | 5000.00
+2025-12-02 13:56:19 | Marque | Blackjack | PLAY_SESSION_END | 0.00 | 0.00
+2025-12-02 13:56:34 | Marque | SYSTEM | CASH_IN | 10000.00 | 10000.00
+2025-12-02 14:05:46 | Marque | Blackjack | PLAY_SESSION_END | 0.00 | 0.00
+2025-12-02 14:05:57 | Marque | SYSTEM | CASH_IN | 10000.00 | 10000.00

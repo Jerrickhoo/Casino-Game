@@ -8,11 +8,6 @@ import utilities.ConsoleDisplay;
 import utilities.Formatter;
 import ui.AnimationDisplay;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-
 public class BlackJack extends Game {
     private double balance;
     private double lastRoundPayout;
@@ -167,7 +162,7 @@ public class BlackJack extends Game {
      */
     private void checkDeckPenetration() {
         int cardsRemaining = deck.getCardsRemaining();
-        int totalCards = 52 * 6; // Standard 6-deck shoe
+        int totalCards = deck.getTotalCards();
         if (cardsRemaining < (totalCards * RESHUFFLE_THRESHOLD / 100)) {
             ConsoleDisplay.clearConsole();
             System.out.println("                    Reshuffling deck...");
@@ -305,10 +300,13 @@ public class BlackJack extends Game {
      * Handle split round - special logic for split aces
      */
     private void handleSplitRound(Hand dealer, Hand originalPlayer, double bet) {
-        boolean splitAces = originalPlayer.cards.get(0).rank.equals("A");
+        // Deduct the split bet upfront
+        balance -= bet;
 
-        Card card0 = originalPlayer.cards.get(0);
-        Card card1 = originalPlayer.cards.get(1);
+        boolean splitAces = originalPlayer.getCard(0).getRank().equals("A");
+
+        Card card0 = originalPlayer.getCard(0);
+        Card card1 = originalPlayer.getCard(1);
 
         Hand hand1 = new Hand();
         Hand hand2 = new Hand();
@@ -321,20 +319,18 @@ public class BlackJack extends Game {
         hand2.add(deck.draw());
 
         System.out.println("                    Split created. Playing Hand 1 then Hand 2.");
+        System.out.println("                    Split bet deducted: " + Formatter.formatCurrency(bet));
         ConsoleDisplay.pause(800);
-
-        double hand1Payout = 0;
-        double hand2Payout = 0;
 
         // Play each split hand (special handling for aces)
         if (splitAces) {
             // Split aces: only 1 card each, no further hits
-            hand1Payout = playSplitAceHand(hand1, dealer, bet, "Hand 1");
-            hand2Payout = playSplitAceHand(hand2, dealer, bet, "Hand 2");
+            playSplitAceHand(hand1, dealer, bet, "Hand 1");
+            playSplitAceHand(hand2, dealer, bet, "Hand 2");
         } else {
             // Normal split: can hit/double/stand
-            hand1Payout = playSplitHand(hand1, dealer, bet, "Hand 1");
-            hand2Payout = playSplitHand(hand2, dealer, bet, "Hand 2");
+            playSplitHand(hand1, dealer, bet, "Hand 1");
+            playSplitHand(hand2, dealer, bet, "Hand 2");
         }
 
         // Dealer plays once
@@ -344,34 +340,33 @@ public class BlackJack extends Game {
         // Resolve both hands
         System.out.println("\n                    ═══════════════════════════════════════════");
         System.out.println("                    Hand 1: " + hand1 + " (" + hand1.getValue() + ")");
-        resolveSingleHand(hand1, dealer, bet);
+        double hand1Result = resolveSplitHand(hand1, dealer, bet);
 
         System.out.println("                    Hand 2: " + hand2 + " (" + hand2.getValue() + ")");
-        resolveSingleHand(hand2, dealer, bet);
+        double hand2Result = resolveSplitHand(hand2, dealer, bet);
 
-        lastRoundPayout = hand1Payout + hand2Payout;
+        lastRoundPayout = hand1Result + hand2Result;
         InputValidator.waitForUserInput("                    Press Enter to continue...");
     }
 
     /**
      * Play split ace hand (1 card each, no double/hit)
      */
-    private double playSplitAceHand(Hand hand, Hand dealer, double bet, String label) {
+    private void playSplitAceHand(Hand hand, Hand dealer, double bet, String label) {
         ConsoleDisplay.clearConsole();
         showGameHeader();
         System.out.println("                    " + label + " (Split Ace) | Bet: " + Formatter.formatCurrency(bet));
         System.out.println("                    ═══════════════════════════════════════════");
         System.out.println("                    Dealer: " + dealer.showFirstCard());
         System.out.println("                    " + label + ": " + hand + "  (" + hand.getValue() + ")");
-        System.out.println("                    (Ace splits - no additional cards)");
+        System.out.println("                    (Ace splits - only 1 card, no further action)");
         ConsoleDisplay.pause(1200);
-        return 0; // Payout resolved later
     }
 
     /**
      * Play normal split hand (can hit/double/stand)
      */
-    private double playSplitHand(Hand hand, Hand dealer, double bet, String label) {
+    private void playSplitHand(Hand hand, Hand dealer, double bet, String label) {
         double handBet = bet;
         boolean firstDecision = true;
 
@@ -386,11 +381,15 @@ public class BlackJack extends Game {
             System.out.println();
 
             if (firstDecision) {
+                // Can double on any first decision with sufficient balance
+                boolean canDouble = balance >= bet;
+
                 System.out.println("                    ┌────────────────────────────────────────┐");
-                System.out.println("                    │  [1] HIT  [2] STAND  [3] DOUBLE      │");
+                System.out.println("                    │  [1] HIT  [2] STAND"
+                        + (canDouble ? "  [3] DOUBLE      │" : "              │"));
                 System.out.println("                    └────────────────────────────────────────┘");
                 System.out.print("                    Choose: ");
-                int choice = InputValidator.readInt(1, 3);
+                int choice = InputValidator.readInt(1, canDouble ? 3 : 2);
 
                 if (choice == 1) {
                     Card drawn = deck.draw();
@@ -398,23 +397,28 @@ public class BlackJack extends Game {
                     System.out.println("                      You draw: " + drawn);
                     ConsoleDisplay.pause(600);
                     if (hand.getValue() > 21) {
-                        return 0; // Will be resolved later
+                        System.out.println("                      BUST! " + hand.getValue());
+                        return;
                     }
                 } else if (choice == 2) {
                     break;
-                } else { // Double
-                    if (balance < handBet * 2) {
+                } else if (choice == 3) { // Double
+                    if (balance >= bet) {
+                        balance -= bet; // Deduct double bet immediately
+                        handBet *= 2;
+                        Card drawn = deck.draw();
+                        hand.add(drawn);
+                        System.out.println("                      You doubled and drew: " + drawn);
+                        ConsoleDisplay.pause(700);
+                        if (hand.getValue() > 21) {
+                            System.out.println("                      BUST after double! " + hand.getValue());
+                        }
+                        break; // Double ends turn
+                    } else {
                         System.out.println("                      Insufficient funds to double!");
                         ConsoleDisplay.pause(700);
                         continue;
                     }
-                    balance -= handBet; // Deduct second bet immediately
-                    handBet *= 2;
-                    Card drawn = deck.draw();
-                    hand.add(drawn);
-                    System.out.println("                      You doubled and drew: " + drawn);
-                    ConsoleDisplay.pause(700);
-                    break; // Double ends turn
                 }
             } else {
                 System.out.println("                    ┌────────────────────────────────────────┐");
@@ -429,7 +433,8 @@ public class BlackJack extends Game {
                     System.out.println("                      You draw: " + drawn);
                     ConsoleDisplay.pause(600);
                     if (hand.getValue() > 21) {
-                        return 0; // Will be resolved
+                        System.out.println("                      BUST! " + hand.getValue());
+                        return;
                     }
                 } else {
                     break;
@@ -437,8 +442,6 @@ public class BlackJack extends Game {
             }
             firstDecision = false;
         }
-
-        return handBet; // Return the bet used for this hand
     }
 
     /**
@@ -466,9 +469,8 @@ public class BlackJack extends Game {
             System.out.println();
 
             if (firstDecision) {
-                // Check if double-down is allowed (9, 10, or 11 only)
-                int value = hand.getValue();
-                boolean canDouble = (value == 9 || value == 10 || value == 11) && balance >= bet;
+                // Check if double-down is allowed (any 2-card hand with sufficient balance)
+                boolean canDouble = hand.getCardCount() == 2 && balance >= bet;
 
                 System.out.println("                    ┌────────────────────────────────────────┐");
                 System.out.println("                    │  [1] HIT  [2] STAND"
@@ -585,6 +587,39 @@ public class BlackJack extends Game {
         System.out.println("                      Balance: " + Formatter.formatCurrency(balance));
     }
 
+    /**
+     * Resolve a split hand outcome and return the payout
+     */
+    private double resolveSplitHand(Hand playerHand, Hand dealer, double bet) {
+        int pVal = playerHand.getValue();
+        int dVal = dealer.getValue();
+        double payout = 0;
+
+        if (pVal > 21) {
+            payout = -bet;
+            System.out.println("                      ✗ Hand busted. Lost " + Formatter.formatCurrency(bet));
+        } else if (dVal > 21) {
+            payout = bet;
+            balance += bet;
+            System.out.println("                      ✓ Dealer busted. Win " + Formatter.formatCurrency(bet));
+            showWinAnimation();
+        } else if (pVal > dVal) {
+            payout = bet;
+            balance += bet;
+            System.out.println("                      ✓ Hand wins! " + Formatter.formatCurrency(bet));
+            showWinAnimation();
+        } else if (pVal == dVal) {
+            payout = 0;
+            System.out.println("                      = Push. Bet returned: " + Formatter.formatCurrency(bet));
+        } else {
+            payout = -bet;
+            System.out.println("                      ✗ Dealer wins. Lost " + Formatter.formatCurrency(bet));
+        }
+
+        System.out.println("                      Balance: " + Formatter.formatCurrency(balance));
+        return payout;
+    }
+
     private void revealHands(Hand dealer, Hand player) {
         System.out.println("                    ┌────────────────────────────────────────┐");
         System.out.println("                    │          DEALER'S HAND                 │");
@@ -630,7 +665,7 @@ public class BlackJack extends Game {
         System.out.println("                    │  • Bust (over 21) = Automatic loss                    │");
         System.out.println("                    │  • Dealer hits on 16 or less                          │");
         System.out.println("                    │  • Dealer hits on SOFT 17 (A+6)                       │");
-        System.out.println("                    │  • Double-down allowed on 9, 10, or 11 only          │");
+        System.out.println("                    │  • Double-down allowed on ANY hand value              │");
         System.out.println("                    │  • Split aces = 1 card each (no further action)       │");
         System.out.println("                    └────────────────────────────────────────────────────────┘");
         System.out.println();
@@ -639,8 +674,8 @@ public class BlackJack extends Game {
         System.out.println("                    │                                                        │");
         System.out.println("                    │  [1] HIT - Draw another card                          │");
         System.out.println("                    │  [2] STAND - Keep your hand and end your turn         │");
-        System.out.println("                    │  [3] DOUBLE - Double bet on 9/10/11 only              │");
-        System.out.println("                    │  [1] SPLIT - Split equal cards (costs 2x bet)         │");
+        System.out.println("                    │  [3] DOUBLE - Double bet on any hand value            │");
+        System.out.println("                    │  [4] SPLIT - Split equal cards (costs 2x bet)         │");
         System.out.println("                    └────────────────────────────────────────────────────────┘");
         System.out.println();
         InputValidator.waitForUserInput();
@@ -648,148 +683,5 @@ public class BlackJack extends Game {
 
     private void showWinAnimation() {
         System.out.println("                      ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣");
-    }
-
-    // ===== INNER CLASSES =====
-
-    private static class Card {
-        final String rank;
-        final String suit;
-
-        Card(String rank, String suit) {
-            this.rank = rank;
-            this.suit = suit;
-        }
-
-        int value() {
-            if ("J".equals(rank) || "Q".equals(rank) || "K".equals(rank))
-                return 10;
-            if ("A".equals(rank))
-                return 11;
-            return Integer.parseInt(rank);
-        }
-
-        @Override
-        public String toString() {
-            return rank + suit;
-        }
-    }
-
-    private static class Deck {
-        private final List<Card> cards = new ArrayList<>();
-        private final Random rng = new Random();
-
-        Deck() {
-            initializeDeck();
-        }
-
-        private void initializeDeck() {
-            String[] suits = { "♠", "♥", "♦", "♣" };
-            String[] ranks = { "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" };
-            // Standard 6-deck shoe
-            for (int shoe = 0; shoe < 6; shoe++) {
-                for (String s : suits) {
-                    for (String r : ranks) {
-                        cards.add(new Card(r, s));
-                    }
-                }
-            }
-        }
-
-        void shuffle() {
-            Collections.shuffle(cards, rng);
-        }
-
-        Card draw() {
-            if (cards.isEmpty())
-                throw new IllegalStateException("Deck empty - reshuffle");
-            return cards.remove(cards.size() - 1);
-        }
-
-        int getCardsRemaining() {
-            return cards.size();
-        }
-    }
-
-    private static class Hand {
-        private final List<Card> cards = new ArrayList<>();
-        private boolean active = false;
-
-        void add(Card c) {
-            cards.add(c);
-        }
-
-        void setActive(boolean active) {
-            this.active = active;
-        }
-
-        /**
-         * Calculate hand value with proper Ace handling Aces start as 11, convert to 1
-         * if
-         * needed to avoid bust
-         */
-        int getValue() {
-            int total = 0;
-            int aces = 0;
-
-            // Sum all card values
-            for (Card c : cards) {
-                total += c.value();
-                if ("A".equals(c.rank))
-                    aces++;
-            }
-
-            // Convert aces from 11 to 1 until hand is <= 21
-            while (total > 21 && aces > 0) {
-                total -= 10; // Convert one ace from 11 to 1
-                aces--;
-            }
-
-            return total;
-        }
-
-        /**
-         * Check if hand is "soft" (contains an Ace counted as 11)
-         */
-        boolean isSoftHand() {
-            int total = 0;
-            int aces = 0;
-            for (Card c : cards) {
-                total += c.value();
-                if ("A".equals(c.rank))
-                    aces++;
-            }
-            // Hand is soft if we can subtract 10 and still be valid (meaning an ace is
-            // being
-            // counted as 11)
-            return aces > 0 && (total - 10) > 0 && (total - 10) <= 21;
-        }
-
-        boolean isBlackjack() {
-            return cards.size() == 2 && getValue() == 21;
-        }
-
-        boolean canSplit() {
-            if (cards.size() != 2)
-                return false;
-            return cards.get(0).rank.equals(cards.get(1).rank);
-        }
-
-        String showFirstCard() {
-            if (cards.isEmpty())
-                return "";
-            return cards.get(0).toString() + " [?]";
-        }
-
-        @Override
-        public String toString() {
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < cards.size(); i++) {
-                if (i > 0)
-                    sb.append(" ");
-                sb.append(cards.get(i));
-            }
-            return sb.toString();
-        }
     }
 }
