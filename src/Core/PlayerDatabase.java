@@ -1,7 +1,6 @@
 package Core;
 
 import java.io.*;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import utilities.Formatter;
 import utilities.ConsoleDisplay;
@@ -14,7 +13,6 @@ public class PlayerDatabase {
     private Map<String, Player> players;
     private static final String DATA_DIR = "../src/data";
     private String playersFile = DATA_DIR + "/players.txt";
-    private String transactionsFile = DATA_DIR + "/transactions.log";
 
     public PlayerDatabase() {
         // Keep usernames ordered and allow case-insensitive lookups/ordering
@@ -84,7 +82,7 @@ public class PlayerDatabase {
         }
 
         players.put(player.getUsername(), player);
-        logTransaction(player.getUsername(), player.getPlayerId(), "SYSTEM", "ACCOUNT_CREATION",
+        Transaction.log(player.getUsername(), player.getPlayerId(), "SYSTEM", "ACCOUNT_CREATION",
                 player.getBalance(), player.getBalance());
         savePlayers();
         return true;
@@ -283,23 +281,7 @@ public class PlayerDatabase {
         System.out.println("                 └──────┴────────────────────┴───────────────┴──────────┘");
     }
 
-    /**
-     * Log transaction to transactions.log
-     * New Format: timestamp | username | playerId | game | action | amount |
-     * balance_after
-     */
-    public void logTransaction(String username, String playerId, String game, String action, double amount,
-            double balanceAfter) {
-        String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-        String logEntry = String.format("%s | %s | %s | %s | %s | %.2f | %.2f",
-                timestamp, username, playerId == null ? "" : playerId, game, action, amount, balanceAfter);
-
-        try (PrintWriter writer = new PrintWriter(new FileWriter(transactionsFile, true))) {
-            writer.println(logEntry);
-        } catch (IOException e) {
-            System.out.println("❌ Error logging transaction: " + e.getMessage());
-        }
-    }
+    // Transaction logging and reading delegated to Core.Transaction
 
     /**
      * Read all transactions and return those that belong to the provided player.
@@ -308,39 +290,12 @@ public class PlayerDatabase {
      * This ensures players cannot see other players' transactions.
      */
     public java.util.List<String> getTransactionsForPlayer(Player player) {
+        // Delegated to Transaction class
         java.util.List<String> results = new ArrayList<>();
-        File file = new File(transactionsFile);
-        if (!file.exists()) {
-            return results;
+        List<Transaction> txs = Transaction.forPlayer(player);
+        for (Transaction t : txs) {
+            results.add(t.toDisplayString());
         }
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                if (line.trim().isEmpty())
-                    continue;
-
-                // Split by pipe separator and trim parts
-                String[] parts = line.split("\\|");
-                for (int i = 0; i < parts.length; i++)
-                    parts[i] = parts[i].trim();
-
-                boolean match = false;
-                if (parts.length >= 7) {
-                    // timestamp | username | playerId | game | action | amount | balance
-                    String entryPlayerId = parts[2];
-                    if (player.getPlayerId() != null && player.getPlayerId().equals(entryPlayerId))
-                        match = true;
-                }
-
-                if (match) {
-                    results.add(line);
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("Error reading transactions: " + e.getMessage());
-        }
-
         return results;
     }
 
@@ -348,20 +303,7 @@ public class PlayerDatabase {
      * Display transactions for a player in chronological order (oldest -> newest).
      */
     public void displayTransactionsForPlayer(Player player, int maxEntries) {
-        java.util.List<String> allTransactions = getTransactionsForPlayer(player);
-        if (allTransactions.isEmpty()) {
-            System.out.println("No transactions found for " + player.getUsername() + ".");
-            return;
-        }
-
-        System.out.println("📋 TRANSACTION HISTORY for " + player.getUsername());
-        System.out.println("╔══════════════════════════════════════════════════════════════════════╗");
-
-        // Print in the order they occurred (file order)
-        int start = Math.max(0, allTransactions.size() - maxEntries);
-        for (int i = start; i < allTransactions.size(); i++) {
-            System.out.println(allTransactions.get(i));
-        }
+        Transaction.displayForPlayer(player, maxEntries);
     }
 
     /**
@@ -378,7 +320,7 @@ public class PlayerDatabase {
         // Update balance
         player.setBalance(player.getBalance() + amount);
         // Log and persist
-        logTransaction(player.getUsername(), player.getPlayerId(), "SYSTEM", "CASH_IN", amount, player.getBalance());
+        Transaction.log(player.getUsername(), player.getPlayerId(), "SYSTEM", "CASH_IN", amount, player.getBalance());
         updatePlayer(player); // saves players
         return true;
     }
@@ -397,7 +339,7 @@ public class PlayerDatabase {
 
         // Deduct and persist
         player.setBalance(balance - amount);
-        logTransaction(player.getUsername(), player.getPlayerId(), "SYSTEM", "CASH_OUT", amount, player.getBalance());
+        Transaction.log(player.getUsername(), player.getPlayerId(), "SYSTEM", "CASH_OUT", amount, player.getBalance());
         updatePlayer(player);
         return true;
     }
@@ -413,7 +355,7 @@ public class PlayerDatabase {
             return 0.0;
 
         player.setBalance(0.0);
-        logTransaction(player.getUsername(), player.getPlayerId(), "SYSTEM", "CASH_OUT_ALL", amount,
+        Transaction.log(player.getUsername(), player.getPlayerId(), "SYSTEM", "CASH_OUT_ALL", amount,
                 player.getBalance());
         updatePlayer(player);
         return amount;

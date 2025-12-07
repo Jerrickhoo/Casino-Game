@@ -3,6 +3,7 @@ package games.Blackjack;
 import games.Game;
 import Core.Player;
 import Core.PlayerDatabase;
+import Core.Transaction;
 import utilities.InputValidator;
 import utilities.ConsoleDisplay;
 import utilities.Formatter;
@@ -85,7 +86,7 @@ public class BlackJack extends Game {
             player.updateGamesPlayed();
             if (playerDB != null) {
                 playerDB.updatePlayer(player);
-                playerDB.logTransaction(player.getUsername(), player.getPlayerId(), getGameName(), "PLAY_SESSION_END",
+                Transaction.log(player.getUsername(), player.getPlayerId(), getGameName(), "PLAY_SESSION_END",
                         balance, balance);
             }
         }

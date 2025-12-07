@@ -4,6 +4,7 @@ import java.util.Random;
 import java.util.Scanner;
 import Core.Player;
 import Core.PlayerDatabase;
+import Core.Transaction;
 import utilities.ConsoleDisplay;
 import utilities.Formatter;
 import utilities.InputValidator;
@@ -151,7 +152,7 @@ public class SlotMachine extends Game {
 
         player.setBalance(balance);
         db.updatePlayer(player);
-        db.logTransaction(player.getUsername(), player.getPlayerId(), getGameName(), "SPIN_RESULT", amount, balance);
+        Transaction.log(player.getUsername(), player.getPlayerId(), getGameName(), "SPIN_RESULT", amount, balance);
     }
 
     @Override

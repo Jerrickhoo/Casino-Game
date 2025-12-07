@@ -3,6 +3,7 @@ package games.Lucky9;
 import java.util.Random;
 import Core.Player;
 import Core.PlayerDatabase;
+import Core.Transaction;
 import utilities.InputValidator;
 import utilities.ConsoleDisplay;
 import utilities.Formatter;
@@ -187,7 +188,7 @@ public class Lucky9 extends Game {
 
 				// Deduct immediately (will be returned on push or add payout on win)
 				currentPlayer.setBalance(currentPlayer.getBalance() - bet);
-				playerDB.logTransaction(currentPlayer.getUsername(), currentPlayer.getPlayerId(), getGameName(), "BET", bet,
+				Transaction.log(currentPlayer.getUsername(), currentPlayer.getPlayerId(), getGameName(), "BET", bet,
 						currentPlayer.getBalance());
 
 				int[] playerCards = drawHand();
@@ -203,7 +204,7 @@ public class Lucky9 extends Game {
 				System.out.println("");
 				if (payout > 0) {
 					currentPlayer.setBalance(currentPlayer.getBalance() + payout);
-					playerDB.logTransaction(currentPlayer.getUsername(), currentPlayer.getPlayerId(), "Lucky9", "WIN",
+					Transaction.log(currentPlayer.getUsername(), currentPlayer.getPlayerId(), "Lucky9", "WIN",
 							payout,
 							currentPlayer.getBalance());
 					System.out.println("            ╔══════════════════════════════════════════════════════════╗");
@@ -213,14 +214,14 @@ public class Lucky9 extends Game {
 				} else if (payout == 0 && playerValue == dealerValue) {
 					// push
 					currentPlayer.setBalance(currentPlayer.getBalance() + bet);
-					playerDB.logTransaction(currentPlayer.getUsername(), currentPlayer.getPlayerId(), "Lucky9", "PUSH",
+					Transaction.log(currentPlayer.getUsername(), currentPlayer.getPlayerId(), "Lucky9", "PUSH",
 							bet,
 							currentPlayer.getBalance());
 					System.out.println("            ╔══════════════════════════════════════════════════════════╗");
 					System.out.println("            ║                 PUSH — BET RETURNED                      ║");
 					System.out.println("            ╚══════════════════════════════════════════════════════════╝");
 				} else {
-					playerDB.logTransaction(currentPlayer.getUsername(), currentPlayer.getPlayerId(), "Lucky9", "LOSS",
+					Transaction.log(currentPlayer.getUsername(), currentPlayer.getPlayerId(), "Lucky9", "LOSS",
 							bet,
 							currentPlayer.getBalance());
 					System.out.println("            ╔══════════════════════════════════════════════════════════╗");
