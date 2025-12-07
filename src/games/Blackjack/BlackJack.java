@@ -85,7 +85,8 @@ public class BlackJack extends Game {
             player.updateGamesPlayed();
             if (playerDB != null) {
                 playerDB.updatePlayer(player);
-                playerDB.logTransaction(player.getUsername(), getGameName(), "PLAY_SESSION_END", balance, balance);
+                playerDB.logTransaction(player.getUsername(), player.getPlayerId(), getGameName(), "PLAY_SESSION_END",
+                        balance, balance);
             }
         }
     }

@@ -5,17 +5,20 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import utilities.Formatter;
 import utilities.ConsoleDisplay;
+import utilities.InputValidator;
 import ui.AnimationDisplay;
 
 public class PlayerDatabase {
     // SortKey is defined as a package-level enum in Core.SortKey
+    // Use a TreeMap for ordered username keys (case-insensitive)
     private Map<String, Player> players;
     private static final String DATA_DIR = "../src/data";
     private String playersFile = DATA_DIR + "/players.txt";
     private String transactionsFile = DATA_DIR + "/transactions.log";
 
     public PlayerDatabase() {
-        this.players = new HashMap<>();
+        // Keep usernames ordered and allow case-insensitive lookups/ordering
+        this.players = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         // Ensure data directory exists
         File dataDir = new File(DATA_DIR);
         if (!dataDir.exists()) {
@@ -63,6 +66,7 @@ public class PlayerDatabase {
      */
     public void savePlayers() {
         try (PrintWriter writer = new PrintWriter(new FileWriter(playersFile))) {
+            // TreeMap.values() returns players in username order
             for (Player player : players.values()) {
                 writer.println(player.toFileString());
             }
@@ -80,7 +84,7 @@ public class PlayerDatabase {
         }
 
         players.put(player.getUsername(), player);
-        logTransaction(player.getUsername(), "SYSTEM", "ACCOUNT_CREATION",
+        logTransaction(player.getUsername(), player.getPlayerId(), "SYSTEM", "ACCOUNT_CREATION",
                 player.getBalance(), player.getBalance());
         savePlayers();
         return true;
@@ -112,7 +116,8 @@ public class PlayerDatabase {
      * Get all players
      */
     public List<Player> getAllPlayers() {
-        return new ArrayList<>(players.values());
+        // Return a LinkedList to reflect a common familiar structure
+        return new LinkedList<>(players.values());
     }
 
     /**
@@ -121,8 +126,23 @@ public class PlayerDatabase {
      * sort.
      */
     public List<Player> getLeaderboard(SortKey key, boolean ascending) {
-        List<Player> leaderboard = getAllPlayers();
+        Collection<Player> source = players.values();
 
+        // For BALANCE use a heap (PriorityQueue) for efficient top-N extraction.
+        if (key == SortKey.BALANCE) {
+            Comparator<Player> balComp = Comparator.comparingDouble(Player::getBalance);
+            if (!ascending)
+                balComp = balComp.reversed(); // max-heap by reversing comparator
+            PriorityQueue<Player> pq = new PriorityQueue<>(balComp);
+            pq.addAll(source);
+            List<Player> result = new ArrayList<>(pq.size());
+            while (!pq.isEmpty())
+                result.add(pq.poll());
+            return result;
+        }
+
+        // For other keys use a TreeSet with tie-breaker on username to preserve all
+        // entries
         Comparator<Player> comparator;
         switch (key) {
             case PLAYER_ID:
@@ -133,80 +153,146 @@ public class PlayerDatabase {
                         Comparator.nullsLast(String::compareToIgnoreCase));
                 break;
             case GAMES_PLAYED:
+            default:
                 comparator = Comparator.comparingInt(Player::getGamesPlayed);
                 break;
-            case BALANCE:
-            default:
-                comparator = Comparator.comparingDouble(Player::getBalance);
-                break;
         }
 
-        if (!ascending) {
+        // Ensure determinism: tie-break by username so TreeSet doesn't drop equal-key
+        // players
+        comparator = comparator.thenComparing(p -> p.getUsername(), String.CASE_INSENSITIVE_ORDER);
+        if (!ascending)
             comparator = comparator.reversed();
-        }
 
-        leaderboard.sort(comparator);
-        return leaderboard;
+        TreeSet<Player> set = new TreeSet<>(comparator);
+        set.addAll(source);
+        return new ArrayList<>(set);
     }
 
     /**
-     * Backwards compatible method: default to balance DESC (previous behavior)
-     */
-    public List<Player> getLeaderboard() {
-        return getLeaderboard(SortKey.BALANCE, false);
-    }
-
-    /**
-     * Display formatted leaderboard (default: balance DESC)
+     * Interactive leaderboard using the table format from CasinoMain.
+     * Centralizes all leaderboard display and sorting here so callers (e.g.,
+     * CasinoMain)
+     * simply call this single method.
      */
     public void displayLeaderboard() {
-        displayLeaderboard(SortKey.BALANCE, false);
+        ConsoleDisplay.clearConsole();
+        System.out.println("\n\n");
+        System.out.println("                 ╔══════════════════════════════════════════════════════════╗");
+        System.out.println("                 ║                     TOP PLAYERS                          ║");
+        System.out.println("                 ╚══════════════════════════════════════════════════════════╝");
+        System.out.println("");
+
+        // Show default leaderboard first (Balance, descending)
+        java.util.List<Player> leaderboard = getLeaderboard(SortKey.BALANCE, false);
+        printLeaderboardTable(leaderboard);
+
+        // Let the user re-sort or return to previous menu repeatedly
+        while (true) {
+            System.out.println();
+            System.out.println("                         ╔═════════════════════════════════════╗");
+            System.out.println("                         ║    Options:                         ║");
+            System.out.println("                         ║      1. Sort by other value         ║");
+            System.out.println("                         ║      2. Exit                        ║");
+            System.out.println("                         ╚═════════════════════════════════════╝");
+            System.out.println("                         ╔═════════════════════════════════════╗");
+            System.out.print("                              Choose option (1-2): ");
+            int next = InputValidator.readInt(1, 2);
+
+            if (next == 2)
+                break; // return
+
+            // Ask how they'd like to sort
+            ConsoleDisplay.clearConsole();
+            System.out.println("\n\n");
+            System.out.println("                         ╔═════════════════════════════════════╗");
+            System.out.println("                         ║       Sort by:                      ║");
+            System.out.println("                         ║       1. Balance                    ║");
+            System.out.println("                         ║       2. Player ID                  ║");
+            System.out.println("                         ║       3. Name                       ║");
+            System.out.println("                         ║       4. Games Played               ║");
+            System.out.println("                         ╚═════════════════════════════════════╝");
+            System.out.println("                         ╔═════════════════════════════════════╗");
+            System.out.print("                              Choose sort option (1-4): ");
+            int sortOption = InputValidator.readInt(1, 4);
+
+            ConsoleDisplay.clearConsole();
+            System.out.println("\n\n");
+            System.out.println("                         ╔═══════════════════════════════════════════╗");
+            System.out.println("                         ║      Order:                               ║");
+            System.out.println("                         ║      1. Descending (high -> low / Z -> A) ║");
+            System.out.println("                         ║      2. Ascending  (low -> high / A -> Z) ║");
+            System.out.println("                         ╚═══════════════════════════════════════════╝");
+            System.out.println("                         ╔═══════════════════════════════════════════╗");
+            System.out.print("                              Choose order (1-2): ");
+            int orderOption = InputValidator.readInt(1, 2);
+
+            // Map to sort key enum
+            SortKey key;
+            switch (sortOption) {
+                case 1:
+                    key = SortKey.BALANCE;
+                    break;
+                case 2:
+                    key = SortKey.PLAYER_ID;
+                    break;
+                case 3:
+                    key = SortKey.NAME;
+                    break;
+                case 4:
+                    key = SortKey.GAMES_PLAYED;
+                    break;
+                default:
+                    key = SortKey.BALANCE;
+                    break;
+            }
+
+            boolean ascending = (orderOption == 2);
+            leaderboard = getLeaderboard(key, ascending);
+            ConsoleDisplay.clearConsole();
+            System.out.println("\n\n");
+            System.out.println("                 ╔══════════════════════════════════════════════════════════╗");
+            System.out.println("                 ║                     TOP PLAYERS                          ║");
+            System.out.println("                 ╚══════════════════════════════════════════════════════════╝");
+            System.out.println("");
+            printLeaderboardTable(leaderboard);
+        }
     }
 
-    /**
-     * Display formatted leaderboard using specified sort key and order
-     */
-    public void displayLeaderboard(SortKey key, boolean ascending) {
-        List<Player> leaderboard = getLeaderboard(key, ascending);
-
-        System.out.println("🏆 CASINO LEADERBOARD");
-        System.out.println("════════════════════════════");
-
-        if (leaderboard.isEmpty()) {
-            System.out.println("No players yet. Be the first to join!");
+    // helper: centralize leaderboard table formatting used by interactive method
+    private void printLeaderboardTable(java.util.List<Player> leaderboard) {
+        if (leaderboard == null || leaderboard.isEmpty()) {
+            System.out.println("                 No players yet. Be the first to register!");
             return;
         }
 
-        System.out.printf("%-4s %-15s %-12s %-12s%n", "Rank", "Player", "Balance", "Games");
-        System.out.println("════════════════════════════");
+        System.out.println("                 ┌──────┬────────────────────┬───────────────┬──────────┐");
+        System.out.println("                 │ Rank │ Player             │ Balance       │ Games    │");
+        System.out.println("                 ├──────┼────────────────────┼───────────────┼──────────┤");
 
         for (int i = 0; i < Math.min(10, leaderboard.size()); i++) {
             Player player = leaderboard.get(i);
-            String medal = "";
-            if (i == 0)
-                medal = "🥇 ";
-            else if (i == 1)
-                medal = "🥈 ";
-            else if (i == 2)
-                medal = "🥉 ";
-
-            System.out.printf("%-4s %-15s %-12s %-12d%n",
-                    medal + (i + 1),
+            String rank = (i == 0) ? " " : (i == 1) ? " " : (i == 2) ? " " : " ";
+            System.out.printf("                 │ %-4s │ %-18s │ %-13s │ %-8d │\n",
+                    rank + (i + 1),
                     player.getUsername(),
                     Formatter.formatCurrency(player.getBalance()),
                     player.getGamesPlayed());
         }
+
+        System.out.println("                 └──────┴────────────────────┴───────────────┴──────────┘");
     }
 
     /**
      * Log transaction to transactions.log
-     * Format: 2024-01-15 10:30:15 | username | game | action | amount |
+     * New Format: timestamp | username | playerId | game | action | amount |
      * balance_after
      */
-    public void logTransaction(String username, String game, String action, double amount, double balanceAfter) {
+    public void logTransaction(String username, String playerId, String game, String action, double amount,
+            double balanceAfter) {
         String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-        String logEntry = String.format("%s | %s | %s | %s | %.2f | %.2f",
-                timestamp, username, game, action, amount, balanceAfter);
+        String logEntry = String.format("%s | %s | %s | %s | %s | %.2f | %.2f",
+                timestamp, username, playerId == null ? "" : playerId, game, action, amount, balanceAfter);
 
         try (PrintWriter writer = new PrintWriter(new FileWriter(transactionsFile, true))) {
             writer.println(logEntry);
@@ -216,41 +302,65 @@ public class PlayerDatabase {
     }
 
     /**
-     * Display recent transactions
+     * Read all transactions and return those that belong to the provided player.
+     * Matching logic:
+     * - If the log entry contains a playerId (7 parts), match by playerId.
+     * This ensures players cannot see other players' transactions.
      */
-    public void displayRecentTransactions(int count) {
+    public java.util.List<String> getTransactionsForPlayer(Player player) {
+        java.util.List<String> results = new ArrayList<>();
         File file = new File(transactionsFile);
         if (!file.exists()) {
-            System.out.println("No transactions yet.");
-            return;
+            return results;
         }
-
-        List<String> transactions = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                if (!line.trim().isEmpty()) {
-                    transactions.add(line);
+                if (line.trim().isEmpty())
+                    continue;
+
+                // Split by pipe separator and trim parts
+                String[] parts = line.split("\\|");
+                for (int i = 0; i < parts.length; i++)
+                    parts[i] = parts[i].trim();
+
+                boolean match = false;
+                if (parts.length >= 7) {
+                    // timestamp | username | playerId | game | action | amount | balance
+                    String entryPlayerId = parts[2];
+                    if (player.getPlayerId() != null && player.getPlayerId().equals(entryPlayerId))
+                        match = true;
+                }
+
+                if (match) {
+                    results.add(line);
                 }
             }
         } catch (IOException e) {
             System.out.println("Error reading transactions: " + e.getMessage());
+        }
+
+        return results;
+    }
+
+    /**
+     * Display transactions for a player in chronological order (oldest -> newest).
+     */
+    public void displayTransactionsForPlayer(Player player, int maxEntries) {
+        java.util.List<String> allTransactions = getTransactionsForPlayer(player);
+        if (allTransactions.isEmpty()) {
+            System.out.println("No transactions found for " + player.getUsername() + ".");
             return;
         }
 
-        System.out.println("📋 RECENT TRANSACTIONS");
-        System.out.println("════════════════════════════");
+        System.out.println("📋 TRANSACTION HISTORY for " + player.getUsername());
+        System.out.println("╔══════════════════════════════════════════════════════════════════════╗");
 
-        if (transactions.isEmpty()) {
-            System.out.println("No transactions yet.");
-            return;
-        }
-
-        // Show most recent transactions first
-        int startIndex = Math.max(0, transactions.size() - count);
-        for (int i = transactions.size() - 1; i >= startIndex; i--) {
-            System.out.println(transactions.get(i));
+        // Print in the order they occurred (file order)
+        int start = Math.max(0, allTransactions.size() - maxEntries);
+        for (int i = start; i < allTransactions.size(); i++) {
+            System.out.println(allTransactions.get(i));
         }
     }
 
@@ -268,7 +378,7 @@ public class PlayerDatabase {
         // Update balance
         player.setBalance(player.getBalance() + amount);
         // Log and persist
-        logTransaction(player.getUsername(), "SYSTEM", "CASH_IN", amount, player.getBalance());
+        logTransaction(player.getUsername(), player.getPlayerId(), "SYSTEM", "CASH_IN", amount, player.getBalance());
         updatePlayer(player); // saves players
         return true;
     }
@@ -287,7 +397,7 @@ public class PlayerDatabase {
 
         // Deduct and persist
         player.setBalance(balance - amount);
-        logTransaction(player.getUsername(), "SYSTEM", "CASH_OUT", amount, player.getBalance());
+        logTransaction(player.getUsername(), player.getPlayerId(), "SYSTEM", "CASH_OUT", amount, player.getBalance());
         updatePlayer(player);
         return true;
     }
@@ -303,7 +413,8 @@ public class PlayerDatabase {
             return 0.0;
 
         player.setBalance(0.0);
-        logTransaction(player.getUsername(), "SYSTEM", "CASH_OUT_ALL", amount, player.getBalance());
+        logTransaction(player.getUsername(), player.getPlayerId(), "SYSTEM", "CASH_OUT_ALL", amount,
+                player.getBalance());
         updatePlayer(player);
         return amount;
     }
