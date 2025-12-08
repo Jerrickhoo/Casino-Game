@@ -771,4 +771,23 @@ public class AnimationDisplay {
                         Thread.currentThread().interrupt();
                 }
         }
+
+        public static void deletionAnimation(boolean enabled) {
+                if (!enabled)
+                        return;
+
+                String[] frames = { "🗑️  Deleting account...", "🗑️  Deleting account data...",
+                                "🗑️  Removing statistics...",
+                                "🗑️  Account deleted successfully!" };
+
+                for (int i = 0; i < frames.length; i++) {
+                        System.out.print("\r                 " + frames[i]);
+                        try {
+                                Thread.sleep(800);
+                        } catch (InterruptedException e) {
+                                Thread.currentThread().interrupt();
+                        }
+                }
+                System.out.println();
+        }
 }

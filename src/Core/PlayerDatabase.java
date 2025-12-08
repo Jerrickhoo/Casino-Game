@@ -139,7 +139,6 @@ public class PlayerDatabase {
             return result;
         }
 
-        // For other keys use a TreeSet with tie-breaker on username to preserve all
         // entries
         Comparator<Player> comparator;
         switch (key) {
@@ -156,15 +155,14 @@ public class PlayerDatabase {
                 break;
         }
 
-        // Ensure determinism: tie-break by username so TreeSet doesn't drop equal-key
-        // players
         comparator = comparator.thenComparing(p -> p.getUsername(), String.CASE_INSENSITIVE_ORDER);
         if (!ascending)
             comparator = comparator.reversed();
 
-        TreeSet<Player> set = new TreeSet<>(comparator);
-        set.addAll(source);
-        return new ArrayList<>(set);
+        // Use a LinkedList and sort it explicitly
+        List<Player> list = new LinkedList<>(source);
+        list.sort(comparator);
+        return new ArrayList<>(list);
     }
 
     /**
@@ -281,31 +279,6 @@ public class PlayerDatabase {
         System.out.println("                 └──────┴────────────────────┴───────────────┴──────────┘");
     }
 
-    // Transaction logging and reading delegated to Core.Transaction
-
-    /**
-     * Read all transactions and return those that belong to the provided player.
-     * Matching logic:
-     * - If the log entry contains a playerId (7 parts), match by playerId.
-     * This ensures players cannot see other players' transactions.
-     */
-    public java.util.List<String> getTransactionsForPlayer(Player player) {
-        // Delegated to Transaction class
-        java.util.List<String> results = new ArrayList<>();
-        List<Transaction> txs = Transaction.forPlayer(player);
-        for (Transaction t : txs) {
-            results.add(t.toDisplayString());
-        }
-        return results;
-    }
-
-    /**
-     * Display transactions for a player in chronological order (oldest -> newest).
-     */
-    public void displayTransactionsForPlayer(Player player, int maxEntries) {
-        Transaction.displayForPlayer(player, maxEntries);
-    }
-
     /**
      * Get player count
      */
@@ -359,6 +332,43 @@ public class PlayerDatabase {
                 player.getBalance());
         updatePlayer(player);
         return amount;
+    }
+
+    /**
+     * Delete a player account with password verification and cleanup.
+     * Returns true if deletion succeeded.
+     */
+    public boolean deleteAccount(Player player, String password) {
+        if (player == null || password == null)
+            return false;
+
+        // Verify password as an extra safeguard (UI also verifies before calling)
+        if (!player.verifyPassword(password))
+            return false;
+        // Delegate core deletion logic to deletePlayer(username) to avoid
+        // duplicating logging and transaction-cleanup behavior.
+        return deletePlayer(player.getUsername());
+    }
+
+    /**
+     * Delete player by username without password verification (caller must verify).
+     * Returns true if removed.
+     */
+    public boolean deletePlayer(String username) {
+        if (username == null)
+            return false;
+        Player removed = players.remove(username);
+        if (removed == null)
+            return false;
+
+        // Log deletion and persist
+        Transaction.log(removed.getUsername(), removed.getPlayerId(), "SYSTEM", "ACCOUNT_DELETION",
+                removed.getBalance(), 0.0);
+        savePlayers();
+
+        // Remove transaction history
+        Transaction.deleteForPlayer(removed);
+        return true;
     }
 
 }

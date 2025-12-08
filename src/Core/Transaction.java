@@ -117,6 +117,59 @@ public class Transaction {
         return filtered;
     }
 
+    /**
+     * Delete all transaction log entries for the specified player.
+     * Returns true if operation succeeded.
+     */
+    public static boolean deleteForPlayer(Player player) {
+        if (player == null)
+            return false;
+
+        ensureDataDir();
+        File src = TRANSACTIONS_PATH.toFile();
+        if (!src.exists())
+            return true; // nothing to do
+
+        File tmp = new File(src.getAbsolutePath() + ".tmp");
+        try (BufferedReader reader = new BufferedReader(new FileReader(src));
+                PrintWriter writer = new PrintWriter(new FileWriter(tmp))) {
+            String line;
+            String username = player.getUsername();
+            String playerId = player.getPlayerId();
+            while ((line = reader.readLine()) != null) {
+                if (line.trim().isEmpty())
+                    continue;
+                String[] parts = line.split("\\|", -1);
+                if (parts.length >= 3) {
+                    String uname = parts[1].trim();
+                    String pid = parts[2].trim();
+                    if (uname.equals(username) || (!pid.isEmpty() && pid.equals(playerId))) {
+                        // skip this line (delete)
+                        continue;
+                    }
+                }
+                writer.println(line);
+            }
+        } catch (IOException e) {
+            System.out.println("⚠️ Failed to delete transactions for player: " + e.getMessage());
+            if (tmp.exists())
+                tmp.delete();
+            return false;
+        }
+
+        // Replace original file with cleaned temp file
+        try {
+            Path srcPath = src.toPath();
+            Path tmpPath = tmp.toPath();
+            Files.delete(srcPath);
+            Files.move(tmpPath, srcPath);
+            return true;
+        } catch (IOException e) {
+            System.out.println("⚠️ Failed to finalize transaction deletion: " + e.getMessage());
+            return false;
+        }
+    }
+
     public static void displayForPlayer(Player player, int maxEntries) {
         List<Transaction> all = forPlayer(player);
         if (all.isEmpty()) {
@@ -125,7 +178,7 @@ public class Transaction {
         }
 
         System.out.println("📋 TRANSACTION HISTORY for " + player.getUsername());
-        System.out.println("╔══════════════════════════════════════════════════════════════════════╗");
+        System.out.println("╔══════════════════════════════════════════════════════════════════════════════════╗");
 
         int start = Math.max(0, all.size() - maxEntries);
         for (int i = start; i < all.size(); i++) {

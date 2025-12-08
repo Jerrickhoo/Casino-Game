@@ -5,6 +5,7 @@ import ui.AnimationDisplay;
 
 import Core.Player;
 import Core.PlayerDatabase;
+import Core.Transaction;
 import games.SlotMachine.SlotMachine;
 import games.DicePoker.DicePoker;
 import games.Lucky9.Lucky9;
@@ -262,7 +263,6 @@ public class CasinoMain {
             System.out.println("            ║     └─────────┘      ║ ║     └─────────┘      ║");
             System.out.println("            ╚══════════════════════╝ ╚══════════════════════╝");
             System.out.println("");
-            System.out.println("");
             System.out.println("            ╔══════════════════════╗ ╔══════════════════════╗");
             System.out.println("            ║   7.  Cash In        ║ ║   8.  Cash Out       ║");
             System.out.println("            ║     ┌─────────┐      ║ ║     ┌─────────┐      ║");
@@ -312,7 +312,7 @@ public class CasinoMain {
                     System.out.println("            ║                     TRANSACTION HISTORY                  ║");
                     System.out.println("            ╚══════════════════════════════════════════════════════════╝");
                     System.out.println("");
-                    playerDB.displayTransactionsForPlayer(currentPlayer, 100);
+                    Transaction.displayForPlayer(currentPlayer, 100);
                     System.out.println();
                     InputValidator.waitForUserInput("                 Press Enter to continue...");
                     break;
@@ -414,8 +414,97 @@ public class CasinoMain {
         }
 
         System.out.println("");
+        // Offer delete option here with strong warnings
         System.out.println("            ╔══════════════════════════════════════════════════════════╗");
-        System.out.print("                 Press Enter to continue... ");
-        InputValidator.waitForUserInput("");
+        System.out.println("            ║    Options:                                              ║");
+        System.out.println("            ║      1. Delete Account (PERMANENT)                       ║");
+        System.out.println("            ║      2. Back                                             ║");
+        System.out.println("            ╚══════════════════════════════════════════════════════════╝");
+        System.out.print("                 Choose option (1-2): ");
+        int opt = InputValidator.readInt(1, 2);
+
+        if (opt == 1) {
+            deleteAccount();
+        }
+    }
+
+    private static void deleteAccount() {
+        ConsoleDisplay.clearConsole();
+        System.out.println("\n\n");
+        System.out.println("                 ╔══════════════════════════════════════════════════════════╗");
+        System.out.println("                 ║                  ⚠️  DELETE ACCOUNT ⚠️                   ║");
+        System.out.println("                 ╚══════════════════════════════════════════════════════════╝");
+        System.out.println("");
+
+        // Display current player's information
+        System.out.println("                 Account to be deleted:");
+        System.out.println("                 Username: " + currentPlayer.getUsername());
+        System.out.println("                 Balance: " + Formatter.formatCurrency(currentPlayer.getBalance()));
+        System.out.println("");
+
+        // Show warning and consequences
+        System.out.println("                 ╔══════════════════════════════════════════════════════════╗");
+        System.out.println("                 ║                      WARNING                             ║");
+        System.out.println("                 ╠══════════════════════════════════════════════════════════╣");
+        System.out.println("                 ║ • All game statistics will be permanently lost           ║");
+        System.out.println("                 ║ • All balance and transaction history will be deleted    ║");
+        System.out.println("                 ║ • This action cannot be undone                           ║");
+        System.out.println("                 ║ • You will need to create a new account to play again    ║");
+        System.out.println("                 ╚══════════════════════════════════════════════════════════╝");
+        System.out.println("");
+
+        // First confirmation
+        System.out.print("                 Are you sure you want to delete your account? (yes/no): ");
+        String confirmation1 = InputValidator.readString().toLowerCase();
+
+        if (!confirmation1.equals("yes") && !confirmation1.equals("y")) {
+            System.out.println("\n                 Account deletion cancelled.");
+            InputValidator.waitForUserInput("                 Press Enter to continue...");
+            return;
+        }
+
+        // Second confirmation - require password
+        System.out.print("\n                 Please enter your password to confirm deletion: ");
+        String passwordConfirm = InputValidator.readString();
+
+        if (!currentPlayer.verifyPassword(passwordConfirm)) {
+            System.out.println("\n                 ❌ Password incorrect. Account deletion cancelled.");
+            InputValidator.waitForUserInput("                 Press Enter to continue...");
+            return;
+        }
+
+        // Final confirmation with strong warning
+        System.out.println("\n                 ╔══════════════════════════════════════════════════════════╗");
+        System.out.println("                 ║                 FINAL WARNING                            ║");
+        System.out.println("                 ╠══════════════════════════════════════════════════════════╣");
+        System.out.println("                 ║ Type 'DELETE MY ACCOUNT' to permanently delete           ║");
+        System.out.println("                 ║ all your data including " +
+                String.format("%-13s", Formatter.formatCurrency(currentPlayer.getBalance())) + " balance            ║");
+        System.out.println("                 ╚══════════════════════════════════════════════════════════╝");
+        System.out.print("\n                 Enter confirmation phrase: ");
+        String finalConfirmation = InputValidator.readString();
+
+        if (!finalConfirmation.equals("DELETE MY ACCOUNT")) {
+            System.out.println("\n                 Account deletion cancelled.");
+            InputValidator.waitForUserInput("                 Press Enter to continue...");
+            return;
+        }
+
+        // Perform account deletion via DB API (verifies again inside)
+        boolean deleted = playerDB.deleteAccount(currentPlayer, passwordConfirm);
+
+        if (deleted) {
+            ConsoleDisplay.clearConsole();
+            System.out.println("\n                 ✅ Account '" + currentPlayer.getUsername() + "' has been permanently deleted.\n");
+            currentPlayer = null; // Clear current player
+
+            // Show animation or message
+            AnimationDisplay.deletionAnimation(true);
+
+            InputValidator.waitForUserInput("\n                 Press Enter to return to main menu...");
+        } else {
+            System.out.println("\n                 ❌ Failed to delete account. Please try again later.");
+            InputValidator.waitForUserInput("                 Press Enter to continue...");
+        }
     }
 }
