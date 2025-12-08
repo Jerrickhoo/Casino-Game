@@ -49,7 +49,7 @@ public class DiceSet {
     public void showHand() {
         System.out.println("Here are the values of your hand:");
         for (int i = 0; i < dice.length; i++) {
-            System.out.println((i + 1) + ". " + Formatter.numToRoman(dice[i]) + " (" + dice[i] + ")");
+            System.out.println(Formatter.numToDice(dice[i]) + " (" + dice[i] + ")");
         }
     }
 

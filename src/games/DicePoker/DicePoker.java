@@ -6,6 +6,7 @@ import java.util.List;
 import Core.Player;
 import Core.PlayerDatabase;
 import games.Game;
+import utilities.ConsoleDisplay;
 import utilities.InputValidator;
 
 /**
@@ -23,11 +24,15 @@ public class DicePoker extends Game {
     }
 
     // simple bot balance tracked locally for betting rounds
-    private double botBalance = 100.0;
+    private double botBalance = 1000.0;
 
     @Override
     public void startGame(Player player, PlayerDatabase playerDB) {
-        System.out.println("Starting Dice Poker. Type 'exit' anytime to return to lobby.");
+        ConsoleDisplay.clearConsole();
+        System.out.println("");
+        displayRules();
+        System.out.println("Welcome to Dice Poker! Your first round will be starting...");
+        ConsoleDisplay.pause(1500);
 
         boolean keepPlaying = true;
         while (keepPlaying) {
@@ -50,8 +55,9 @@ public class DicePoker extends Game {
             double botAnte = Math.min(bet, botBalance);
             botBalance -= botAnte;
             pot += bet + botAnte;
-
-            System.out.println("Pot initialized at: " + utilities.Formatter.formatCurrency(pot));
+            ConsoleDisplay.clearConsole();
+            System.out.println( "Pot initialized at: " + utilities.Formatter.formatCurrency(pot));
+            ConsoleDisplay.pause(1500,"Now Rolling Dice...");
             // create hands
             DiceSet playerHand = new DiceSet();
             DiceSet botHand = new DiceSet();
@@ -96,6 +102,25 @@ public class DicePoker extends Game {
             System.out.println("After your reroll:");
             playerHand.showHand();
 
+            // Run a full betting round (pre-reroll)
+            BettingResult post = runBettingRound(player, playerHand, botHand, pot);
+            pot = post.pot;
+            if (post.folded) {
+                // fold resolved: award pot to winner
+                if (post.foldWinner == 1) {
+                    // player wins
+                    player.setBalance(player.getBalance() + pot);
+                    System.out
+                            .println("Opponent folded. You win the pot of " + utilities.Formatter.formatCurrency(pot));
+                } else if (post.foldWinner == -1) {
+                    botBalance += pot;
+                    System.out
+                            .println("You folded. Opponent wins the pot of " + utilities.Formatter.formatCurrency(pot));
+                }
+                System.out.print("Play again? (Y/N): ");
+                keepPlaying = InputValidator.readYesNo();
+                continue;
+            }
             // evaluate
             DiceRank pRank = playerHand.evaluateHand();
             DiceRank bRank = botHand.evaluateHand();
@@ -156,6 +181,7 @@ public class DicePoker extends Game {
 
             System.out.print("Play again? (Y/N): ");
             keepPlaying = InputValidator.readYesNo();
+            ConsoleDisplay.clearConsole();
         }
     }
 
@@ -231,6 +257,10 @@ public class DicePoker extends Game {
                         // after raise, other side must respond
                         botDone = false;
                         playerDone = true;
+                        System.out.println("Opponent is Thinking...");
+                        ConsoleDisplay.pause(2000);
+                        ConsoleDisplay.clearConsole();
+                        playerHand.showHand();
                     }
                 } else {
                     // must call, raise, or fold
@@ -331,9 +361,31 @@ public class DicePoker extends Game {
 
     @Override
     public void displayRules() {
-        System.out.println("Dice Poker rules: Roll five dice, optionally reroll once, best hand wins.");
-        System.out.println(
-                "Combinations: Five_of_a_Kind, Four_of_a_Kind, Full_House, Straight(1-5 or 2-6), Three_of_a_Kind, Two_Pair, Pair, No_Combination");
+        System.out.println("\n\n");
+        System.out.println("┌────────────────────────────────────────────────────────┐");
+        System.out.println("│                      HOW TO PLAY                       │");
+        System.out.println("├────────────────────────────────────────────────────────┤");
+        System.out.println("│  1) Both players ante to start the round.              │");
+        System.out.println("│  2) Both roll all dice and see their own hand.         │");
+        System.out.println("│                                                        │");
+        System.out.println("│  3) BETTING PHASE 1:                                   │");
+        System.out.println("│     - You may CHECK or RAISE.                          │");
+        System.out.println("│     - Opponent responds (CHECK / CALL / RAISE / FOLD). │");
+        System.out.println("│     - If someone folds, the other wins the pot.        │");
+        System.out.println("│                                                        │");
+        System.out.println("│  4) If both players are still in, you may REROLL       │");
+        System.out.println("│     any dice to try improving your hand.               │");
+        System.out.println("│                                                        │");
+        System.out.println("│  5) BETTING PHASE 2 (same rules as Phase 1).           │");
+        System.out.println("│                                                        │");
+        System.out.println("│  6) If nobody folds, hands are revealed and            │");
+        System.out.println("│     the higher hand wins the pot.                      │");
+        System.out.println("│                                                        │");
+        System.out.println("│  7) Play another round?                                │");
+        System.out.println("└────────────────────────────────────────────────────────┘");
+        InputValidator.waitForUserInput();
+        ConsoleDisplay.clearConsole();
+        
     }
 
     @Override
