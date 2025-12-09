@@ -161,8 +161,8 @@ public class SlotMachine extends Game {
         System.out.println("            ║             MOSES BONANZA              ║");
         System.out.println("            ╠════════════════════════════════════════╣");
         System.out.println("            ║   Match all 3 symbols horizontally!    ║");
-        System.out.println("            ║   Top = x2  |  Mid = x5  |  Bottom = x2║");
-        System.out.println("            ║   Type EXIT when placing bet to quit  ║");
+        System.out.println("            ║  Top = x2  |  Mid = x5  |  Bottom = x2 ║");
+        System.out.println("            ║   Type EXIT when placing bet to quit   ║");
         System.out.println("            ╚════════════════════════════════════════╝");
         ConsoleDisplay.pause(1000);
     }
