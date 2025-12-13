@@ -8,11 +8,18 @@ import utilities.ConsoleDisplay;
 import utilities.Formatter;
 import ui.AnimationDisplay;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+
 public class BlackJack extends Game {
     private double balance;
     private double lastRoundPayout;
     private Deck deck;
-    private static final int RESHUFFLE_THRESHOLD = 75; // Reshuffle when 75% through deck
+    private static final int RESHUFFLE_THRESHOLD = 75;
+    private static final String LEFT_PADDING = "            "; // match CasinoMain main left margin
+    private static final int BOX_WIDTH = 56; // unify box widths
 
     public BlackJack(double startingBalance) {
         this.balance = startingBalance;
@@ -22,83 +29,64 @@ public class BlackJack extends Game {
     }
 
     public BlackJack() {
-        super();
-        this.lastRoundPayout = 0;
-        this.deck = new Deck();
-        this.deck.shuffle();
+        this(100.0);
     }
-
-    // ===== ABSTRACT GAME IMPLEMENTATION =====
 
     @Override
     public void startGame(Player player, PlayerDatabase playerDB) {
         this.player = player;
-        if (player != null) {
+        if (player != null)
             this.balance = player.getBalance();
-        }
 
         showWelcomeScreen();
 
-        System.out.println();
-        System.out.println("                    ╔════════════════════════════════════════════════════════╗");
-        System.out.println("                    ║              [1] Continue to Game                      ║");
-        System.out.println("                    ║              [2] Return to Casino Menu                 ║");
-        System.out.println("                    ╚════════════════════════════════════════════════════════╝");
-        System.out.print("                    Choose: ");
-        int menuChoice = InputValidator.readInt(1, 2);
-
-        if (menuChoice == 2) {
+        printCentered("");
+        printMenuBox(new String[] { "[1] Continue to Game", "[2] Return to Casino" });
+        printCentered("");
+        int menu = readChoice(1, 2);
+        if (menu == 2)
             return;
-        }
 
-        ConsoleDisplay.pause(700);
+        // Game loop - play while balance >= 1.0
+        while (balance >= 1.0) {
+            checkDeckPenetration();
+            clearAndHeader();
 
-        // Main game loop
-        while (balance > 0) {
-            ConsoleDisplay.clearConsole();
-            showGameHeader();
-
-            System.out.println("                    Current Balance: " + Formatter.formatCurrency(balance));
-            double bet = getBetFromPlayer();
+            printCentered("Balance: " + formatBalance(balance));
+            double bet = promptBet();
             if (bet <= 0)
-                break;
+                break; // Invalid bet, exit to casino
 
             playRound(bet);
 
-            if (balance <= 0) {
-                ConsoleDisplay.clearConsole();
-                System.out.println("\n                    ╔════════════════════════════════════════╗");
-                System.out.println("                    ║     YOU'RE OUT OF CHIPS! GAME OVER      ║");
-                System.out.println("                    ╚════════════════════════════════════════╝");
-                InputValidator.waitForUserInput("                    \nPress Enter to return to casino...");
+            if (balance < 1.0) {
+                printCenteredBox("YOU'RE OUT OF CHIPS - RETURNING TO CASINO");
+                waitForEnterAndClear();
                 break;
             }
 
-            if (!askPlayAgain()) {
-                break;
-            }
+            // After each round, ask play again or return
+            printCentered("");
+            printMenuBox(new String[] { "[1] Play another hand", "[2] Return to Casino" });
+            printCentered("");
+            int choice = readChoice(1, 2);
+            if (choice == 2)
+                break; // User chose to return to casino
         }
 
-        // Update player and database
+        // Update player balance and database before returning
         if (player != null) {
             player.setBalance(balance);
-            player.updateGamesPlayed();
-            if (playerDB != null) {
+            if (playerDB != null)
                 playerDB.updatePlayer(player);
-                playerDB.logTransaction(player.getUsername(), getGameName(), "PLAY_SESSION_END", balance, balance);
-            }
         }
     }
 
     @Override
     public void playRound() {
-        // Single round triggered from outside (legacy support)
-        if (balance > 0) {
-            double bet = getBetFromPlayer();
-            if (bet > 0) {
-                playRound(bet);
-            }
-        }
+        double bet = promptBet();
+        if (bet > 0)
+            playRound(bet);
     }
 
     @Override
@@ -119,569 +107,519 @@ public class BlackJack extends Game {
     @Override
     public void updateBalance(double amount) {
         this.balance += amount;
-        if (this.player != null) {
+        if (this.player != null)
             this.player.setBalance(this.balance);
-        }
     }
 
-    // ===== PRIVATE HELPER METHODS =====
-
-    /**
-     * Get valid bet from player with proper validation
-     */
-    private double getBetFromPlayer() {
-        double minBet = 1.0;
-        double maxBet = balance;
-
-        if (balance < minBet) {
-            System.out.println("                    Insufficient balance to play. Minimum bet: $" + minBet);
-            return -1;
-        }
-
-        System.out.print("                    Place your bet ($" + minBet + " - $" + Formatter.formatCurrency(maxBet)
-                + "): ");
-        return InputValidator.readDouble(minBet, maxBet);
-    }
-
-    /**
-     * Ask if player wants to play again
-     */
-    private boolean askPlayAgain() {
-        System.out.println();
-        System.out.println("                    ╔════════════════════════════════════════╗");
-        System.out.println("                    ║  [1] Play another hand                 ║");
-        System.out.println("                    ║  [2] Return to Casino                  ║");
-        System.out.println("                    ╚════════════════════════════════════════╝");
-        System.out.print("                    Choose: ");
-        int choice = InputValidator.readInt(1, 2);
-        return choice == 1;
-    }
-
-    /**
-     * Check and reshuffle deck if needed (Shuffle Penetration)
-     */
-    private void checkDeckPenetration() {
-        int cardsRemaining = deck.getCardsRemaining();
-        int totalCards = deck.getTotalCards();
-        if (cardsRemaining < (totalCards * RESHUFFLE_THRESHOLD / 100)) {
-            ConsoleDisplay.clearConsole();
-            System.out.println("                    Reshuffling deck...");
-            deck = new Deck();
-            deck.shuffle();
-            ConsoleDisplay.pause(800);
-        }
-    }
-
-    /**
-     * Main round logic - handles single hand and split logic
-     */
     private void playRound(double bet) {
-        lastRoundPayout = 0; // Reset payout
-        checkDeckPenetration();
+        lastRoundPayout = 0;
+        clearAndHeader();
+        Formatter.showProgressBar(centerText("Shuffling & Dealing...", getConsoleWidth()), 500);
 
-        ConsoleDisplay.clearConsole();
-        Formatter.showProgressBar("                    Dealing cards", 500);
+        Hand player = new Hand();
+        Hand dealer = new Hand();
 
-        Hand playerHand = new Hand();
-        Hand dealerHand = new Hand();
+        player.add(deck.draw());
+        dealer.add(deck.draw());
+        player.add(deck.draw());
+        dealer.add(deck.draw());
 
-        // Initial deal
-        playerHand.add(deck.draw());
-        dealerHand.add(deck.draw());
-        playerHand.add(deck.draw());
-        dealerHand.add(deck.draw());
+        player.lastBet = bet;
 
-        // Display initial hands
-        displayInitialHands(dealerHand, playerHand, bet);
+        displayInitialHands(dealer, player, bet);
 
-        // Check for blackjacks
-        if (handleBlackjacks(playerHand, dealerHand, bet)) {
+        if (handleBlackjacks(player, dealer, bet))
+            return;
+
+        boolean playerAlive = playPlayerHand(player, dealer);
+        if (!playerAlive) {
+            balance -= player.lastBet;
+            lastRoundPayout = -player.lastBet;
+            printCentered(formatLoss("You busted! -" + Formatter.formatCurrency(player.lastBet)));
+            waitForEnterAndClear();
             return;
         }
 
-        // Check for split opportunity
-        if (playerHand.canSplit() && balance >= bet * 2) {
-            if (offerSplit()) {
-                handleSplitRound(dealerHand, playerHand, bet);
-                return;
+        playDealerHand(dealer, player);
+
+        resolveHand(player, dealer);
+        waitForEnterAndClear();
+    }
+
+    private boolean handleBlackjacks(Hand player, Hand dealer, double bet) {
+        if (dealer.isBlackjack() || player.isBlackjack()) {
+            // Show both hands when a blackjack check occurs
+            clearAndHeader();
+            printCentered("");
+            displayHandBox(dealer, player, true);
+            printCentered("");
+            if (dealer.isBlackjack() && player.isBlackjack()) {
+                printCentered(formatNeutral("Push (both blackjack). Bet returned."));
+                return true;
+            } else if (player.isBlackjack()) {
+                double win = bet * 1.5;
+                balance += win;
+                lastRoundPayout = win;
+                printCentered(formatWin("BLACKJACK! +" + Formatter.formatCurrency(win)));
+                return true;
+            } else {
+                printCentered(formatLoss("Dealer has blackjack. You lose."));
+                balance -= bet;
+                lastRoundPayout = -bet;
+                return true;
             }
         }
+        return false;
+    }
 
-        // Normal single hand play
-        double finalBet = bet;
-        playerHand.setActive(true);
+    private boolean playPlayerHand(Hand hand, Hand dealer) {
+        boolean firstDecision = true;
 
-        if (!playPlayerHand(playerHand, dealerHand, finalBet)) {
-            // Player busted
-            balance -= finalBet;
-            lastRoundPayout = -finalBet;
-            System.out.println("                      ✗ YOU BUSTED");
-            InputValidator.waitForUserInput("                    Press Enter to continue...");
-            return;
+        while (true) {
+            clearAndHeader();
+            printCentered("");
+            displayHandBox(dealer, hand, false);
+            printCentered("");
+
+            boolean canDouble = firstDecision && hand.getCardCount() == 2 && balance >= hand.lastBet;
+
+            if (firstDecision) {
+                String hit = "[1] Hit";
+                String stand = "[2] Stand";
+                String dbl = canDouble ? "[3] Double" : null;
+                if (dbl != null)
+                    printMenuBox(new String[] { hit, stand, dbl });
+                else
+                    printMenuBox(new String[] { hit, stand });
+
+                int max = canDouble ? 3 : 2;
+                int choice = readChoice(1, max);
+
+                if (choice == 1) {
+                    Card drawn = deck.draw();
+                    hand.add(drawn);
+                    printCentered(formatAction("You draw: " + drawn));
+                    ConsoleDisplay.pause(1500);
+                    if (hand.getValue() > 21)
+                        return false;
+                } else if (choice == 2) {
+                    return true;
+                } else {
+                    // Double down
+                    balance -= hand.lastBet;
+                    hand.lastBet *= 2;
+                    Card drawn = deck.draw();
+                    hand.add(drawn);
+                    printCentered(formatAction("You double and draw: " + drawn));
+                    ConsoleDisplay.pause(2000);
+                    return hand.getValue() <= 21;
+                }
+            } else {
+                printMenuBox(new String[] { "[1] Hit", "[2] Stand" });
+                int choice = readChoice(1, 2);
+                if (choice == 1) {
+                    Card drawn = deck.draw();
+                    hand.add(drawn);
+                    printCentered(formatAction("You draw: " + drawn));
+                    ConsoleDisplay.pause(1500);
+                    if (hand.getValue() > 21)
+                        return false;
+                } else {
+                    return true;
+                }
+            }
+            firstDecision = false;
         }
-
-        // Dealer plays
-        playDealerHand(dealerHand);
-
-        // Resolve
-        resolveSingleHand(playerHand, dealerHand, finalBet);
-        InputValidator.waitForUserInput("                    Press Enter to continue...");
     }
 
-    /**
-     * Display initial hands
-     */
-    private void displayInitialHands(Hand dealer, Hand player, double bet) {
-        ConsoleDisplay.clearConsole();
-        showGameHeader();
-        System.out.println("                    Bet: " + Formatter.formatCurrency(bet));
-        System.out.println("                    ═══════════════════════════════════════════");
-        System.out.println("                    ┌────────────────────────────────────────┐");
-        System.out.println("                    │          DEALER'S HAND                 │");
-        System.out.println("                    └────────────────────────────────────────┘");
-        System.out.println("                      " + dealer.showFirstCard());
-        System.out.println();
-        System.out.println("                    ┌────────────────────────────────────────┐");
-        System.out.println("                    │          YOUR HAND                     │");
-        System.out.println("                    └────────────────────────────────────────┘");
-        System.out.println("                      " + player + "  Value: " + player.getValue() + " "
-                + (player.isSoftHand() ? "(Soft)" : "(Hard)"));
-    }
+    private void playDealerHand(Hand dealer, Hand player) {
+        AnimationDisplay.showLoadingAnimation(centerText("Dealer is revealing...", getConsoleWidth()), 800);
+        printCentered("");
+        displayHandBox(dealer, player, true);
+        printCentered("");
 
-    /**
-     * Handle blackjack scenarios
-     */
-    private boolean handleBlackjacks(Hand player, Hand dealer, double bet) {
-        boolean playerBJ = player.isBlackjack();
-        boolean dealerBJ = dealer.isBlackjack();
-
-        if (!playerBJ && !dealerBJ) {
-            return false;
+        while (true) {
+            ConsoleDisplay.pause(1300);
+            int val = dealer.getValue();
+            boolean soft = dealer.isSoftHand();
+            if (val < 17 || (val == 17 && soft)) {
+                Card c = deck.draw();
+                dealer.add(c);
+                clearAndHeader();
+                printCentered("");
+                displayHandBox(dealer, player, true);
+                printCentered("");
+                printCentered(formatAction("Dealer draws: " + c));
+                ConsoleDisplay.pause(1500);
+            } else
+                break;
         }
-
-        ConsoleDisplay.pause(600);
-        revealHands(dealer, player);
-
-        if (playerBJ && dealerBJ) {
-            System.out.println("                    \n  = Both have Blackjack - PUSH");
-            System.out.println("                      Bet returned: " + Formatter.formatCurrency(bet));
-            lastRoundPayout = 0;
-        } else if (playerBJ) {
-            double payout = bet * 1.5;
-            balance += payout;
-            System.out.println("                    \n  ✓ BLACKJACK! YOU WIN!");
-            System.out.println("                      Winnings: " + Formatter.formatCurrency(payout));
-            lastRoundPayout = payout;
-            showWinAnimation();
-        } else {
-            balance -= bet;
-            System.out.println("                    \n  ✗ Dealer has Blackjack - YOU LOSE");
-            System.out.println("                      Amount lost: " + Formatter.formatCurrency(bet));
-            lastRoundPayout = -bet;
-        }
-
-        InputValidator.waitForUserInput("                    Press Enter to continue...");
-        return true;
-    }
-
-    /**
-     * Offer split to player
-     */
-    private boolean offerSplit() {
-        System.out.println("                    ");
-        System.out.println("                    ┌────────────────────────────────────────┐");
-        System.out.println("                    │  [1] SPLIT         [2] NO SPLIT       │");
-        System.out.println("                    └────────────────────────────────────────┘");
-        System.out.print("                    Choose: ");
-        return InputValidator.readInt(1, 2) == 1;
-    }
-
-    /**
-     * Handle split round - special logic for split aces
-     */
-    private void handleSplitRound(Hand dealer, Hand originalPlayer, double bet) {
-        // Deduct the split bet upfront
-        balance -= bet;
-
-        boolean splitAces = originalPlayer.getCard(0).getRank().equals("A");
-
-        Card card0 = originalPlayer.getCard(0);
-        Card card1 = originalPlayer.getCard(1);
-
-        Hand hand1 = new Hand();
-        Hand hand2 = new Hand();
-
-        hand1.add(card0);
-        hand2.add(card1);
-
-        // Draw one card to each split hand
-        hand1.add(deck.draw());
-        hand2.add(deck.draw());
-
-        System.out.println("                    Split created. Playing Hand 1 then Hand 2.");
-        System.out.println("                    Split bet deducted: " + Formatter.formatCurrency(bet));
-        ConsoleDisplay.pause(800);
-
-        // Play each split hand (special handling for aces)
-        if (splitAces) {
-            // Split aces: only 1 card each, no further hits
-            playSplitAceHand(hand1, dealer, bet, "Hand 1");
-            playSplitAceHand(hand2, dealer, bet, "Hand 2");
-        } else {
-            // Normal split: can hit/double/stand
-            playSplitHand(hand1, dealer, bet, "Hand 1");
-            playSplitHand(hand2, dealer, bet, "Hand 2");
-        }
-
-        // Dealer plays once
-        AnimationDisplay.showLoadingAnimation("                    Dealer is thinking", 1000);
-        playDealerHand(dealer);
-
-        // Resolve both hands
-        System.out.println("\n                    ═══════════════════════════════════════════");
-        System.out.println("                    Hand 1: " + hand1 + " (" + hand1.getValue() + ")");
-        double hand1Result = resolveSplitHand(hand1, dealer, bet);
-
-        System.out.println("                    Hand 2: " + hand2 + " (" + hand2.getValue() + ")");
-        double hand2Result = resolveSplitHand(hand2, dealer, bet);
-
-        lastRoundPayout = hand1Result + hand2Result;
-        InputValidator.waitForUserInput("                    Press Enter to continue...");
-    }
-
-    /**
-     * Play split ace hand (1 card each, no double/hit)
-     */
-    private void playSplitAceHand(Hand hand, Hand dealer, double bet, String label) {
-        ConsoleDisplay.clearConsole();
-        showGameHeader();
-        System.out.println("                    " + label + " (Split Ace) | Bet: " + Formatter.formatCurrency(bet));
-        System.out.println("                    ═══════════════════════════════════════════");
-        System.out.println("                    Dealer: " + dealer.showFirstCard());
-        System.out.println("                    " + label + ": " + hand + "  (" + hand.getValue() + ")");
-        System.out.println("                    (Ace splits - only 1 card, no further action)");
+        clearAndHeader();
+        printCentered("");
+        displayHandBox(dealer, player, true);
+        printCentered("");
+        printCentered(formatAction(
+                "Dealer final: " + dealer + " (" + dealer.getValue() + (dealer.isSoftHand() ? " soft" : "") + ")"));
         ConsoleDisplay.pause(1200);
     }
 
-    /**
-     * Play normal split hand (can hit/double/stand)
-     */
-    private void playSplitHand(Hand hand, Hand dealer, double bet, String label) {
-        double handBet = bet;
-        boolean firstDecision = true;
+    private void resolveHand(Hand player, Hand dealer) {
+        double bet = player.lastBet;
+        int pv = player.getValue();
+        int dv = dealer.getValue();
 
-        while (true) {
-            ConsoleDisplay.clearConsole();
-            showGameHeader();
-            System.out.println("                    " + label + " | Bet: " + Formatter.formatCurrency(handBet));
-            System.out.println("                    ═══════════════════════════════════════════");
-            System.out.println("                    Dealer: " + dealer.showFirstCard());
-            System.out.println("                    " + label + ": " + hand + "  (" + hand.getValue() + " "
-                    + (hand.isSoftHand() ? "Soft" : "Hard") + ")");
-            System.out.println();
+        printCentered("");
 
-            if (firstDecision) {
-                // Can double on any first decision with sufficient balance
-                boolean canDouble = balance >= bet;
-
-                System.out.println("                    ┌────────────────────────────────────────┐");
-                System.out.println("                    │  [1] HIT  [2] STAND"
-                        + (canDouble ? "  [3] DOUBLE      │" : "              │"));
-                System.out.println("                    └────────────────────────────────────────┘");
-                System.out.print("                    Choose: ");
-                int choice = InputValidator.readInt(1, canDouble ? 3 : 2);
-
-                if (choice == 1) {
-                    Card drawn = deck.draw();
-                    hand.add(drawn);
-                    System.out.println("                      You draw: " + drawn);
-                    ConsoleDisplay.pause(600);
-                    if (hand.getValue() > 21) {
-                        System.out.println("                      BUST! " + hand.getValue());
-                        return;
-                    }
-                } else if (choice == 2) {
-                    break;
-                } else if (choice == 3) { // Double
-                    if (balance >= bet) {
-                        balance -= bet; // Deduct double bet immediately
-                        handBet *= 2;
-                        Card drawn = deck.draw();
-                        hand.add(drawn);
-                        System.out.println("                      You doubled and drew: " + drawn);
-                        ConsoleDisplay.pause(700);
-                        if (hand.getValue() > 21) {
-                            System.out.println("                      BUST after double! " + hand.getValue());
-                        }
-                        break; // Double ends turn
-                    } else {
-                        System.out.println("                      Insufficient funds to double!");
-                        ConsoleDisplay.pause(700);
-                        continue;
-                    }
-                }
-            } else {
-                System.out.println("                    ┌────────────────────────────────────────┐");
-                System.out.println("                    │      [1] HIT           [2] STAND      │");
-                System.out.println("                    └────────────────────────────────────────┘");
-                System.out.print("                    Choose: ");
-                int choice = InputValidator.readInt(1, 2);
-
-                if (choice == 1) {
-                    Card drawn = deck.draw();
-                    hand.add(drawn);
-                    System.out.println("                      You draw: " + drawn);
-                    ConsoleDisplay.pause(600);
-                    if (hand.getValue() > 21) {
-                        System.out.println("                      BUST! " + hand.getValue());
-                        return;
-                    }
-                } else {
-                    break;
-                }
-            }
-            firstDecision = false;
+        if (dealer.isBlackjack() && player.isBlackjack()) {
+            printCentered(formatNeutral("Push (both blackjack). Bet returned."));
+            return;
         }
-    }
-
-    /**
-     * Play player hand (single hand - NOT split)
-     * Returns true if player didn't bust, false if busted
-     */
-    private boolean playPlayerHand(Hand hand, Hand dealer, double bet) {
-        boolean firstDecision = true;
-
-        while (true) {
-            ConsoleDisplay.clearConsole();
-            showGameHeader();
-            System.out.println("                    Bet: " + Formatter.formatCurrency(bet));
-            System.out.println("                    ═══════════════════════════════════════════");
-            System.out.println("                    ┌────────────────────────────────────────┐");
-            System.out.println("                    │          DEALER'S HAND                 │");
-            System.out.println("                    └────────────────────────────────────────┘");
-            System.out.println("                      " + dealer.showFirstCard());
-            System.out.println();
-            System.out.println("                    ┌────────────────────────────────────────┐");
-            System.out.println("                    │          YOUR HAND                     │");
-            System.out.println("                    └────────────────────────────────────────┘");
-            System.out.println("                      " + hand + "  Value: " + hand.getValue() + " "
-                    + (hand.isSoftHand() ? "(Soft)" : "(Hard)"));
-            System.out.println();
-
-            if (firstDecision) {
-                // Check if double-down is allowed (any 2-card hand with sufficient balance)
-                boolean canDouble = hand.getCardCount() == 2 && balance >= bet;
-
-                System.out.println("                    ┌────────────────────────────────────────┐");
-                System.out.println("                    │  [1] HIT  [2] STAND"
-                        + (canDouble ? "  [3] DOUBLE      │" : "              │"));
-                System.out.println("                    └────────────────────────────────────────┘");
-                System.out.print("                    Choose: ");
-
-                int choice = InputValidator.readInt(1, canDouble ? 3 : 2);
-
-                if (choice == 1) {
-                    Card drawn = deck.draw();
-                    hand.add(drawn);
-                    System.out.println("                      You draw: " + drawn);
-                    ConsoleDisplay.pause(600);
-                    if (hand.getValue() > 21) {
-                        System.out.println("                      BUST! " + hand.getValue());
-                        return false; // Player busted
-                    }
-                } else if (choice == 2) {
-                    break;
-                } else if (choice == 3) { // Double
-                    balance -= bet; // Deduct double bet immediately
-                    Card drawn = deck.draw();
-                    hand.add(drawn);
-                    System.out.println("                      You doubled and drew: " + drawn);
-                    ConsoleDisplay.pause(700);
-                    if (hand.getValue() > 21) {
-                        System.out.println("                      BUST after double! " + hand.getValue());
-                        return false;
-                    }
-                    break; // Double ends turn
-                }
-            } else {
-                System.out.println("                    ┌────────────────────────────────────────┐");
-                System.out.println("                    │      [1] HIT           [2] STAND      │");
-                System.out.println("                    └────────────────────────────────────────┘");
-                System.out.print("                    Choose: ");
-                int choice = InputValidator.readInt(1, 2);
-
-                if (choice == 1) {
-                    Card drawn = deck.draw();
-                    hand.add(drawn);
-                    System.out.println("                      You draw: " + drawn);
-                    ConsoleDisplay.pause(600);
-                    if (hand.getValue() > 21) {
-                        System.out.println("                      BUST! " + hand.getValue());
-                        return false;
-                    }
-                } else {
-                    break;
-                }
-            }
-            firstDecision = false;
+        if (player.isBlackjack()) {
+            double win = bet * 1.5;
+            balance += win;
+            lastRoundPayout = win;
+            printCentered(formatWin("BLACKJACK! +" + Formatter.formatCurrency(win)));
+            return;
         }
-
-        return true; // Player didn't bust
-    }
-
-    /**
-     * Play dealer hand (Soft 17 rule: Dealer hits on soft 17, stands on hard 17+)
-     */
-    private void playDealerHand(Hand dealer) {
-        AnimationDisplay.showLoadingAnimation("                    Dealer is revealing", 1000);
-        revealHands(dealer, null);
-
-        while (true) {
-            ConsoleDisplay.pause(600);
-            int value = dealer.getValue();
-            boolean isSoft = dealer.isSoftHand();
-
-            // Dealer must hit on 16 or less, or on soft 17 (Soft 17 rule)
-            if (value < 17 || (value == 17 && isSoft)) {
-                Card c = deck.draw();
-                System.out.println("                      Dealer draws: " + c);
-                dealer.add(c);
-            } else {
-                break; // Dealer stands
-            }
-        }
-
-        System.out.println("                      Dealer final: " + dealer + "  (" + dealer.getValue() + " "
-                + (dealer.isSoftHand() ? "Soft" : "Hard") + ")");
-    }
-
-    /**
-     * Resolve a single hand outcome
-     */
-    private void resolveSingleHand(Hand playerHand, Hand dealer, double bet) {
-        int pVal = playerHand.getValue();
-        int dVal = dealer.getValue();
-
-        if (pVal > 21) {
+        if (pv > 21) {
             balance -= bet;
-            lastRoundPayout -= bet;
-            System.out.println("                      ✗ Hand busted. Lost " + Formatter.formatCurrency(bet));
-        } else if (dVal > 21) {
+            lastRoundPayout = -bet;
+            printCentered(formatLoss("You busted -" + Formatter.formatCurrency(bet)));
+            return;
+        }
+        if (dv > 21) {
             balance += bet;
-            lastRoundPayout += bet;
-            System.out.println("                      ✓ Dealer busted. Win " + Formatter.formatCurrency(bet));
-            showWinAnimation();
-        } else if (pVal > dVal) {
+            lastRoundPayout = bet;
+            printCentered(formatWin("Dealer busted! +" + Formatter.formatCurrency(bet)));
+            return;
+        }
+        if (pv > dv) {
             balance += bet;
-            lastRoundPayout += bet;
-            System.out.println("                      ✓ Hand wins! " + Formatter.formatCurrency(bet));
-            showWinAnimation();
-        } else if (pVal == dVal) {
-            System.out.println("                      = Push. Bet returned: " + Formatter.formatCurrency(bet));
+            lastRoundPayout = bet;
+            printCentered(formatWin("You win +" + Formatter.formatCurrency(bet)));
+        } else if (pv == dv) {
+            lastRoundPayout = 0;
+            printCentered(formatNeutral("Push. Bet returned."));
         } else {
             balance -= bet;
-            lastRoundPayout -= bet;
-            System.out.println("                      ✗ Dealer wins. Lost " + Formatter.formatCurrency(bet));
+            lastRoundPayout = -bet;
+            printCentered(formatLoss("You lose -" + Formatter.formatCurrency(bet)));
         }
-
-        System.out.println("                      Balance: " + Formatter.formatCurrency(balance));
     }
 
-    /**
-     * Resolve a split hand outcome and return the payout
-     */
-    private double resolveSplitHand(Hand playerHand, Hand dealer, double bet) {
-        int pVal = playerHand.getValue();
-        int dVal = dealer.getValue();
-        double payout = 0;
-
-        if (pVal > 21) {
-            payout = -bet;
-            System.out.println("                      ✗ Hand busted. Lost " + Formatter.formatCurrency(bet));
-        } else if (dVal > 21) {
-            payout = bet;
-            balance += bet;
-            System.out.println("                      ✓ Dealer busted. Win " + Formatter.formatCurrency(bet));
-            showWinAnimation();
-        } else if (pVal > dVal) {
-            payout = bet;
-            balance += bet;
-            System.out.println("                      ✓ Hand wins! " + Formatter.formatCurrency(bet));
-            showWinAnimation();
-        } else if (pVal == dVal) {
-            payout = 0;
-            System.out.println("                      = Push. Bet returned: " + Formatter.formatCurrency(bet));
-        } else {
-            payout = -bet;
-            System.out.println("                      ✗ Dealer wins. Lost " + Formatter.formatCurrency(bet));
+    private void checkDeckPenetration() {
+        int remaining = deck.getCardsRemaining();
+        int total = deck.getTotalCards();
+        if (remaining < total * (100 - RESHUFFLE_THRESHOLD) / 100) {
+            deck = new Deck();
+            deck.shuffle();
+            printCenteredBox("Deck reshuffled");
+            ConsoleDisplay.pause(1200);
         }
-
-        System.out.println("                      Balance: " + Formatter.formatCurrency(balance));
-        return payout;
     }
 
-    private void revealHands(Hand dealer, Hand player) {
-        System.out.println("                    ┌────────────────────────────────────────┐");
-        System.out.println("                    │          DEALER'S HAND                 │");
-        System.out.println("                    └────────────────────────────────────────┘");
-        System.out.println("                      " + dealer + "  (" + dealer.getValue() + " "
-                + (dealer.isSoftHand() ? "Soft" : "Hard") + ")");
+    private double promptBet() {
+        double min = 1.0;
+        if (balance < min) {
+            printCentered(formatLoss("Insufficient funds."));
+            return -1;
+        }
+        printCenteredBox("Place your bet (min " + Formatter.formatCurrency(min) + ")");
+        return InputValidator.readDouble(min, balance);
+    }
+
+    private void displayInitialHands(Hand dealer, Hand player, double bet) {
+        clearAndHeader();
+        printCentered("Bet: " + Formatter.formatCurrency(bet));
+        printCentered("");
+        displayHandBox(dealer, player, false);
+        printCentered("");
+    }
+
+    private void displayHandBox(Hand dealer, Hand player, boolean revealDealer) {
+        String padding = LEFT_PADDING;
+        System.out.println(padding + "┌" + "─".repeat(BOX_WIDTH) + "┐");
+        String dealerVal = dealer.getValue() + (dealer.isSoftHand() ? " (soft)" : "");
+        String dealerDisplayRaw = revealDealer ? dealer.toString() + "  (" + dealerVal + ")" : dealer.showFirstCard();
+        String dealerDisplay = String.format("%-" + (BOX_WIDTH - 10) + "s", dealerDisplayRaw);
+        System.out.println(padding + "│ Dealer: " + dealerDisplay + "│");
         if (player != null) {
-            System.out.println();
-            System.out.println("                    ┌────────────────────────────────────────┐");
-            System.out.println("                    │          YOUR HAND                     │");
-            System.out.println("                    └────────────────────────────────────────┘");
-            System.out.println("                      " + player + "  (" + player.getValue() + " "
-                    + (player.isSoftHand() ? "Soft" : "Hard") + ")");
+            System.out.println(padding + "├" + "─".repeat(BOX_WIDTH) + "┤");
+            String playerStr = player + "  (" + player.getValue() + (player.isSoftHand() ? " soft" : "") + ")";
+            System.out.println(padding + "│ Player: " + String.format("%-" + (BOX_WIDTH - 10) + "s", playerStr) + "│");
         }
+        System.out.println(padding + "└" + "─".repeat(BOX_WIDTH) + "┘");
     }
 
-    private void showGameHeader() {
-        System.out.println();
-        System.out.println("                    ╔════════════════════════════════════════════════════════╗");
-        System.out.println("                    ║                 ♠ BLACKJACK GAME ♠                    ║");
-        System.out.println("                    ║              ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣                ║");
-        System.out.println("                    ╚════════════════════════════════════════════════════════╝");
-        System.out.println();
+    private void clearAndHeader() {
+        ConsoleDisplay.clearConsole();
+        printHeader();
+    }
+
+    private void printHeader() {
+        String padding = LEFT_PADDING;
+        int width = BOX_WIDTH + 2;
+        String border = "═".repeat(width);
+        System.out.println("");
+        System.out.println(padding + "╔" + border + "╗");
+        String title = "BLACKJACK";
+        int innerWidth = width - 2; // pad inside
+        int leftPad = Math.max(0, (innerWidth - title.length()) / 2);
+        String titleLine = "║" + " ".repeat(leftPad) + title
+                + " ".repeat(Math.max(0, innerWidth - leftPad - title.length())) + "║";
+        System.out.println(padding + titleLine);
+        System.out.println(padding + "╚" + border + "╝");
+        System.out.println("");
     }
 
     private void showWelcomeScreen() {
-        System.out.println("\n\n");
-        System.out.println("                    ╔════════════════════════════════════════════════════════╗");
-        System.out.println("                    ║            WELCOME TO BLACKJACK!                      ║");
-        System.out.println("                    ╚════════════════════════════════════════════════════════╝");
-        System.out.println();
-        System.out.println("                    ┌────────────────────────────────────────────────────────┐");
-        System.out.println("                    │                    OBJECTIVE:                          │");
-        System.out.println("                    │  Beat the dealer without going over 21 points         │");
-        System.out.println("                    └────────────────────────────────────────────────────────┘");
-        System.out.println();
-        System.out.println("                    ┌────────────────────────────────────────────────────────┐");
-        System.out.println("                    │                     GAME RULES:                        │");
-        System.out.println("                    │                                                        │");
-        System.out.println("                    │  • Card Values: 2-10 = face value, J/Q/K = 10         │");
-        System.out.println("                    │  • Ace = 1 or 11 (automatic best value)               │");
-        System.out.println("                    │  • Blackjack (21 on 2 cards) = 1.5x payout           │");
-        System.out.println("                    │  • Bust (over 21) = Automatic loss                    │");
-        System.out.println("                    │  • Dealer hits on 16 or less                          │");
-        System.out.println("                    │  • Dealer hits on SOFT 17 (A+6)                       │");
-        System.out.println("                    │  • Double-down allowed on ANY hand value              │");
-        System.out.println("                    │  • Split aces = 1 card each (no further action)       │");
-        System.out.println("                    └────────────────────────────────────────────────────────┘");
-        System.out.println();
-        System.out.println("                    ┌────────────────────────────────────────────────────────┐");
-        System.out.println("                    │                    YOUR OPTIONS:                       │");
-        System.out.println("                    │                                                        │");
-        System.out.println("                    │  [1] HIT - Draw another card                          │");
-        System.out.println("                    │  [2] STAND - Keep your hand and end your turn         │");
-        System.out.println("                    │  [3] DOUBLE - Double bet on any hand value            │");
-        System.out.println("                    │  [4] SPLIT - Split equal cards (costs 2x bet)         │");
-        System.out.println("                    └────────────────────────────────────────────────────────┘");
-        System.out.println();
-        InputValidator.waitForUserInput();
+        ConsoleDisplay.clearConsole();
+        printCentered("");
+
+        String[] lines = new String[] {
+                "       WELCOME TO BLACKJACK       ",
+                "",
+                "OBJECTIVE: Beat the dealer without going over 21",
+                "",
+                "RULES:",
+                "  * Face cards = 10; Aces = 1 or 11",
+                "  * Blackjack pays 3:2 (1.5x)",
+                "  * Dealer hits on soft 17",
+                "  * Double allowed on first decision",
+                "",
+                "HOW TO PLAY:",
+                "  1. Place your bet",
+                "  2. You and dealer each get 2 cards",
+                "  3. Hit, Stand, or Double your bet",
+                "  4. Dealer plays automatically",
+                "  5. Highest hand wins (no busting)",
+                ""
+        };
+        printBoxLines(lines);
+
+        printCentered("");
+        String padding = LEFT_PADDING;
+        waitForEnterAndClear();
     }
 
-    private void showWinAnimation() {
-        System.out.println("                      ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣ ♠ ♥ ♦ ♣");
+    private String formatBalance(double amount) {
+        return Formatter.formatCurrency(amount);
+    }
+
+    private String formatWin(String msg) {
+        return "WIN: " + msg;
+    }
+
+    private String formatLoss(String msg) {
+        return "LOSS: " + msg;
+    }
+
+    private String formatNeutral(String msg) {
+        return "NOTICE: " + msg;
+    }
+
+    private String formatAction(String msg) {
+        return "-> " + msg;
+    }
+
+    private void printMenuBox(String[] options) {
+        printBoxLines(options);
+    }
+
+    private void printCenteredBox(String text) {
+        int contentWidth = Math.min(70, Math.max(BOX_WIDTH, text.length() + 6));
+        String border = "═".repeat(contentWidth + 2);
+        String padding = LEFT_PADDING;
+        System.out.println(padding + border);
+        System.out.println(padding + "  " + text + "  ");
+        System.out.println(padding + border);
+    }
+
+    private void printBoxLines(String[] lines) {
+        int inner = 0;
+        for (String l : lines)
+            if (l != null)
+                inner = Math.max(inner, l.length());
+        int contentWidth = Math.min(70, Math.max(BOX_WIDTH, inner));
+        String top = "╔" + "═".repeat(contentWidth + 2) + "╗";
+        String bottom = "╚" + "═".repeat(contentWidth + 2) + "╝";
+        String padding = LEFT_PADDING;
+        System.out.println(padding + top);
+        for (String l : lines) {
+            if (l == null)
+                l = "";
+            int pad = contentWidth - l.length();
+            String padded = " " + l + " ".repeat(Math.max(0, pad + 1));
+            System.out.println(padding + "║" + padded + "║");
+        }
+        System.out.println(padding + bottom);
+    }
+
+    private void waitForEnterAndClear() {
+        InputValidator.waitForUserInput(LEFT_PADDING + "Press Enter...");
+        clearAndHeader();
+    }
+
+    // Suppress question marks and show boxed prompt instead
+    private int readChoice(int min, int max) {
+        printChoiceBox("Enter choice (" + min + "-" + max + ")");
+        return InputValidator.readInt(min, max);
+    }
+
+    private void printChoiceBox(String text) {
+        int contentWidth = Math.min(70, Math.max(BOX_WIDTH, text.length() + 4));
+        String border = "═".repeat(contentWidth + 2);
+        String padding = LEFT_PADDING;
+        System.out.println(padding + border);
+        System.out.println(padding + "  " + text);
+        System.out.println(padding + border);
+    }
+
+    private int getConsoleWidth() {
+        String c = System.getenv("COLUMNS");
+        try {
+            if (c != null)
+                return Integer.parseInt(c);
+        } catch (Exception ignored) {
+        }
+        return 80;
+    }
+
+    private String centerText(String s, int width) {
+        if (s == null)
+            return "";
+        int pad = Math.max(0, (width - s.length()) / 2);
+        return " ".repeat(pad) + s;
+    }
+
+    private void printCentered(String s) {
+        System.out.println(LEFT_PADDING + s);
+    }
+
+    private static class Card {
+        final String rank;
+        final String suit;
+
+        Card(String r, String s) {
+            rank = r;
+            suit = s;
+        }
+
+        int value() {
+            if ("J".equals(rank) || "Q".equals(rank) || "K".equals(rank))
+                return 10;
+            if ("A".equals(rank))
+                return 11;
+            return Integer.parseInt(rank);
+        }
+
+        @Override
+        public String toString() {
+            return rank;
+        }
+
+        public String getRank() {
+            return rank;
+        }
+    }
+
+    private static class Deck {
+        private final List<Card> cards = new ArrayList<>();
+        private final Random rng = new Random();
+        private static final int SHOES = 6;
+
+        Deck() {
+            init();
+        }
+
+        private void init() {
+            String[] suits = { "S", "H", "D", "C" };
+            String[] ranks = { "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" };
+            for (int s = 0; s < SHOES; s++)
+                for (String su : suits)
+                    for (String r : ranks)
+                        cards.add(new Card(r, su));
+        }
+
+        void shuffle() {
+            Collections.shuffle(cards, rng);
+        }
+
+        Card draw() {
+            if (cards.isEmpty())
+                throw new IllegalStateException("Deck empty");
+            return cards.remove(cards.size() - 1);
+        }
+
+        int getCardsRemaining() {
+            return cards.size();
+        }
+
+        int getTotalCards() {
+            return 52 * SHOES;
+        }
+    }
+
+    private static class Hand {
+        private final List<Card> cards = new ArrayList<>();
+        double lastBet = 0;
+
+        void add(Card c) {
+            cards.add(c);
+        }
+
+        Card getCard(int i) {
+            return cards.get(i);
+        }
+
+        int getCardCount() {
+            return cards.size();
+        }
+
+        int getValue() {
+            int total = 0;
+            int aces = 0;
+            for (Card c : cards) {
+                total += c.value();
+                if ("A".equals(c.getRank()))
+                    aces++;
+            }
+            while (total > 21 && aces > 0) {
+                total -= 10;
+                aces--;
+            }
+            return total;
+        }
+
+        boolean isSoftHand() {
+            int total = 0, aces = 0;
+            for (Card c : cards) {
+                total += c.value();
+                if ("A".equals(c.getRank()))
+                    aces++;
+            }
+            return aces > 0 && total - 10 <= 21;
+        }
+
+        boolean isBlackjack() {
+            return cards.size() == 2 && getValue() == 21;
+        }
+
+        String showFirstCard() {
+            if (cards.isEmpty())
+                return "";
+            return cards.get(0).toString() + " [?]";
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < cards.size(); i++) {
+                if (i > 0)
+                    sb.append(" ");
+                sb.append(cards.get(i));
+            }
+            return sb.toString();
+        }
     }
 }
