@@ -40,4 +40,9 @@ public abstract class Game {
     // Update internal balance and (if linked) the player object
     public abstract void updateBalance(double amount);
 
+    public void playRound(Player player) {
+        // TODO Auto-generated method stub
+        
+    }
+
 }
