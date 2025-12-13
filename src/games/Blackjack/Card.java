@@ -27,6 +27,8 @@ public class Card {
 
     @Override
     public String toString() {
-        return rank + suit;
+        // Show only rank (numeric/letter) to avoid suit glyphs and match "pure number
+        // or letter"
+        return rank;
     }
 }

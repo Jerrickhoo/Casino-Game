@@ -3,6 +3,7 @@ package games.Blackjack;
 import games.Game;
 import Core.Player;
 import Core.PlayerDatabase;
+import Core.Transaction;
 import utilities.InputValidator;
 import utilities.ConsoleDisplay;
 import utilities.Formatter;
@@ -77,8 +78,11 @@ public class BlackJack extends Game {
         // Update player balance and database before returning
         if (player != null) {
             player.setBalance(balance);
-            if (playerDB != null)
+            if (playerDB != null) {
                 playerDB.updatePlayer(player);
+                Transaction.log(player.getUsername(), player.getPlayerId(), getGameName(), "PLAY_SESSION_END",
+                        balance, balance);
+            }
         }
     }
 
@@ -337,7 +341,8 @@ public class BlackJack extends Game {
     }
 
     private void displayHandBox(Hand dealer, Hand player, boolean revealDealer) {
-        String padding = LEFT_PADDING;
+        int totalWidth = BOX_WIDTH + 2; // top line: corner + BOX_WIDTH '─' + corner
+        String padding = getLeftPadForTotalWidth(totalWidth);
         System.out.println(padding + "┌" + "─".repeat(BOX_WIDTH) + "┐");
         String dealerVal = dealer.getValue() + (dealer.isSoftHand() ? " (soft)" : "");
         String dealerDisplayRaw = revealDealer ? dealer.toString() + "  (" + dealerVal + ")" : dealer.showFirstCard();
@@ -357,8 +362,9 @@ public class BlackJack extends Game {
     }
 
     private void printHeader() {
-        String padding = LEFT_PADDING;
         int width = BOX_WIDTH + 2;
+        int totalWidth = width + 2; // account for corners
+        String padding = getLeftPadForTotalWidth(totalWidth);
         String border = "═".repeat(width);
         System.out.println("");
         System.out.println(padding + "╔" + border + "╗");
@@ -398,7 +404,6 @@ public class BlackJack extends Game {
         printBoxLines(lines);
 
         printCentered("");
-        String padding = LEFT_PADDING;
         waitForEnterAndClear();
     }
 
@@ -429,7 +434,8 @@ public class BlackJack extends Game {
     private void printCenteredBox(String text) {
         int contentWidth = Math.min(70, Math.max(BOX_WIDTH, text.length() + 6));
         String border = "═".repeat(contentWidth + 2);
-        String padding = LEFT_PADDING;
+        int totalWidth = contentWidth + 4;
+        String padding = getLeftPadForTotalWidth(totalWidth);
         System.out.println(padding + border);
         System.out.println(padding + "  " + text + "  ");
         System.out.println(padding + border);
@@ -443,7 +449,8 @@ public class BlackJack extends Game {
         int contentWidth = Math.min(70, Math.max(BOX_WIDTH, inner));
         String top = "╔" + "═".repeat(contentWidth + 2) + "╗";
         String bottom = "╚" + "═".repeat(contentWidth + 2) + "╝";
-        String padding = LEFT_PADDING;
+        int totalWidth = contentWidth + 4; // corner + inner + corners
+        String padding = getLeftPadForTotalWidth(totalWidth);
         System.out.println(padding + top);
         for (String l : lines) {
             if (l == null)
@@ -456,7 +463,7 @@ public class BlackJack extends Game {
     }
 
     private void waitForEnterAndClear() {
-        InputValidator.waitForUserInput(LEFT_PADDING + "Press Enter...");
+        InputValidator.waitForUserInput(centerText("Press Enter...", getConsoleWidth()));
         clearAndHeader();
     }
 
@@ -469,7 +476,8 @@ public class BlackJack extends Game {
     private void printChoiceBox(String text) {
         int contentWidth = Math.min(70, Math.max(BOX_WIDTH, text.length() + 4));
         String border = "═".repeat(contentWidth + 2);
-        String padding = LEFT_PADDING;
+        int totalWidth = contentWidth + 4;
+        String padding = getLeftPadForTotalWidth(totalWidth);
         System.out.println(padding + border);
         System.out.println(padding + "  " + text);
         System.out.println(padding + border);
@@ -493,133 +501,14 @@ public class BlackJack extends Game {
     }
 
     private void printCentered(String s) {
-        System.out.println(LEFT_PADDING + s);
+        System.out.println(centerText(s, getConsoleWidth()));
     }
 
-    private static class Card {
-        final String rank;
-        final String suit;
-
-        Card(String r, String s) {
-            rank = r;
-            suit = s;
-        }
-
-        int value() {
-            if ("J".equals(rank) || "Q".equals(rank) || "K".equals(rank))
-                return 10;
-            if ("A".equals(rank))
-                return 11;
-            return Integer.parseInt(rank);
-        }
-
-        @Override
-        public String toString() {
-            return rank;
-        }
-
-        public String getRank() {
-            return rank;
-        }
+    private String getLeftPadForTotalWidth(int totalWidth) {
+        int pad = Math.max(0, (getConsoleWidth() - totalWidth) / 2);
+        return " ".repeat(pad);
     }
 
-    private static class Deck {
-        private final List<Card> cards = new ArrayList<>();
-        private final Random rng = new Random();
-        private static final int SHOES = 6;
-
-        Deck() {
-            init();
-        }
-
-        private void init() {
-            String[] suits = { "S", "H", "D", "C" };
-            String[] ranks = { "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" };
-            for (int s = 0; s < SHOES; s++)
-                for (String su : suits)
-                    for (String r : ranks)
-                        cards.add(new Card(r, su));
-        }
-
-        void shuffle() {
-            Collections.shuffle(cards, rng);
-        }
-
-        Card draw() {
-            if (cards.isEmpty())
-                throw new IllegalStateException("Deck empty");
-            return cards.remove(cards.size() - 1);
-        }
-
-        int getCardsRemaining() {
-            return cards.size();
-        }
-
-        int getTotalCards() {
-            return 52 * SHOES;
-        }
-    }
-
-    private static class Hand {
-        private final List<Card> cards = new ArrayList<>();
-        double lastBet = 0;
-
-        void add(Card c) {
-            cards.add(c);
-        }
-
-        Card getCard(int i) {
-            return cards.get(i);
-        }
-
-        int getCardCount() {
-            return cards.size();
-        }
-
-        int getValue() {
-            int total = 0;
-            int aces = 0;
-            for (Card c : cards) {
-                total += c.value();
-                if ("A".equals(c.getRank()))
-                    aces++;
-            }
-            while (total > 21 && aces > 0) {
-                total -= 10;
-                aces--;
-            }
-            return total;
-        }
-
-        boolean isSoftHand() {
-            int total = 0, aces = 0;
-            for (Card c : cards) {
-                total += c.value();
-                if ("A".equals(c.getRank()))
-                    aces++;
-            }
-            return aces > 0 && total - 10 <= 21;
-        }
-
-        boolean isBlackjack() {
-            return cards.size() == 2 && getValue() == 21;
-        }
-
-        String showFirstCard() {
-            if (cards.isEmpty())
-                return "";
-            return cards.get(0).toString() + " [?]";
-        }
-
-        @Override
-        public String toString() {
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < cards.size(); i++) {
-                if (i > 0)
-                    sb.append(" ");
-                sb.append(cards.get(i));
-            }
-            return sb.toString();
-        }
-    }
+    // Rely on the project-level Card, Deck, and Hand classes in
+    // src/games/Blackjack/
 }

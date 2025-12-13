@@ -3,9 +3,11 @@ package games.Lucky9;
 import java.util.Random;
 import Core.Player;
 import Core.PlayerDatabase;
-import utilities.InputValidator;
+import Core.Transaction;
+// Use the project's utilities helpers
 import utilities.ConsoleDisplay;
 import utilities.Formatter;
+import utilities.InputValidator;
 import games.Game;
 
 /**
@@ -21,8 +23,7 @@ import games.Game;
 public class Lucky9 extends Game {
 	private final Random rng = new Random();
 
-	// Allow instance usage similar to SlotMachine.start()
-	private double balance;
+	// Use inherited `balance` from Game; do not shadow it here.
 
 	public Lucky9() {
 		super();
@@ -33,108 +34,22 @@ public class Lucky9 extends Game {
 		this.balance = playerBalance;
 	}
 
-	/**
-	 * Start loop for instance usage. Returns updated balance when player exits.
-	 */
-	public double start() {
-		while (true) {
-			ConsoleDisplay.clearConsole();
-			System.out.println("\n\n");
-			System.out.println("            ╔══════════════════════════════════════════════════════════╗");
-			System.out.println("            ║                        LUCKY 9                          ║");
-			System.out.println("            ╠══════════════════════════════════════════════════════════╣");
-			System.out.println("            ║                Get as close to 9 as possible!            ║");
-			System.out.println("            ╚══════════════════════════════════════════════════════════╝");
-			System.out.println("");
-			System.out.println("                 Current Balance: " + Formatter.formatCurrency(balance));
-			System.out.println("");
-			System.out.println("            ╔══════════════════════╗ ╔══════════════════════╗");
-			System.out.println("            ║      1. PLAY         ║ ║    2. EXIT GAME      ║");
-			System.out.println("            ║   ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄   ║ ║   ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄   ║");
-			System.out.println("            ║   █                 █   ║   █                 █   ║");
-			System.out.println("            ║   █    █▀▀▀▀▀▀█    █   ║   █    █▀▀▀▀▀▀█    █   ║");
-			System.out.println("            ║   █    █ DEAL █    █   ║   █    █ BACK  █    █   ║");
-			System.out.println("            ║   █    █▄▄▄▄▄▄█    █   ║   █    █▄▄▄▄▄▄█    █   ║");
-			System.out.println("            ║   █       🎴        █   ║   █      🚪         █   ║");
-			System.out.println("            ║   █▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█   ║   █▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█   ║");
-			System.out.println("            ╚══════════════════════╝ ╚══════════════════════╝");
-			System.out.print("\n                 Choose (1-2): ");
-
-			int choice = InputValidator.readInt(1, 2);
-			if (choice == 1) {
-				if (balance <= 0) {
-					System.out.println("\n                 ❌ You have no funds to bet. Deposit more to play.");
-					InputValidator.waitForUserInput("\n                 Press Enter to continue...");
-					continue;
-				}
-
-				System.out.print("\n                 Enter bet amount: ");
-				double bet = InputValidator.readDouble(1, balance);
-				balance -= bet;
-
-				// Clear screen after bet is placed
-				ConsoleDisplay.clearConsole();
-				System.out.println("\n");
-				System.out.println("            ╔══════════════════════════════════════════════════════════╗");
-				System.out.println("            ║                        LUCKY 9                          ║");
-				System.out.println("            ╠══════════════════════════════════════════════════════════╣");
-				System.out.println("            ║               Bet Placed: "
-						+ String.format("%-20s", Formatter.formatCurrency(bet)) + "           ║");
-				System.out.println("            ╚══════════════════════════════════════════════════════════╝");
-				System.out.println("");
-
-				// Enhanced dealing animation
-				dealingAnimation();
-
-				int[] playerCards = drawHand();
-				int[] dealerCards = drawHand();
-
-				int playerValue = handValue(playerCards);
-				int dealerValue = handValue(dealerCards);
-
-				displayHands(playerCards, dealerCards, playerValue, dealerValue);
-
-				double payout = resolvePayout(bet, playerValue, dealerValue, playerCards);
-
-				System.out.println("");
-				if (payout > 0) {
-					balance += payout;
-					System.out.println("            ╔══════════════════════════════════════════════════════════╗");
-					System.out.println("            ║              YOU WON "
-							+ String.format("%-33s", Formatter.formatCurrency(payout)) + "   ║");
-					System.out.println("            ╚══════════════════════════════════════════════════════════╝");
-				} else if (payout == 0 && playerValue == dealerValue) {
-					balance += bet;
-					System.out.println("            ╔══════════════════════════════════════════════════════════╗");
-					System.out.println("            ║              ➖ PUSH — BET RETURNED                      ║");
-					System.out.println("            ╚══════════════════════════════════════════════════════════╝");
-				} else {
-					System.out.println("            ╔══════════════════════════════════════════════════════════╗");
-					System.out.println("            ║             ❌ YOU LOST "
-							+ String.format("%-33s", Formatter.formatCurrency(bet)) + "║");
-					System.out.println("            ╚══════════════════════════════════════════════════════════╝");
-				}
-
-				System.out.println("");
-				System.out.println("                 New Balance: " + Formatter.formatCurrency(balance));
-				System.out.println("");
-
-				InputValidator.waitForUserInput("                 Press Enter to continue...");
-			} else {
-				ConsoleDisplay.pause(1000, "Returning to Casino menu...");
-				return balance;
-			}
-		}
-	}
-
 	// Static entry point for CasinoMain style usage
 	public static void play(Player currentPlayer, PlayerDatabase playerDB) {
 		Lucky9 game = new Lucky9();
-		game.playWithPlayer(currentPlayer, playerDB);
+		game.startGame(currentPlayer, playerDB);
 	}
+
+	// Play loop when provided player + db (main game flow)
 
 	// Play loop when provided player + db
 	private void playWithPlayer(Player currentPlayer, PlayerDatabase playerDB) {
+		// ensure game state mirrors the logged-in player so balance updates apply
+		if (currentPlayer != null) {
+			this.player = currentPlayer;
+			this.balance = currentPlayer.getBalance();
+		}
+
 		while (true) {
 			ConsoleDisplay.clearConsole();
 			System.out.println("\n\n");
@@ -147,19 +62,13 @@ public class Lucky9 extends Game {
 			System.out.println("                 Player: " + String.format("%-30s", currentPlayer.getUsername()));
 			System.out.println("                 Balance: " + Formatter.formatCurrency(currentPlayer.getBalance()));
 			System.out.println("");
-			System.out.println("            ╔══════════════════════╗ ╔══════════════════════╗");
-			System.out.println("            ║      1. PLAY         ║ ║    2. EXIT GAME      ║");
-			System.out.println("            ║   ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄  ║ ║   ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄  ║");
-			System.out.println("            ║   █               █  ║ ║   █               █  ║");
-			System.out.println("            ║   █    █▀▀▀▀▀▀█   █  ║ ║   █    █▀▀▀▀▀▀█   █  ║");
-			System.out.println("            ║   █    █ DEAL █   █  ║ ║   █    █ BACK █   █  ║");
-			System.out.println("            ║   █    █▄▄▄▄▄▄█   █  ║ ║   █    █▄▄▄▄▄▄█   █  ║");
-			System.out.println("            ║   █               █  ║ ║   █               █  ║");
-			System.out.println("            ║   █▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█  ║ ║   █▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█  ║");
-			System.out.println("            ╚══════════════════════╝ ╚══════════════════════╝");
-			System.out.print("\n                 Choose (1-2): ");
+			System.out.print("\n                 Choose (1-3): ");
+			System.out.println();
+			System.out.println("            ╔══════════════════════════════════════════════════════════╗");
+			System.out.println("            ║   1. PLAY    2. TUTORIAL    3. EXIT GAME                 ║");
+			System.out.println("            ╚══════════════════════════════════════════════════════════╝");
 
-			int choice = InputValidator.readInt(1, 2);
+			int choice = InputValidator.readInt(1, 3);
 			if (choice == 1) {
 				if (currentPlayer.getBalance() <= 0) {
 					System.out.println(
@@ -171,54 +80,108 @@ public class Lucky9 extends Game {
 				System.out.print("\n                 Enter bet amount: ");
 				double bet = InputValidator.readDouble(1, currentPlayer.getBalance());
 
-				// Clear screen after bet is placed
+				// Start round flow: deal 2 cards to player and dealer
+				int[] playerCards = drawHand(2);
+				int[] dealerCards = drawHand(2);
+
+				// Show player's cards, hide dealer
 				ConsoleDisplay.clearConsole();
 				System.out.println("\n");
 				System.out.println("            ╔══════════════════════════════════════════════════════════╗");
 				System.out.println("            ║                        LUCKY 9                           ║");
 				System.out.println("            ╠══════════════════════════════════════════════════════════╣");
 				System.out.println("            ║               Bet Placed: "
-						+ String.format("%-20s", Formatter.formatCurrency(bet)) + "          ║");
+						+ String.format("%-20s", Formatter.formatCurrency(bet)) + "           ║");
 				System.out.println("            ╚══════════════════════════════════════════════════════════╝");
 				System.out.println("");
+				// display player's two cards only
+				// show player's two cards and reveal one of dealer's cards for thrill
+				// small dealing animation
+				loadingAnimation("Dealing", 8, 120);
+				displayPlayerWithOneDealer(playerCards, dealerCards);
 
-				// Enhanced dealing animation
-				dealingAnimation();
+				// If player's shown hand is already 9, instant win (jackpot)
+				int shownPlayerValue = handValue(playerCards);
+				if (shownPlayerValue == 9) {
+					// Deduct bet then award jackpot
+					this.balance -= bet;
+					currentPlayer.setBalance(this.balance);
+					Transaction.log(currentPlayer.getUsername(), currentPlayer.getPlayerId(), "Lucky9", "BET", bet,
+							this.balance);
+					this.balance += bet * 3.0;
+					currentPlayer.setBalance(this.balance);
+					Transaction.log(currentPlayer.getUsername(), currentPlayer.getPlayerId(), "Lucky9", "WIN",
+							bet * 3.0, this.balance);
+					System.out.println();
+					System.out.println("            ╔══════════════════════════════════════════════════════════╗");
+					System.out.println("            ║              JACKPOT! You hit 9 — Instant Win!         ║");
+					System.out.println("            ╚══════════════════════════════════════════════════════════╝");
+					InputValidator.waitForUserInput("                 Press Enter to continue...");
+					currentPlayer.updateGamesPlayed();
+					playerDB.updatePlayer(currentPlayer);
+					continue;
+				}
 
-				// Deduct immediately (will be returned on push or add payout on win)
-				currentPlayer.setBalance(currentPlayer.getBalance() - bet);
-				playerDB.logTransaction(currentPlayer.getUsername(), "Lucky9", "BET", bet, currentPlayer.getBalance());
+				// Ask player whether to draw exactly one 3rd card
+				System.out.print("                 Draw 3rd card? (Y/N): ");
+				boolean draw = InputValidator.readYesNo();
+				if (draw) {
+					int c = drawSingle();
+					playerCards = appendCard(playerCards, c);
+					System.out.println("                 You drew: [" + c + "]");
+					loadingAnimation("Processing draw", 6, 120);
+				}
 
-				int[] playerCards = drawHand();
-				int[] dealerCards = drawHand();
+				// Deduct bet and log before dealer actions
+				this.balance -= bet;
+				currentPlayer.setBalance(this.balance);
+				Transaction.log(currentPlayer.getUsername(), currentPlayer.getPlayerId(), "Lucky9", "BET", bet,
+						this.balance);
 
+				// Reveal dealer cards and compute values
+				System.out.println();
+				loadingAnimation("Revealing dealer", 6, 120);
 				int playerValue = handValue(playerCards);
 				int dealerValue = handValue(dealerCards);
-
 				displayHands(playerCards, dealerCards, playerValue, dealerValue);
 
+				// Dealer draws one card if dealer's value <= 5
+				if (dealerValue <= 5) {
+					int dc = drawSingle();
+					dealerCards = appendCard(dealerCards, dc);
+					System.out.println("\n                 Dealer draws: [" + dc + "]");
+					// recompute dealer value and show updated hands
+					dealerValue = handValue(dealerCards);
+					loadingAnimation("Dealer drawing", 6, 120);
+					displayHands(playerCards, dealerCards, playerValue, dealerValue);
+				}
+
 				double payout = resolvePayout(bet, playerValue, dealerValue, playerCards);
+				// suspense before result
+				loadingAnimation("Calculating result", 8, 120);
 
 				System.out.println("");
 				if (payout > 0) {
-					currentPlayer.setBalance(currentPlayer.getBalance() + payout);
-					playerDB.logTransaction(currentPlayer.getUsername(), "Lucky9", "WIN", payout,
-							currentPlayer.getBalance());
+					this.balance += payout;
+					currentPlayer.setBalance(this.balance);
+					Transaction.log(currentPlayer.getUsername(), currentPlayer.getPlayerId(), "Lucky9", "WIN", payout,
+							this.balance);
 					System.out.println("            ╔══════════════════════════════════════════════════════════╗");
 					System.out.println("            ║              YOU WON "
-							+ String.format("%-33s", Formatter.formatCurrency(payout)) + "║");
+							+ String.format("%-33s", Formatter.formatCurrency(payout)) + "   ║");
 					System.out.println("            ╚══════════════════════════════════════════════════════════╝");
 				} else if (payout == 0 && playerValue == dealerValue) {
-					// push
-					currentPlayer.setBalance(currentPlayer.getBalance() + bet);
-					playerDB.logTransaction(currentPlayer.getUsername(), "Lucky9", "PUSH", bet,
-							currentPlayer.getBalance());
+					this.balance += bet;
+					currentPlayer.setBalance(this.balance);
+					Transaction.log(currentPlayer.getUsername(), currentPlayer.getPlayerId(), "Lucky9", "PUSH", bet,
+							this.balance);
 					System.out.println("            ╔══════════════════════════════════════════════════════════╗");
 					System.out.println("            ║                 PUSH — BET RETURNED                      ║");
 					System.out.println("            ╚══════════════════════════════════════════════════════════╝");
 				} else {
-					playerDB.logTransaction(currentPlayer.getUsername(), "Lucky9", "LOSS", bet,
-							currentPlayer.getBalance());
+					Transaction.log(currentPlayer.getUsername(), currentPlayer.getPlayerId(), "Lucky9", "LOSS", bet,
+							this.balance);
+					currentPlayer.setBalance(this.balance);
 					System.out.println("            ╔══════════════════════════════════════════════════════════╗");
 					System.out.println("            ║              YOU LOST "
 							+ String.format("%-33s", Formatter.formatCurrency(bet)) + "  ║");
@@ -226,8 +189,7 @@ public class Lucky9 extends Game {
 				}
 
 				System.out.println("");
-				System.out.println(
-						"                 New Balance: " + Formatter.formatCurrency(currentPlayer.getBalance()));
+				System.out.println("                 New Balance: " + Formatter.formatCurrency(this.balance));
 				System.out.println("");
 
 				currentPlayer.updateGamesPlayed();
@@ -235,6 +197,21 @@ public class Lucky9 extends Game {
 
 				InputValidator.waitForUserInput("                 Press Enter to continue...");
 
+			} else if (choice == 2) {
+				// Show tutorial/rules screen then return to menu
+				ConsoleDisplay.clearConsole();
+				System.out.println("\n");
+				System.out.println("            ╔════════════════════════════════════════════════════════════╗");
+				System.out.println("            ║                        LUCKY 9 - TUTORIAL                  ║");
+				System.out.println("            ╠════════════════════════════════════════════════════════════╣");
+				System.out.println("            ║  - Each card is a digit 1..9. Hand value = sum % 10.       ║");
+				System.out.println("            ║  - Closest to 9 wins. Exact 9 pays 3x, regular win pays 2x.║");
+				System.out.println("            ║  - You'll be prompted for each card (Y/N) up to 3 draws.   ║");
+				System.out.println("            ║    If you draw none, you'll receive 1 card automatically.  ║");
+				System.out.println("            ╚════════════════════════════════════════════════════════════╝");
+				System.out.println("");
+				InputValidator.waitForUserInput("                 Press Enter to return to Lucky9 menu...");
+				continue;
 			} else {
 				// Exit to games menu
 				return;
@@ -242,13 +219,18 @@ public class Lucky9 extends Game {
 		}
 	}
 
-	// Draw 3 cards valued 1..9
-	private int[] drawHand() {
-		int[] cards = new int[3];
-		for (int i = 0; i < 3; i++) {
-			cards[i] = rng.nextInt(9) + 1; // 1..9
+	// Draw N cards valued 1..9
+	private int[] drawHand(int n) {
+		int[] cards = new int[n];
+		for (int i = 0; i < n; i++) {
+			cards[i] = drawSingle();
 		}
 		return cards;
+	}
+
+	// Draw a single card (1..9)
+	private int drawSingle() {
+		return rng.nextInt(9) + 1;
 	}
 
 	// Hand value: (sum of cards) % 10
@@ -257,26 +239,6 @@ public class Lucky9 extends Game {
 		for (int c : cards)
 			sum += c;
 		return sum % 10;
-	}
-
-	private void dealingAnimation() {
-		String[] frames = { "🂠 🂠 🂠", "🃏 🃏 🃏", "🂡 🂡 🂡", "🃏 🃏 🃏", "🂢 🂢 🂢", "🃏 🃏 🃏" };
-		System.out.println("");
-		System.out.println("                 Dealing your cards...");
-		System.out.println("");
-
-		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < 8; j++) {
-				System.out.print("\r                            " + frames[j % frames.length] + "        ");
-				try {
-					Thread.sleep(150);
-				} catch (InterruptedException e) {
-					Thread.currentThread().interrupt();
-				}
-			}
-		}
-		System.out.println("\r                                                  ");
-		System.out.println("");
 	}
 
 	private void displayHands(int[] player, int[] dealer, int pValue, int dValue) {
@@ -292,6 +254,49 @@ public class Lucky9 extends Game {
 			System.out.print("[" + v + "] ");
 		System.out.println("  => " + dValue + "                               ║");
 		System.out.println("            ╚════════════════════════════════════════════════════════════╝");
+	}
+
+	// (Removed unused displayPlayerOnly)
+
+	// Display player's cards and reveal only the dealer's first card
+	private void displayPlayerWithOneDealer(int[] player, int[] dealer) {
+		System.out.println();
+		System.out.println("            ╔════════════════════════════════════════════════════════════╗");
+		System.out.print("            ║  Player: ");
+		for (int v : player)
+			System.out.print("[" + v + "] ");
+		System.out.println("  => " + handValue(player) + "                                    ║");
+		System.out.print("            ║  Dealer : ");
+		// reveal dealer first card, hide the rest
+		if (dealer.length > 0)
+			System.out.print("[" + dealer[0] + "] ");
+		for (int i = 1; i < dealer.length; i++) {
+			System.out.print("[?] ");
+		}
+		System.out.println("  => ?                                   ║");
+		System.out.println("            ╚════════════════════════════════════════════════════════════╝");
+	}
+
+	// Simple loading animation used between actions to increase suspense
+	private void loadingAnimation(String message, int cycles, int delayMs) {
+		String[] frames = { ".", "..", "...", " ..", "  .", "   " };
+		for (int i = 0; i < cycles; i++) {
+			System.out.print("\r                 " + message + frames[i % frames.length] + "   ");
+			try {
+				Thread.sleep(delayMs);
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+			}
+		}
+		System.out.println();
+	}
+
+	// Append a single card to an array, returning a new array
+	private int[] appendCard(int[] arr, int card) {
+		int[] out = new int[arr.length + 1];
+		System.arraycopy(arr, 0, out, 0, arr.length);
+		out[arr.length] = card;
+		return out;
 	}
 
 	/**
