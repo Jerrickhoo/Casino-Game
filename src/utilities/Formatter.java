@@ -16,23 +16,48 @@ public class Formatter {
         System.out.println("] Complete!");
     }
 
-    public static String numToRoman(int num) {
+    public static String numToDice(int num) {
         // valid for 1..6 only
         switch (num) {
             case 1:
-                return "I";
+                System.out.println("┌─────────┐");
+                System.out.println("│         │");
+                System.out.println("│    ●    │");
+                System.out.println("│         │");
+                return "└─────────┘";
             case 2:
-                return "II";
+                System.out.println("┌─────────┐");
+                System.out.println("│  ●      │");
+                System.out.println("│         │");
+                System.out.println("│      ●  │");
+                return "└─────────┘";
             case 3:
-                return "III";
+                System.out.println("┌─────────┐");
+                System.out.println("│  ●      │");
+                System.out.println("│    ●    │");
+                System.out.println("│      ●  │");
+                return "└─────────┘";
             case 4:
-                return "IV";
+                System.out.println("┌─────────┐");
+                System.out.println("│  ●   ●  │");
+                System.out.println("│         │");
+                System.out.println("│  ●   ●  │");
+                return "└─────────┘";
             case 5:
-                return "V";
+                System.out.println("┌─────────┐");
+                System.out.println("│  ●   ●  │");
+                System.out.println("│    ●    │");
+                System.out.println("│  ●   ●  │");
+                return "└─────────┘";
             case 6:
-                return "VI";
+                System.out.println("┌─────────┐");
+                System.out.println("│  ●   ●  │");
+                System.out.println("│  ●   ●  │");
+                System.out.println("│  ●   ●  │");
+                return "└─────────┘";
             default:
-                return "";
+                return"";
+                
         }
     }
 }

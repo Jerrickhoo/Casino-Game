@@ -15,7 +15,7 @@ public class Deck {
     }
 
     private void initializeDeck() {
-        String[] suits = { "♠", "♥", "♦", "♣" };
+        String[] suits = { "S", "H", "D", "C" };
         String[] ranks = { "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" };
 
         for (int shoe = 0; shoe < DECK_COUNT; shoe++) {

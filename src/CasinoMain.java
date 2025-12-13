@@ -240,13 +240,20 @@ public class CasinoMain {
             System.out.println(
                     "                                                ╚══════════════════════════════════════════════════════════╝");
             System.out.println("");
-            System.out.println("                                                     ╔══════════════════════╗ ╔══════════════════════╗");
-            System.out.println("                                                     ║    1. LUCKY 9        ║ ║    2. BLACKJACK      ║");
-            System.out.println("                                                     ║    ┌─────────┐       ║ ║    ┌─────────┐       ║");
-            System.out.println("                                                     ║    │    9    │       ║ ║    │ K Q J A │       ║");
-            System.out.println("                                                     ║    │   WIN   │       ║ ║    │  BJACK  │       ║");
-            System.out.println("                                                     ║    └─────────┘       ║ ║    └─────────┘       ║");
-            System.out.println("                                                     ╚══════════════════════╝ ╚══════════════════════╝");
+            System.out.println(
+                    "                                                     ╔══════════════════════╗ ╔══════════════════════╗");
+            System.out.println(
+                    "                                                     ║    1. LUCKY 9        ║ ║    2. BLACKJACK      ║");
+            System.out.println(
+                    "                                                     ║    ┌─────────┐       ║ ║    ┌─────────┐       ║");
+            System.out.println(
+                    "                                                     ║    │    9    │       ║ ║    │ K Q J A │       ║");
+            System.out.println(
+                    "                                                     ║    │   WIN   │       ║ ║    │  BJACK  │       ║");
+            System.out.println(
+                    "                                                     ║    └─────────┘       ║ ║    └─────────┘       ║");
+            System.out.println(
+                    "                                                     ╚══════════════════════╝ ╚══════════════════════╝");
             System.out.println("");
             System.out.println("                                                     ╔══════════════════════╗ ╔══════════════════════╗");
             System.out.println("                                                     ║   3. SLOT MACHINE    ║ ║   4. CHUCK-A-LUCK    ║");
