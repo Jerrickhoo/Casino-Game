@@ -12,7 +12,7 @@ import games.Game;
 
 public class SlotMachine extends Game {
     private Reel[] reels;
-    private final String[] symbols = { "Justin", "Joseph", "Moses", "Gian", "Marque" };
+    private final String[] symbols = { "Moses", "John", "Hermosura" };
     private final int[] multipliers = { 2, 5, 2 };
     private final Random rand = new Random();
     private final Scanner sc = new Scanner(System.in);
@@ -49,13 +49,35 @@ public class SlotMachine extends Game {
         displayRules();
 
         while (true) {
+            System.out.println("\n\n");
             System.out.println("            ╔════════════════════════════════════════╗");
+            System.out.println("            ║             MOSES BONANZA              ║");
+            System.out.println("            ╠════════════════════════════════════════╣");
             System.out.println("            ║ Player: " + String.format("%-30s", player.getUsername()) + " ║");
             System.out.println(
                     "            ║ Balance: " + String.format("%-29s", Formatter.formatCurrency(balance)) + " ║");
             System.out.println("            ╚════════════════════════════════════════╝");
+            System.out.println("");
+            System.out.println("            ╔══════════════════════╗ ╔══════════════════════╗");
+            System.out.println("            ║      1. PLAY         ║ ║    2. EXIT GAME      ║");
+            System.out.println("            ╚══════════════════════╝ ╚══════════════════════╝");
+            System.out.print("\n            Choose (1-2): ");
+            int choice = InputValidator.readInt(1, 2);
+            if (choice == 2) {
+                exitMessage();
+                return;
+            }
 
-            System.out.print("            Place bet (type EXIT to quit): $");
+            // Player chose to play
+            if (balance <= 0) {
+                System.out.println(
+                        "            You don't have any balance to place a bet — return to Casino or deposit more.");
+                ConsoleDisplay.pause(800, "            Press Enter to continue...");
+                ConsoleDisplay.clearConsole();
+                continue;
+            }
+
+            System.out.print("\n            Place bet (type EXIT to quit): $");
             double bet = InputValidator.readDoubleOrExit(1);
 
             if (bet == Double.MIN_VALUE) {
@@ -80,13 +102,12 @@ public class SlotMachine extends Game {
                 ConsoleDisplay.pause(1200, "            Enjoy your coins! Returning to Casino...");
             } else {
                 System.out.println("            No matches this round...");
-                balance -= bet;
                 updateBalance(-bet);
             }
 
             updateBalance(winAmount);
 
-            System.out.println("\n            Spin again? (Y/N): ");
+            System.out.print("\n            Spin again? (Y/N): ");
             if (!InputValidator.readYesNo()) {
                 exitMessage();
                 return;
@@ -109,14 +130,53 @@ public class SlotMachine extends Game {
             lastGrid[2][c] = symbols[rand.nextInt(symbols.length)];
         }
 
-        System.out.println("\n            RESULTS");
-        System.out.println("            ╔═══════════════════════════════╗");
-        for (int r = 0; r < 3; r++) {
-            System.out.printf("             %s | %s | %s\n", lastGrid[r][0], lastGrid[r][1], lastGrid[r][2]);
-            if (r < 2)
-                System.out.println("            ║═══════════════════════════════║");
+        // Compute a uniform cell width for nicer alignment
+        int cellWidth = 0;
+        for (String s : symbols) {
+            if (s != null && s.length() > cellWidth)
+                cellWidth = s.length();
         }
-        System.out.println("            ╚═══════════════════════════════╝");
+        // add a bit of padding
+        cellWidth += 2;
+
+        // total inner width for border drawing
+        // Each row: " ║ " + cell + " | " + cell + " | " + cell + " ║"
+        // Inner characters between the vertical borders = 1 + cellWidth + 3 + cellWidth
+        // + 3 + cellWidth + 1 = 8 + 3*cellWidth
+        int totalInner = 3 * cellWidth + 8;
+
+        StringBuilder border = new StringBuilder();
+        for (int i = 0; i < totalInner; i++)
+            border.append('═');
+
+        System.out.println("\n            RESULTS");
+        System.out.println("            ╔" + border.toString() + "╗");
+
+        String rowFmt = "            ║ %" + "-" + cellWidth + "s | %" + "-" + cellWidth + "s | %" + "-" + cellWidth
+                + "s ║\n";
+
+        // subtle ANSI color highlight; if not supported, it will appear as plain text
+        final String ANSI_GREEN = "\u001B[32m";
+        final String ANSI_RESET = "\u001B[0m";
+
+        for (int r = 0; r < 3; r++) {
+            boolean isWinRow = lastGrid[r][0].equals(lastGrid[r][1]) && lastGrid[r][1].equals(lastGrid[r][2]);
+            if (isWinRow) {
+                // Color the matching row but avoid adding explicit text markers
+                String c0 = String.format("%-" + cellWidth + "s", lastGrid[r][0]);
+                String c1 = String.format("%-" + cellWidth + "s", lastGrid[r][1]);
+                String c2 = String.format("%-" + cellWidth + "s", lastGrid[r][2]);
+                System.out.printf("            ║ %s%s%s | %s%s%s | %s%s%s ║\n", ANSI_GREEN, c0, ANSI_RESET, ANSI_GREEN,
+                        c1,
+                        ANSI_RESET, ANSI_GREEN, c2, ANSI_RESET);
+            } else {
+                System.out.printf(rowFmt, lastGrid[r][0], lastGrid[r][1], lastGrid[r][2]);
+            }
+
+            if (r < 2)
+                System.out.println("            ║" + border.toString() + "║");
+        }
+        System.out.println("            ╚" + border.toString() + "╝");
     }
 
     public double calculatePayout(double bet) {
@@ -191,7 +251,6 @@ public class SlotMachine extends Game {
         db.updatePlayer(player);
         ConsoleDisplay.pause(800, "            Balance saved!");
         ConsoleDisplay.pause("            Press Enter to return to Casino...");
-        sc.close();
         System.out.println("\n            See you next time, gambler!");
     }
 }
