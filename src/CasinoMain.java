@@ -90,7 +90,7 @@ public class CasinoMain {
             System.out.println("                                                ╚═══════════════════════════╝ ╚═══════════════════════════╝");
             System.out.println("                                                                                  ");
             System.out.println("                                                ╔═════════════════════════════════════════════════════════╗");
-            System.out.print("                                            Enter your choice (1-4): ");
+            System.out.print("                                                  Enter your choice (1-4): ");
 
             int choice = InputValidator.readInt(1, 4);
 
@@ -280,7 +280,7 @@ public class CasinoMain {
             System.out.println("                                                               ╚══════════════════════╝");
             System.out.println("");
             System.out.println("                                                ╔══════════════════════════════════════════════════════════╗");
-            System.out.print("                                                           Enter your choice (1-9): ");
+            System.out.print("                                                 Enter your choice (1-9): ");
 
             int choice = InputValidator.readInt(1, 9);
 
