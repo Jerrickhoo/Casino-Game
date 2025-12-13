@@ -4,6 +4,7 @@ import java.util.Random;
 import java.util.Scanner;
 import Core.Player;
 import Core.PlayerDatabase;
+import Core.Transaction;
 import utilities.ConsoleDisplay;
 import utilities.Formatter;
 import utilities.InputValidator;
@@ -11,14 +12,15 @@ import games.Game;
 
 public class SlotMachine extends Game {
     private Reel[] reels;
-    private final String[] symbols = {"Justin", "Joseph", "Moses", "Gian", "Marque"};
-    private final int[] multipliers = {2, 5, 2};
+    private final String[] symbols = { "Justin", "Joseph", "Moses", "Gian", "Marque" };
+    private final int[] multipliers = { 2, 5, 2 };
     private final Random rand = new Random();
     private final Scanner sc = new Scanner(System.in);
     private String[][] lastGrid;
     private PlayerDatabase db;
 
-    public SlotMachine() {}
+    public SlotMachine() {
+    }
 
     public SlotMachine(Player player, PlayerDatabase playerDB) {
         super(player);
@@ -39,8 +41,9 @@ public class SlotMachine extends Game {
         this.balance = player.getBalance();
         this.db = playerDB;
         this.gameName = "Moses Bonanza Slot Machine";
-        
-        if (reels == null) setupReels();
+
+        if (reels == null)
+            setupReels();
 
         ConsoleDisplay.clearConsole();
         displayRules();
@@ -48,7 +51,8 @@ public class SlotMachine extends Game {
         while (true) {
             System.out.println("            ╔════════════════════════════════════════╗");
             System.out.println("            ║ Player: " + String.format("%-30s", player.getUsername()) + " ║");
-            System.out.println("            ║ Balance: " + String.format("%-29s", Formatter.formatCurrency(balance)) + " ║");
+            System.out.println(
+                    "            ║ Balance: " + String.format("%-29s", Formatter.formatCurrency(balance)) + " ║");
             System.out.println("            ╚════════════════════════════════════════╝");
 
             System.out.print("            Place bet (type EXIT to quit): $");
@@ -109,7 +113,8 @@ public class SlotMachine extends Game {
         System.out.println("            ╔═══════════════════════════════╗");
         for (int r = 0; r < 3; r++) {
             System.out.printf("             %s | %s | %s\n", lastGrid[r][0], lastGrid[r][1], lastGrid[r][2]);
-            if (r < 2) System.out.println("            ║═══════════════════════════════║");
+            if (r < 2)
+                System.out.println("            ║═══════════════════════════════║");
         }
         System.out.println("            ╚═══════════════════════════════╝");
     }
@@ -122,7 +127,8 @@ public class SlotMachine extends Game {
                 int multi = multipliers[r];
                 double lineWin = bet * multi;
                 win += lineWin;
-                System.out.println("            Payline " + (r + 1) + " matched! (x" + multi + ") -> " + Formatter.formatCurrency(lineWin));
+                System.out.println("            Payline " + (r + 1) + " matched! (x" + multi + ") -> "
+                        + Formatter.formatCurrency(lineWin));
             }
         }
 
@@ -141,11 +147,12 @@ public class SlotMachine extends Game {
     @Override
     public void updateBalance(double amount) {
         balance += amount;
-        if (balance < 0) balance = 0;
+        if (balance < 0)
+            balance = 0;
 
         player.setBalance(balance);
         db.updatePlayer(player);
-        db.logTransaction(player.getUsername(), getGameName(), "SPIN_RESULT", amount, balance);
+        Transaction.log(player.getUsername(), player.getPlayerId(), getGameName(), "SPIN_RESULT", amount, balance);
     }
 
     @Override
@@ -166,7 +173,7 @@ public class SlotMachine extends Game {
     }
 
     private void reelSpinAnimation() {
-        String[] frames = {"|", "/", "-", "\\"};
+        String[] frames = { "|", "/", "-", "\\" };
         System.out.println("            🎰 Spinning reels...");
 
         for (int i = 0; i < 10; i++) {
