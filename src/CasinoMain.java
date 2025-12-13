@@ -31,66 +31,66 @@ public class CasinoMain {
             ConsoleDisplay.clearConsole();
             System.out.println("\n\n");
             System.out.println(
-                    "            ╔════════════════════════════════════════════════════════════════════════════════╗");
+                    "                                      ╔════════════════════════════════════════════════════════════════════════════════╗");
             System.out.println(
-                    "            ║                  ██████  █████  ███████ ██ ███    ██   ████                    ║");
+                    "                                      ║                  ██████  █████  ███████ ██ ███    ██   ████                    ║");
             System.out.println(
-                    "            ║                 ██      ██   ██ ██      ██ ████   ██ ██    ██                  ║");
+                    "                                      ║                 ██      ██   ██ ██      ██ ████   ██ ██    ██                  ║");
             System.out.println(
-                    "            ║                 ██      ███████ ███████ ██ ██ ██  ██ ██    ██                  ║");
+                    "                                      ║                 ██      ███████ ███████ ██ ██ ██  ██ ██    ██                  ║");
             System.out.println(
-                    "            ║                 ██      ██   ██      ██ ██ ██  ██ ██ ██    ██                  ║");
+                    "                                      ║                 ██      ██   ██      ██ ██ ██  ██ ██ ██    ██                  ║");
             System.out.println(
-                    "            ║                  ██████ ██   ██ ███████ ██ ██   ████   ████                    ║");
+                    "                                      ║                  ██████ ██   ██ ███████ ██ ██   ████   ████                    ║");
             System.out.println(
-                    "            ║                                                                                ║");
+                    "                                      ║                                                                                ║");
             System.out.println(
-                    "            ║                       ██████     █████     ██  ██   ██████                     ║");
+                    "                                      ║                       ██████     █████     ██  ██   ██████                     ║");
             System.out.println(
-                    "            ║                      ██         ██   ██  ██  ██  ██ ██                         ║");
+                    "                                      ║                      ██         ██   ██  ██  ██  ██ ██                         ║");
             System.out.println(
-                    "            ║                      ██   ████  ███████  ██  ██  ██ ████                       ║");
+                    "                                      ║                      ██   ████  ███████  ██  ██  ██ ████                       ║");
             System.out.println(
-                    "            ║                      ██     ██  ██   ██  ██      ██ ██                         ║");
+                    "                                      ║                      ██     ██  ██   ██  ██      ██ ██                         ║");
             System.out.println(
-                    "            ║                       ██████    ██   ██  ██      ██ ██████                     ║");
+                    "                                      ║                       ██████    ██   ██  ██      ██ ██████                     ║");
             System.out.println(
-                    "            ║                                                                                ║");
+                    "                                      ║                                                                                ║");
             System.out.println(
-                    "            ╚════════════════════════════════════════════════════════════════════════════════╝");
+                    "                                      ╚════════════════════════════════════════════════════════════════════════════════╝");
             System.out.println("");
 
-            System.out.println("                       ╔════════════════════════════╗ ╔═══════════════════════════╗");
-            System.out.println("                       ║         1. LOGIN           ║ ║        2. REGISTER        ║");
-            System.out.println("                       ║    ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄   ║ ║   ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄   ║");
-            System.out.println("                       ║    █                   █   ║ ║   █                   █   ║");
-            System.out.println("                       ║    █    █▀▀▀▀▀▀▀▀▀▀█   █   ║ ║   █    █▀▀▀▀▀▀▀▀▀▀█   █   ║");
-            System.out.println("                       ║    █    █  ACCESS  █   █   ║ ║   █    █  SIGN UP █   █   ║");
-            System.out.println("                       ║    █    █▄▄▄▄▄▄▄▄▄▄█   █   ║ ║   █    █▄▄▄▄▄▄▄▄▄▄█   █   ║");
-            System.out.println("                       ║    █                   █   ║ ║   █                   █   ║");
-            System.out.println("                       ║    █  ┌─────────────┐  █   ║ ║   █  ┌─────────────┐  █   ║");
-            System.out.println("                       ║    █  │ USER: █████ │  █   ║ ║   █  │  NEW PLAYER │  █   ║");
-            System.out.println("                       ║    █                   █   ║ ║   █  │   ACCOUNT   │  █   ║");
-            System.out.println("                       ║    █  │ PASS: █████ │  █   ║ ║   █  └─────────────┘  █   ║");
-            System.out.println("                       ║    █  └─────────────┘  █   ║ ║   █                   █   ║");
-            System.out.println("                       ║    █▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█   ║ ║   █▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█   ║");
-            System.out.println("                       ╚════════════════════════════╝ ╚═══════════════════════════╝");
+            System.out.println("                                                ╔════════════════════════════╗ ╔═══════════════════════════╗");
+            System.out.println("                                                ║         1. LOGIN           ║ ║        2. REGISTER        ║");
+            System.out.println("                                                ║    ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄   ║ ║   ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄   ║");
+            System.out.println("                                                ║    █                   █   ║ ║   █                   █   ║");
+            System.out.println("                                                ║    █    █▀▀▀▀▀▀▀▀▀▀█   █   ║ ║   █    █▀▀▀▀▀▀▀▀▀▀█   █   ║");
+            System.out.println("                                                ║    █    █  ACCESS  █   █   ║ ║   █    █  SIGN UP █   █   ║");
+            System.out.println("                                                ║    █    █▄▄▄▄▄▄▄▄▄▄█   █   ║ ║   █    █▄▄▄▄▄▄▄▄▄▄█   █   ║");
+            System.out.println("                                                ║    █                   █   ║ ║   █                   █   ║");
+            System.out.println("                                                ║    █  ┌─────────────┐  █   ║ ║   █  ┌─────────────┐  █   ║");
+            System.out.println("                                                ║    █  │ USER: █████ │  █   ║ ║   █  │  NEW PLAYER │  █   ║");
+            System.out.println("                                                ║    █                   █   ║ ║   █  │   ACCOUNT   │  █   ║");
+            System.out.println("                                                ║    █  │ PASS: █████ │  █   ║ ║   █  └─────────────┘  █   ║");
+            System.out.println("                                                ║    █  └─────────────┘  █   ║ ║   █                   █   ║");
+            System.out.println("                                                ║    █▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█   ║ ║   █▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█   ║");
+            System.out.println("                                                ╚════════════════════════════╝ ╚═══════════════════════════╝");
             System.out.println("                                                                                  ");
-            System.out.println("                       ╔═══════════════════════════╗ ╔═══════════════════════════╗");
-            System.out.println("                       ║      3. LEADERBOARD       ║ ║         4. EXIT           ║");
-            System.out.println("                       ║   ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄   ║ ║   ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄   ║");
-            System.out.println("                       ║   █                   █   ║ ║   █                   █   ║");
-            System.out.println("                       ║   █    ▄▄▄▄▄▄▄▄▄▄▄    █   ║ ║   █     █▀▀▀▀▀▀▀█     █   ║");
-            System.out.println("                       ║   █    █ LEADER  █    █   ║ ║   █     █ QUIT  █     █   ║");
-            System.out.println("                       ║   █    ▀▀▀▀▀▀▀▀▀▀▀    █   ║ ║   █     █▄▄▄▄▄▄▄█     █   ║");
-            System.out.println("                       ║   █   █ 1 █ 2 █ 3 █   █   ║ ║   █   ┌───────────┐   █   ║");
-            System.out.println("                       ║   █   ███ ███ ███ █   █   ║ ║   █   │   GOOD    │   █   ║");
-            System.out.println("                       ║   █   TOP PLAYERS     █   ║ ║   █   │   BYE!    │   █   ║");
-            System.out.println("                       ║   █▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█   ║ ║   █▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█   ║");
-            System.out.println("                       ╚═══════════════════════════╝ ╚═══════════════════════════╝");
+            System.out.println("                                                ╔═══════════════════════════╗ ╔═══════════════════════════╗");
+            System.out.println("                                                ║      3. LEADERBOARD       ║ ║         4. EXIT           ║");
+            System.out.println("                                                ║   ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄   ║ ║   ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄   ║");
+            System.out.println("                                                ║   █                   █   ║ ║   █                   █   ║");
+            System.out.println("                                                ║   █    ▄▄▄▄▄▄▄▄▄▄▄    █   ║ ║   █     █▀▀▀▀▀▀▀█     █   ║");
+            System.out.println("                                                ║   █    █ LEADER  █    █   ║ ║   █     █ QUIT  █     █   ║");
+            System.out.println("                                                ║   █    ▀▀▀▀▀▀▀▀▀▀▀    █   ║ ║   █     █▄▄▄▄▄▄▄█     █   ║");
+            System.out.println("                                                ║   █   █ 1 █ 2 █ 3 █   █   ║ ║   █   ┌───────────┐   █   ║");
+            System.out.println("                                                ║   █   ███ ███ ███ █   █   ║ ║   █   │   GOOD    │   █   ║");
+            System.out.println("                                                ║   █   TOP PLAYERS     █   ║ ║   █   │   BYE!    │   █   ║");
+            System.out.println("                                                ║   █▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█   ║ ║   █▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█   ║");
+            System.out.println("                                                ╚═══════════════════════════╝ ╚═══════════════════════════╝");
             System.out.println("                                                                                  ");
-            System.out.println("                       ╔═════════════════════════════════════════════════════════╗");
-            System.out.print("                            Enter your choice (1-4): ");
+            System.out.println("                                                ╔═════════════════════════════════════════════════════════╗");
+            System.out.print("                                            Enter your choice (1-4): ");
 
             int choice = InputValidator.readInt(1, 4);
 
@@ -116,15 +116,15 @@ public class CasinoMain {
     private static void login() {
         ConsoleDisplay.clearConsole();
         System.out.println("\n\n");
-        System.out.println("            ╔══════════════════════════════════════════════════════════╗");
-        System.out.println("            ║                        PLAYER LOGIN                      ║");
-        System.out.println("            ╚══════════════════════════════════════════════════════════╝");
+        System.out.println("                                                ╔══════════════════════════════════════════════════════════╗");
+        System.out.println("                                                ║                       PLAYER LOGIN                       ║");
+        System.out.println("                                                ╚══════════════════════════════════════════════════════════╝");
         System.out.println("");
 
-        System.out.print("                 Username: ");
+        System.out.print("                                                Username: ");
         String username = InputValidator.readString();
 
-        System.out.print("                 Password: ");
+        System.out.print("                                                Password: ");
         String password = InputValidator.readString();
 
         Player player = playerDB.getPlayer(username);
