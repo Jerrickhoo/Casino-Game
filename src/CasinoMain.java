@@ -5,6 +5,7 @@ import ui.AnimationDisplay;
 import Core.Player;
 import Core.PlayerDatabase;
 import Core.Transaction;
+import games.Game;
 import games.SlotMachine.SlotMachine;
 import games.DicePoker.DicePoker;
 import games.Lucky9.Lucky9;
@@ -255,36 +256,63 @@ public class CasinoMain {
             System.out.println(
                     "                                                     ╚══════════════════════╝ ╚══════════════════════╝");
             System.out.println("");
-            System.out.println("                                                     ╔══════════════════════╗ ╔══════════════════════╗");
-            System.out.println("                                                     ║   3. SLOT MACHINE    ║ ║   4. CHUCK-A-LUCK    ║");
-            System.out.println("                                                     ║     ┌─────────┐      ║ ║     ┌─────────┐      ║");
-            System.out.println("                                                     ║     │  7 7 7  │      ║ ║     │I II III │      ║");
-            System.out.println("                                                     ║     │ JACKPOT │      ║ ║     │  DICE   │      ║");
-            System.out.println("                                                     ║     └─────────┘      ║ ║     └─────────┘      ║");
-            System.out.println("                                                     ╚══════════════════════╝ ╚══════════════════════╝");
+            System.out.println(
+                    "                                                     ╔══════════════════════╗ ╔══════════════════════╗");
+            System.out.println(
+                    "                                                     ║   3. SLOT MACHINE    ║ ║   4. CHUCK-A-LUCK    ║");
+            System.out.println(
+                    "                                                     ║     ┌─────────┐      ║ ║     ┌─────────┐      ║");
+            System.out.println(
+                    "                                                     ║     │  7 7 7  │      ║ ║     │I II III │      ║");
+            System.out.println(
+                    "                                                     ║     │ JACKPOT │      ║ ║     │  DICE   │      ║");
+            System.out.println(
+                    "                                                     ║     └─────────┘      ║ ║     └─────────┘      ║");
+            System.out.println(
+                    "                                                     ╚══════════════════════╝ ╚══════════════════════╝");
             System.out.println("");
-            System.out.println("                                                     ╔══════════════════════╗ ╔══════════════════════╗");
-            System.out.println("                                                     ║   5.   PLAYER        ║ ║   6. Transaction     ║");
-            System.out.println("                                                     ║        STATS         ║ ║        History       ║");
-            System.out.println("                                                     ║     ┌─────────┐      ║ ║     ┌─────────┐      ║");
-            System.out.println("                                                     ║     │  STATS  │      ║ ║     │ HISTORY │      ║");
-            System.out.println("                                                     ║     └─────────┘      ║ ║     └─────────┘      ║");
-            System.out.println("                                                     ╚══════════════════════╝ ╚══════════════════════╝");
+            System.out.println(
+                    "                                                     ╔══════════════════════╗ ╔══════════════════════╗");
+            System.out.println(
+                    "                                                     ║   5.   PLAYER        ║ ║   6. Transaction     ║");
+            System.out.println(
+                    "                                                     ║        STATS         ║ ║        History       ║");
+            System.out.println(
+                    "                                                     ║     ┌─────────┐      ║ ║     ┌─────────┐      ║");
+            System.out.println(
+                    "                                                     ║     │  STATS  │      ║ ║     │ HISTORY │      ║");
+            System.out.println(
+                    "                                                     ║     └─────────┘      ║ ║     └─────────┘      ║");
+            System.out.println(
+                    "                                                     ╚══════════════════════╝ ╚══════════════════════╝");
             System.out.println("");
-            System.out.println("                                                     ╔══════════════════════╗ ╔══════════════════════╗");
-            System.out.println("                                                     ║   7.  Cash In        ║ ║   8.  Cash Out       ║");
-            System.out.println("                                                     ║     ┌─────────┐      ║ ║     ┌─────────┐      ║");
-            System.out.println("                                                     ║     │  CASH   │      ║ ║     │  CASH   │      ║");
-            System.out.println("                                                     ║     │   IN    │      ║ ║     │   OUT   │      ║");
-            System.out.println("                                                     ║     └─────────┘      ║ ║     └─────────┘      ║");
-            System.out.println("                                                     ╚══════════════════════╝ ╚══════════════════════╝");
+            System.out.println(
+                    "                                                     ╔══════════════════════╗ ╔══════════════════════╗");
+            System.out.println(
+                    "                                                     ║   7.  Cash In        ║ ║   8.  Cash Out       ║");
+            System.out.println(
+                    "                                                     ║     ┌─────────┐      ║ ║     ┌─────────┐      ║");
+            System.out.println(
+                    "                                                     ║     │  CASH   │      ║ ║     │  CASH   │      ║");
+            System.out.println(
+                    "                                                     ║     │   IN    │      ║ ║     │   OUT   │      ║");
+            System.out.println(
+                    "                                                     ║     └─────────┘      ║ ║     └─────────┘      ║");
+            System.out.println(
+                    "                                                     ╚══════════════════════╝ ╚══════════════════════╝");
             System.out.println("");
-            System.out.println("                                                                ╔══════════════════════╗              ");
-            System.out.println("                                                                ║   9. LOGOUT          ║              ");
-            System.out.println("                                                                ║     ┌─────────┐      ║              ");
-            System.out.println("                                                                ║     │   EXIT  │      ║              ");
-            System.out.println("                                                                ║     └─────────┘      ║              ");
-            System.out.println("                                                                ╚══════════════════════╝              ");
+            System.out.println(
+                    "                                                                ╔══════════════════════╗              ");
+            System.out.println(
+                    "                                                                ║   9. LOGOUT          ║              ");
+            System.out.println(
+                    "                                                                ║     ┌─────────┐      ║              ");
+            System.out.println(
+                    "                                                                ║     │   EXIT  │      ║              ");
+            System.out.println(
+                    "                                                                ║     └─────────┘      ║              ");
+            System.out.println(
+                    "                                                                ╚══════════════════════╝              ");
             System.out.println("");
             System.out.println(
                     "                                                ╔══════════════════════════════════════════════════════════╗");
@@ -294,20 +322,16 @@ public class CasinoMain {
 
             switch (choice) {
                 case 1:
-                    // Use Game polymorphism: start the Lucky9 game with current player + DB
-                    new Lucky9().startGame(currentPlayer, playerDatabase);
+                    playGame(new Lucky9());
                     break;
                 case 2:
-                    // Launch Blackjack via Game polymorphism (BlackJack will update player + DB)
-                    new BlackJack().startGame(currentPlayer, playerDatabase);
+                    playGame(new BlackJack());
                     break;
                 case 3:
-                    SlotMachine slotGame = new SlotMachine(currentPlayer, playerDatabase);
-                    slotGame.startGame(currentPlayer, playerDatabase);
+                    playGame(new SlotMachine());
                     break;
                 case 4:
-                    DicePoker diceGame = new DicePoker();
-                    diceGame.startGame(currentPlayer, playerDatabase);
+                    playGame(new DicePoker());
                     break;
                 case 5:
                     showPlayerStats();
@@ -516,5 +540,13 @@ public class CasinoMain {
             System.out.println("\n                 ERROR: Failed to delete account. Please try again later.");
             InputValidator.waitForUserInput("                 Press Enter to continue...");
         }
+    }
+
+    /**
+     * Polymorphic method to start any game using the Game interface
+     * Provides consistent game launching across all game types
+     */
+    private static void playGame(Game game) {
+        game.startGame(currentPlayer, playerDatabase);
     }
 }

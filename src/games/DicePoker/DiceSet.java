@@ -67,15 +67,15 @@ public class DiceSet {
 
         boolean isFive = false, isFour = false, isThree = false;
         int pairs = 0;
-        for (int v = 1; v <= 6; v++) {
-            int c = counts[v];
-            if (c == 5)
+        for (int value = 1; value <= 6; value++) {
+            int count = counts[value];
+            if (count == 5)
                 isFive = true;
-            if (c == 4)
+            if (count == 4)
                 isFour = true;
-            if (c == 3)
+            if (count == 3)
                 isThree = true;
-            if (c == 2)
+            if (count == 2)
                 pairs++;
         }
 

@@ -16,14 +16,14 @@ public class SlotMachine extends Game {
     private final Random rand = new Random();
     // Scanner was unused; using InputValidator instead
     private String[][] lastGrid;
-    private PlayerDatabase db;
+    private PlayerDatabase playerDatabase;
 
     public SlotMachine() {
     }
 
     public SlotMachine(Player player, PlayerDatabase playerDB) {
         super(player);
-        this.db = playerDB;
+        this.playerDatabase = playerDB;
         setupReels();
     }
 
@@ -38,7 +38,7 @@ public class SlotMachine extends Game {
     public void startGame(Player player, PlayerDatabase playerDB) {
         this.player = player;
         this.balance = player.getBalance();
-        this.db = playerDB;
+        this.playerDatabase = playerDB;
         this.gameName = "Moses Bonanza Slot Machine";
 
         if (reels == null)
@@ -120,13 +120,13 @@ public class SlotMachine extends Game {
     public void playRound() {
         lastGrid = new String[3][3];
 
-        for (int c = 0; c < 3; c++) {
-            reels[c].spin();
-            String center = reels[c].getSymbol();
-            lastGrid[1][c] = center;
+        for (int column = 0; column < 3; column++) {
+            reels[column].spin();
+            String center = reels[column].getSymbol();
+            lastGrid[1][column] = center;
 
-            lastGrid[0][c] = symbols[rand.nextInt(symbols.length)];
-            lastGrid[2][c] = symbols[rand.nextInt(symbols.length)];
+            lastGrid[0][column] = symbols[rand.nextInt(symbols.length)];
+            lastGrid[2][column] = symbols[rand.nextInt(symbols.length)];
         }
 
         // Compute a uniform cell width for nicer alignment
@@ -210,7 +210,7 @@ public class SlotMachine extends Game {
             balance = 0;
 
         player.setBalance(balance);
-        db.updatePlayer(player);
+        playerDatabase.updatePlayer(player);
         Transaction.log(player.getUsername(), player.getPlayerId(), getGameName(), "SPIN_RESULT", amount, balance);
     }
 
@@ -247,9 +247,9 @@ public class SlotMachine extends Game {
     private void exitMessage() {
         System.out.println("\n            Thanks for playing " + getGameName() + "!");
         System.out.println("            Saving your balance...");
-        db.updatePlayer(player);
+        playerDatabase.updatePlayer(player);
         ConsoleDisplay.pause(800, "            Balance saved!");
-        ConsoleDisplay.pause("            Press Enter to return to Casino...");
+        InputValidator.waitForUserInput();
         System.out.println("\n            See you next time, gambler!");
     }
 }

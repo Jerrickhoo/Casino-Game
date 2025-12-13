@@ -9,8 +9,8 @@ public class Hand {
     // Keep lastBet per hand for tracking double or bet resolution
     public double lastBet = 0;
 
-    public void add(Card c) {
-        cards.add(c);
+    public void add(Card card) {
+        cards.add(card);
     }
 
     public void setActive(boolean active) {
@@ -30,9 +30,9 @@ public class Hand {
         int aces = 0;
 
         // Sum all card values
-        for (Card c : cards) {
-            total += c.value();
-            if ("A".equals(c.getRank()))
+        for (Card card : cards) {
+            total += card.value();
+            if ("A".equals(card.getRank()))
                 aces++;
         }
 
@@ -51,9 +51,9 @@ public class Hand {
     public boolean isSoftHand() {
         int total = 0;
         int aces = 0;
-        for (Card c : cards) {
-            total += c.value();
-            if ("A".equals(c.getRank()))
+        for (Card card : cards) {
+            total += card.value();
+            if ("A".equals(card.getRank()))
                 aces++;
         }
         // Hand is soft if we can subtract 10 and still be valid (meaning an ace is
@@ -91,12 +91,12 @@ public class Hand {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < cards.size(); i++) {
             if (i > 0)
-                sb.append(" ");
-            sb.append(cards.get(i));
+                stringBuilder.append(" ");
+            stringBuilder.append(cards.get(i));
         }
-        return sb.toString();
+        return stringBuilder.toString();
     }
 }

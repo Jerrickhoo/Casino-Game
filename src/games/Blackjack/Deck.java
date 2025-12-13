@@ -7,7 +7,7 @@ import java.util.Random;
 
 public class Deck {
     private final List<Card> cards = new ArrayList<>();
-    private final Random rng = new Random();
+    private final Random random = new Random();
     private static final int DECK_COUNT = 6; // Standard 6-deck shoe
 
     public Deck() {
@@ -28,7 +28,7 @@ public class Deck {
     }
 
     public void shuffle() {
-        Collections.shuffle(cards, rng);
+        Collections.shuffle(cards, random);
     }
 
     public Card draw() {

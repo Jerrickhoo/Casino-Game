@@ -247,9 +247,9 @@ public class DicePoker extends Game {
                     } else {
                         // raise amount
                         System.out.print("Enter raise amount: ");
-                        double amt = InputValidator.readDouble(1.0, player.getBalance());
-                        // pay amt
-                        double pay = Math.min(amt, player.getBalance());
+                        double amount = InputValidator.readDouble(1.0, player.getBalance());
+                        // pay amount
+                        double pay = Math.min(amount, player.getBalance());
                         player.setBalance(player.getBalance() - pay);
                         playerContrib += pay;
                         pot += pay;

@@ -9,17 +9,11 @@ import utilities.ConsoleDisplay;
 import utilities.Formatter;
 import ui.AnimationDisplay;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-
 public class BlackJack extends Game {
     private double balance;
     private double lastRoundPayout;
     private Deck deck;
     private static final int RESHUFFLE_THRESHOLD = 75;
-    private static final String LEFT_PADDING = "            "; // match CasinoMain main left margin
     private static final int BOX_WIDTH = 56; // unify box widths
 
     public BlackJack(double startingBalance) {
@@ -40,6 +34,7 @@ public class BlackJack extends Game {
             this.balance = player.getBalance();
 
         showWelcomeScreen();
+        displayRules();
 
         printCentered("");
         printMenuBox(new String[] { "[1] Continue to Game", "[2] Return to Casino" });
@@ -53,12 +48,12 @@ public class BlackJack extends Game {
             checkDeckPenetration();
             clearAndHeader();
 
-            printCentered("Balance: " + formatBalance(balance));
+            printCentered("Balance: " + Formatter.formatCurrency(balance));
             double bet = promptBet();
             if (bet <= 0)
                 break; // Invalid bet, exit to casino
 
-            playRound(bet);
+            playRoundWithBet(bet);
 
             if (balance < 1.0) {
                 printCenteredBox("YOU'RE OUT OF CHIPS - RETURNING TO CASINO");
@@ -90,7 +85,7 @@ public class BlackJack extends Game {
     public void playRound() {
         double bet = promptBet();
         if (bet > 0)
-            playRound(bet);
+            playRoundWithBet(bet);
     }
 
     @Override
@@ -100,7 +95,32 @@ public class BlackJack extends Game {
 
     @Override
     public void displayRules() {
-        showWelcomeScreen();
+        ConsoleDisplay.clearConsole();
+        printCentered("");
+
+        String[] lines = new String[] {
+                "       BLACKJACK RULES       ",
+                "",
+                "OBJECTIVE: Beat the dealer without going over 21",
+                "",
+                "RULES:",
+                "  * Face cards = 10; Aces = 1 or 11",
+                "  * Blackjack pays 3:2 (1.5x)",
+                "  * Dealer hits on soft 17",
+                "  * Double allowed on first decision",
+                "",
+                "HOW TO PLAY:",
+                "  1. Place your bet",
+                "  2. You and dealer each get 2 cards",
+                "  3. Hit, Stand, or Double your bet",
+                "  4. Dealer plays automatically",
+                "  5. Highest hand wins (no busting)",
+                ""
+        };
+        printBoxLines(lines);
+
+        printCentered("");
+        waitForEnterAndClear();
     }
 
     @Override
@@ -115,7 +135,7 @@ public class BlackJack extends Game {
             this.player.setBalance(this.balance);
     }
 
-    private void playRound(double bet) {
+    private void playRoundWithBet(double bet) {
         lastRoundPayout = 0;
         clearAndHeader();
         Formatter.showProgressBar(centerText("Shuffling & Dealing...", getConsoleWidth()), 500);
@@ -139,7 +159,7 @@ public class BlackJack extends Game {
         if (!playerAlive) {
             balance -= player.lastBet;
             lastRoundPayout = -player.lastBet;
-            printCentered(formatLoss("You busted! -" + Formatter.formatCurrency(player.lastBet)));
+            printCentered(formatMessage("LOSS: ", "You busted! -" + Formatter.formatCurrency(player.lastBet)));
             waitForEnterAndClear();
             return;
         }
@@ -158,16 +178,16 @@ public class BlackJack extends Game {
             displayHandBox(dealer, player, true);
             printCentered("");
             if (dealer.isBlackjack() && player.isBlackjack()) {
-                printCentered(formatNeutral("Push (both blackjack). Bet returned."));
+                printCentered(formatMessage("NOTICE: ", "Push (both blackjack). Bet returned."));
                 return true;
             } else if (player.isBlackjack()) {
                 double win = bet * 1.5;
                 balance += win;
                 lastRoundPayout = win;
-                printCentered(formatWin("BLACKJACK! +" + Formatter.formatCurrency(win)));
+                printCentered(formatMessage("WIN: ", "BLACKJACK! +" + Formatter.formatCurrency(win)));
                 return true;
             } else {
-                printCentered(formatLoss("Dealer has blackjack. You lose."));
+                printCentered(formatMessage("LOSS: ", "Dealer has blackjack. You lose."));
                 balance -= bet;
                 lastRoundPayout = -bet;
                 return true;
@@ -202,7 +222,7 @@ public class BlackJack extends Game {
                 if (choice == 1) {
                     Card drawn = deck.draw();
                     hand.add(drawn);
-                    printCentered(formatAction("You draw: " + drawn));
+                    printCentered(formatMessage("-> ", "You draw: " + drawn));
                     ConsoleDisplay.pause(1500);
                     if (hand.getValue() > 21)
                         return false;
@@ -214,7 +234,7 @@ public class BlackJack extends Game {
                     hand.lastBet *= 2;
                     Card drawn = deck.draw();
                     hand.add(drawn);
-                    printCentered(formatAction("You double and draw: " + drawn));
+                    printCentered(formatMessage("-> ", "You double and draw: " + drawn));
                     ConsoleDisplay.pause(2000);
                     return hand.getValue() <= 21;
                 }
@@ -224,7 +244,7 @@ public class BlackJack extends Game {
                 if (choice == 1) {
                     Card drawn = deck.draw();
                     hand.add(drawn);
-                    printCentered(formatAction("You draw: " + drawn));
+                    printCentered(formatMessage("-> ", "You draw: " + drawn));
                     ConsoleDisplay.pause(1500);
                     if (hand.getValue() > 21)
                         return false;
@@ -244,16 +264,16 @@ public class BlackJack extends Game {
 
         while (true) {
             ConsoleDisplay.pause(1300);
-            int val = dealer.getValue();
-            boolean soft = dealer.isSoftHand();
-            if (val < 17 || (val == 17 && soft)) {
-                Card c = deck.draw();
-                dealer.add(c);
+            int value = dealer.getValue();
+            boolean isSoft = dealer.isSoftHand();
+            if (value < 17 || (value == 17 && isSoft)) {
+                Card card = deck.draw();
+                dealer.add(card);
                 clearAndHeader();
                 printCentered("");
                 displayHandBox(dealer, player, true);
                 printCentered("");
-                printCentered(formatAction("Dealer draws: " + c));
+                printCentered(formatMessage("-> ", "Dealer draws: " + card));
                 ConsoleDisplay.pause(1500);
             } else
                 break;
@@ -262,52 +282,53 @@ public class BlackJack extends Game {
         printCentered("");
         displayHandBox(dealer, player, true);
         printCentered("");
-        printCentered(formatAction(
+        printCentered(formatMessage(
+                "-> ",
                 "Dealer final: " + dealer + " (" + dealer.getValue() + (dealer.isSoftHand() ? " soft" : "") + ")"));
         ConsoleDisplay.pause(1200);
     }
 
     private void resolveHand(Hand player, Hand dealer) {
         double bet = player.lastBet;
-        int pv = player.getValue();
-        int dv = dealer.getValue();
+        int playerValue = player.getValue();
+        int dealerValue = dealer.getValue();
 
         printCentered("");
 
         if (dealer.isBlackjack() && player.isBlackjack()) {
-            printCentered(formatNeutral("Push (both blackjack). Bet returned."));
+            printCentered(formatMessage("NOTICE: ", "Push (both blackjack). Bet returned."));
             return;
         }
         if (player.isBlackjack()) {
             double win = bet * 1.5;
             balance += win;
             lastRoundPayout = win;
-            printCentered(formatWin("BLACKJACK! +" + Formatter.formatCurrency(win)));
+            printCentered(formatMessage("WIN: ", "BLACKJACK! +" + Formatter.formatCurrency(win)));
             return;
         }
-        if (pv > 21) {
+        if (playerValue > 21) {
             balance -= bet;
             lastRoundPayout = -bet;
-            printCentered(formatLoss("You busted -" + Formatter.formatCurrency(bet)));
+            printCentered(formatMessage("LOSS: ", "You busted -" + Formatter.formatCurrency(bet)));
             return;
         }
-        if (dv > 21) {
+        if (dealerValue > 21) {
             balance += bet;
             lastRoundPayout = bet;
-            printCentered(formatWin("Dealer busted! +" + Formatter.formatCurrency(bet)));
+            printCentered(formatMessage("WIN: ", "Dealer busted! +" + Formatter.formatCurrency(bet)));
             return;
         }
-        if (pv > dv) {
+        if (playerValue > dealerValue) {
             balance += bet;
             lastRoundPayout = bet;
-            printCentered(formatWin("You win +" + Formatter.formatCurrency(bet)));
-        } else if (pv == dv) {
+            printCentered(formatMessage("WIN: ", "You win +" + Formatter.formatCurrency(bet)));
+        } else if (playerValue == dealerValue) {
             lastRoundPayout = 0;
-            printCentered(formatNeutral("Push. Bet returned."));
+            printCentered(formatMessage("NOTICE: ", "Push. Bet returned."));
         } else {
             balance -= bet;
             lastRoundPayout = -bet;
-            printCentered(formatLoss("You lose -" + Formatter.formatCurrency(bet)));
+            printCentered(formatMessage("LOSS: ", "You lose -" + Formatter.formatCurrency(bet)));
         }
     }
 
@@ -325,7 +346,7 @@ public class BlackJack extends Game {
     private double promptBet() {
         double min = 1.0;
         if (balance < min) {
-            printCentered(formatLoss("Insufficient funds."));
+            printCentered(formatMessage("LOSS: ", "Insufficient funds."));
             return -1;
         }
         printCenteredBox("Place your bet (min " + Formatter.formatCurrency(min) + ")");
@@ -385,20 +406,7 @@ public class BlackJack extends Game {
         String[] lines = new String[] {
                 "       WELCOME TO BLACKJACK       ",
                 "",
-                "OBJECTIVE: Beat the dealer without going over 21",
-                "",
-                "RULES:",
-                "  * Face cards = 10; Aces = 1 or 11",
-                "  * Blackjack pays 3:2 (1.5x)",
-                "  * Dealer hits on soft 17",
-                "  * Double allowed on first decision",
-                "",
-                "HOW TO PLAY:",
-                "  1. Place your bet",
-                "  2. You and dealer each get 2 cards",
-                "  3. Hit, Stand, or Double your bet",
-                "  4. Dealer plays automatically",
-                "  5. Highest hand wins (no busting)",
+                "Enjoy the classic card game!",
                 ""
         };
         printBoxLines(lines);
@@ -407,24 +415,8 @@ public class BlackJack extends Game {
         waitForEnterAndClear();
     }
 
-    private String formatBalance(double amount) {
-        return Formatter.formatCurrency(amount);
-    }
-
-    private String formatWin(String msg) {
-        return "WIN: " + msg;
-    }
-
-    private String formatLoss(String msg) {
-        return "LOSS: " + msg;
-    }
-
-    private String formatNeutral(String msg) {
-        return "NOTICE: " + msg;
-    }
-
-    private String formatAction(String msg) {
-        return "-> " + msg;
+    private String formatMessage(String prefix, String msg) {
+        return prefix + msg;
     }
 
     private void printMenuBox(String[] options) {
@@ -432,31 +424,25 @@ public class BlackJack extends Game {
     }
 
     private void printCenteredBox(String text) {
-        int contentWidth = Math.min(70, Math.max(BOX_WIDTH, text.length() + 6));
-        String border = "═".repeat(contentWidth + 2);
-        int totalWidth = contentWidth + 4;
-        String padding = getLeftPadForTotalWidth(totalWidth);
-        System.out.println(padding + border);
-        System.out.println(padding + "  " + text + "  ");
-        System.out.println(padding + border);
+        printBoxLines(new String[] { text });
     }
 
     private void printBoxLines(String[] lines) {
         int inner = 0;
-        for (String l : lines)
-            if (l != null)
-                inner = Math.max(inner, l.length());
+        for (String line : lines)
+            if (line != null)
+                inner = Math.max(inner, line.length());
         int contentWidth = Math.min(70, Math.max(BOX_WIDTH, inner));
         String top = "╔" + "═".repeat(contentWidth + 2) + "╗";
         String bottom = "╚" + "═".repeat(contentWidth + 2) + "╝";
         int totalWidth = contentWidth + 4; // corner + inner + corners
         String padding = getLeftPadForTotalWidth(totalWidth);
         System.out.println(padding + top);
-        for (String l : lines) {
-            if (l == null)
-                l = "";
-            int pad = contentWidth - l.length();
-            String padded = " " + l + " ".repeat(Math.max(0, pad + 1));
+        for (String line : lines) {
+            if (line == null)
+                line = "";
+            int pad = contentWidth - line.length();
+            String padded = " " + line + " ".repeat(Math.max(0, pad + 1));
             System.out.println(padding + "║" + padded + "║");
         }
         System.out.println(padding + bottom);
@@ -474,20 +460,14 @@ public class BlackJack extends Game {
     }
 
     private void printChoiceBox(String text) {
-        int contentWidth = Math.min(70, Math.max(BOX_WIDTH, text.length() + 4));
-        String border = "═".repeat(contentWidth + 2);
-        int totalWidth = contentWidth + 4;
-        String padding = getLeftPadForTotalWidth(totalWidth);
-        System.out.println(padding + border);
-        System.out.println(padding + "  " + text);
-        System.out.println(padding + border);
+        printBoxLines(new String[] { text });
     }
 
     private int getConsoleWidth() {
-        String c = System.getenv("COLUMNS");
+        String envColumns = System.getenv("COLUMNS");
         try {
-            if (c != null)
-                return Integer.parseInt(c);
+            if (envColumns != null)
+                return Integer.parseInt(envColumns);
         } catch (Exception ignored) {
         }
         return 80;

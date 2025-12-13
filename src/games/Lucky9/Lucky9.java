@@ -126,9 +126,9 @@ public class Lucky9 extends Game {
 				System.out.print("                 Draw 3rd card? (Y/N): ");
 				boolean draw = InputValidator.readYesNo();
 				if (draw) {
-					int c = drawSingle();
-					playerCards = appendCard(playerCards, c);
-					System.out.println("                 You drew: [" + c + "]");
+					int card = drawSingle();
+					playerCards = appendCard(playerCards, card);
+					System.out.println("                 You drew: [" + card + "]");
 					loadingAnimation("Processing draw", 6, 120);
 				}
 
@@ -147,9 +147,9 @@ public class Lucky9 extends Game {
 
 				// Dealer draws one card if dealer's value <= 5
 				if (dealerValue <= 5) {
-					int dc = drawSingle();
-					dealerCards = appendCard(dealerCards, dc);
-					System.out.println("\n                 Dealer draws: [" + dc + "]");
+					int dealerCard = drawSingle();
+					dealerCards = appendCard(dealerCards, dealerCard);
+					System.out.println("\n                 Dealer draws: [" + dealerCard + "]");
 					// recompute dealer value and show updated hands
 					dealerValue = handValue(dealerCards);
 					loadingAnimation("Dealer drawing", 6, 120);
