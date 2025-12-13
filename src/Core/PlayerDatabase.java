@@ -1,7 +1,19 @@
 package Core;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.TreeMap;
 import utilities.Formatter;
 import utilities.ConsoleDisplay;
 import utilities.InputValidator;
@@ -11,16 +23,16 @@ public class PlayerDatabase {
     // SortKey is defined as a package-level enum in Core.SortKey
     // Use a TreeMap for ordered username keys (case-insensitive)
     private Map<String, Player> players;
-    private static final String DATA_DIR = "../src/data";
-    private String playersFile = DATA_DIR + "/players.txt";
+    private static final String DATA_DIRECTORY = "../src/data";
+    private String playersFilePath = DATA_DIRECTORY + "/players.txt";
 
     public PlayerDatabase() {
         // Keep usernames ordered and allow case-insensitive lookups/ordering
         this.players = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         // Ensure data directory exists
-        File dataDir = new File(DATA_DIR);
-        if (!dataDir.exists()) {
-            dataDir.mkdirs();
+        File dataDirectory = new File(DATA_DIRECTORY);
+        if (!dataDirectory.exists()) {
+            dataDirectory.mkdirs();
         }
         loadPlayers();
     }
@@ -29,9 +41,9 @@ public class PlayerDatabase {
      * Load players from text file
      */
     private void loadPlayers() {
-        File file = new File(playersFile);
+        File file = new File(playersFilePath);
         if (!file.exists()) {
-            System.out.println("📁 No existing player database. Starting fresh.");
+            System.out.println("Files: No existing player database. Starting fresh.");
             return;
         }
 
@@ -50,12 +62,12 @@ public class PlayerDatabase {
                 }
             }
 
-            System.out.print("✅ Loaded " + loadedCount + " players");
+            System.out.print("   SUCCESS: Loaded " + loadedCount + " players");
             AnimationDisplay.showLoadingAnimation("", 1500);
             ConsoleDisplay.clearConsole();
 
         } catch (IOException e) {
-            System.out.println("❌ Error loading players: " + e.getMessage());
+            System.out.println("ERROR: Error loading players: " + e.getMessage());
         }
     }
 
@@ -63,13 +75,13 @@ public class PlayerDatabase {
      * Save all players to text file
      */
     public void savePlayers() {
-        try (PrintWriter writer = new PrintWriter(new FileWriter(playersFile))) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(playersFilePath))) {
             // TreeMap.values() returns players in username order
             for (Player player : players.values()) {
                 writer.println(player.toFileString());
             }
         } catch (IOException e) {
-            System.out.println("❌ Error saving players: " + e.getMessage());
+            System.out.println("ERROR: Error saving players: " + e.getMessage());
         }
     }
 
@@ -123,25 +135,24 @@ public class PlayerDatabase {
      * This replaces the older bubble-sort implementation with a Comparator based
      * sort.
      */
-    public List<Player> getLeaderboard(SortKey key, boolean ascending) {
-        Collection<Player> source = players.values();
+    public List<Player> getLeaderboard(SortKey sortKey, boolean ascending) {
+        Collection<Player> playerCollection = players.values();
 
         // For BALANCE use a heap (PriorityQueue) for efficient top-N extraction.
-        if (key == SortKey.BALANCE) {
-            Comparator<Player> balComp = Comparator.comparingDouble(Player::getBalance);
+        if (sortKey == SortKey.BALANCE) {
+            Comparator<Player> balanceComparator = Comparator.comparingDouble(Player::getBalance);
             if (!ascending)
-                balComp = balComp.reversed(); // max-heap by reversing comparator
-            PriorityQueue<Player> pq = new PriorityQueue<>(balComp);
-            pq.addAll(source);
-            List<Player> result = new ArrayList<>(pq.size());
-            while (!pq.isEmpty())
-                result.add(pq.poll());
+                balanceComparator = balanceComparator.reversed(); // max-heap by reversing comparator
+            PriorityQueue<Player> priorityQueue = new PriorityQueue<>(balanceComparator);
+            priorityQueue.addAll(playerCollection);
+            List<Player> result = new ArrayList<>(priorityQueue.size());
+            while (!priorityQueue.isEmpty())
+                result.add(priorityQueue.poll());
             return result;
         }
 
-        // entries
         Comparator<Player> comparator;
-        switch (key) {
+        switch (sortKey) {
             case PLAYER_ID:
                 comparator = Comparator.comparing(Player::getPlayerId, Comparator.nullsLast(String::compareTo));
                 break;
@@ -160,9 +171,9 @@ public class PlayerDatabase {
             comparator = comparator.reversed();
 
         // Use a LinkedList and sort it explicitly
-        List<Player> list = new LinkedList<>(source);
-        list.sort(comparator);
-        return new ArrayList<>(list);
+        List<Player> playerList = new LinkedList<>(playerCollection);
+        playerList.sort(comparator);
+        return new ArrayList<>(playerList);
     }
 
     /**
@@ -180,7 +191,7 @@ public class PlayerDatabase {
         System.out.println("");
 
         // Show default leaderboard first (Balance, descending)
-        java.util.List<Player> leaderboard = getLeaderboard(SortKey.BALANCE, false);
+        List<Player> leaderboard = getLeaderboard(SortKey.BALANCE, false);
         printLeaderboardTable(leaderboard);
 
         // Let the user re-sort or return to previous menu repeatedly
@@ -262,21 +273,22 @@ public class PlayerDatabase {
             return;
         }
 
-        System.out.println("                 ┌──────┬────────────────────┬───────────────┬──────────┐");
-        System.out.println("                 │ Rank │ Player             │ Balance       │ Games    │");
-        System.out.println("                 ├──────┼────────────────────┼───────────────┼──────────┤");
+        System.out.println("                 ┌──────┬────────────────┬────────────────────┬───────────────┬──────────┐");
+        System.out.println("                 │ Rank │ Player ID      │ Player             │ Balance       │ Games    │");
+        System.out.println("                 ├──────┼────────────────┼────────────────────┼───────────────┼──────────┤");
 
         for (int i = 0; i < Math.min(10, leaderboard.size()); i++) {
             Player player = leaderboard.get(i);
             String rank = (i == 0) ? " " : (i == 1) ? " " : (i == 2) ? " " : " ";
-            System.out.printf("                 │ %-4s │ %-18s │ %-13s │ %-8d │\n",
+            System.out.printf("                 │ %-4s │ %-12s │ %-18s │ %-13s │ %-8d │\n",
                     rank + (i + 1),
+                    player.getPlayerId(),
                     player.getUsername(),
                     Formatter.formatCurrency(player.getBalance()),
                     player.getGamesPlayed());
         }
 
-        System.out.println("                 └──────┴────────────────────┴───────────────┴──────────┘");
+        System.out.println("                 └──────┴────────────────┴────────────────────┴───────────────┴──────────┘");
     }
 
     /**
