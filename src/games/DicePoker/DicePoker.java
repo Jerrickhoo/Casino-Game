@@ -56,8 +56,8 @@ public class DicePoker extends Game {
             botBalance -= botAnte;
             pot += bet + botAnte;
             ConsoleDisplay.clearConsole();
-            System.out.println( "Pot initialized at: " + utilities.Formatter.formatCurrency(pot));
-            ConsoleDisplay.pause(1500,"Now Rolling Dice...");
+            System.out.println("Pot initialized at: " + utilities.Formatter.formatCurrency(pot));
+            ConsoleDisplay.pause(1500, "Now Rolling Dice...");
             // create hands
             DiceSet playerHand = new DiceSet();
             DiceSet botHand = new DiceSet();
@@ -385,7 +385,7 @@ public class DicePoker extends Game {
         System.out.println("└────────────────────────────────────────────────────────┘");
         InputValidator.waitForUserInput();
         ConsoleDisplay.clearConsole();
-        
+
     }
 
     @Override
