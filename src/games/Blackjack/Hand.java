@@ -6,6 +6,8 @@ import java.util.List;
 public class Hand {
     private final List<Card> cards = new ArrayList<>();
     private boolean active = false;
+    // Keep lastBet per hand for tracking double or bet resolution
+    public double lastBet = 0;
 
     public void add(Card c) {
         cards.add(c);
