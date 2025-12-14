@@ -47,9 +47,12 @@ public class SlotMachine extends Game {
             ConsoleDisplay.clearConsole();
             displayRules();
 
-            System.out.println("                                                      ╔══════════════════════╗ ╔══════════════════════╗");
-            System.out.println("                                                      ║      1. PLAY         ║ ║    2. EXIT GAME      ║");
-            System.out.println("                                                      ╚══════════════════════╝ ╚══════════════════════╝");
+            System.out.println(
+                    "                                                      ╔══════════════════════╗ ╔══════════════════════╗");
+            System.out.println(
+                    "                                                      ║      1. PLAY         ║ ║    2. EXIT GAME      ║");
+            System.out.println(
+                    "                                                      ╚══════════════════════╝ ╚══════════════════════╝");
             System.out.print("\n                                                      Choose [1-2]: ");
             int choice = InputValidator.readInt(1, 2);
             if (choice == 2) {
@@ -60,7 +63,8 @@ public class SlotMachine extends Game {
             if (balance <= 0) {
                 System.out.println(
                         "                                                      You don't have any balance to place a bet! Go to the cash-in page...");
-                ConsoleDisplay.pause(1000, "                                                Press Enter to continue...");
+                ConsoleDisplay.pause(1000,
+                        "                                                Press Enter to continue...");
                 ConsoleDisplay.clearConsole();
                 continue;
             }
@@ -73,8 +77,10 @@ public class SlotMachine extends Game {
                 return;
             }
 
-            if (bet > balance) {
-                System.out.println("                                                      You don't have enough money for that bet!");
+            // Check if player can afford the bet using Player's canAfford method
+            if (!player.canAfford(bet)) {
+                System.out.println(
+                        "                                                      You don't have enough money for that bet!");
                 ConsoleDisplay.pause(5000);
                 ConsoleDisplay.clearConsole();
                 continue;
@@ -88,9 +94,12 @@ public class SlotMachine extends Game {
             double winAmount = calculatePayout(bet);
 
             if (winAmount > 0) {
-                System.out.println("\n                                                      ==========================================");
-                System.out.println("                                                      Total Winnings: " + Formatter.formatCurrency(winAmount));
-                System.out.println("                                                      ==========================================");
+                System.out.println(
+                        "\n                                                      ==========================================");
+                System.out.println("                                                      Total Winnings: "
+                        + Formatter.formatCurrency(winAmount));
+                System.out.println(
+                        "                                                      ==========================================");
                 System.out.println("\n                                                      CONGRATS! PALDO! ");
                 System.out.println();
             } else {
@@ -102,7 +111,8 @@ public class SlotMachine extends Game {
 
             updateBalance(winAmount);
 
-            InputValidator.waitForUserInput("                                                      Press Enter to continue...");
+            InputValidator.waitForUserInput(
+                    "                                                      Press Enter to continue...");
             ConsoleDisplay.clearConsole();
         }
     }
@@ -139,7 +149,8 @@ public class SlotMachine extends Game {
         for (int i = 0; i < totalInner; i++)
             border.append('═');
 
-        String rowFmt = "                                                      ║ %" + "-" + cellWidth + "s | %" + "-" + cellWidth + "s | %" + "-" + cellWidth
+        String rowFmt = "                                                      ║ %" + "-" + cellWidth + "s | %" + "-"
+                + cellWidth + "s | %" + "-" + cellWidth
                 + "s ║\n";
 
         final String ANSI_GREEN = "\u001B[32m";
@@ -171,7 +182,9 @@ public class SlotMachine extends Game {
                     String pc0 = String.format("%-" + cellWidth + "s", c0);
                     String pc1 = String.format("%-" + cellWidth + "s", c1);
                     String pc2 = String.format("%-" + cellWidth + "s", c2);
-                    System.out.printf("                                                      ║ %s%s%s | %s%s%s | %s%s%s ║\n", ANSI_GREEN, pc0, ANSI_RESET,
+                    System.out.printf(
+                            "                                                      ║ %s%s%s | %s%s%s | %s%s%s ║\n",
+                            ANSI_GREEN, pc0, ANSI_RESET,
                             ANSI_GREEN,
                             pc1, ANSI_RESET, ANSI_GREEN, pc2, ANSI_RESET);
                 } else {
@@ -179,7 +192,8 @@ public class SlotMachine extends Game {
                 }
 
                 if (r < 2)
-                    System.out.println("                                                      ║" + border.toString() + "║");
+                    System.out.println(
+                            "                                                      ║" + border.toString() + "║");
             }
             System.out.println("                                                      ╚" + border.toString() + "╝");
 
@@ -203,14 +217,14 @@ public class SlotMachine extends Game {
                 double lineWin = bet * multi;
                 win += lineWin;
 
-                System.out.println("                                                      Payline " + (r + 1) + " matched! (x" + multi + ") = "
-                    + Formatter.formatCurrency(lineWin));
+                System.out.println("                                                      Payline " + (r + 1)
+                        + " matched! (x" + multi + ") = "
+                        + Formatter.formatCurrency(lineWin));
             }
         }
 
         return win;
     }
-
 
     @Override
     public double calculatePayout() {
@@ -230,21 +244,36 @@ public class SlotMachine extends Game {
 
     @Override
     public void displayRules() {
-        System.out.println("\n                                                      ╔═══════════════════════════════════════════════╗");
-        System.out.println("                                                      ║                 MOSES BONANZA                 ║");
-        System.out.println("                                                      ╠═══════════════════════════════════════════════╣");
-        System.out.println("                                                      ║       Match all 3 symbols horizontally!       ║");
-        System.out.println("                                                      ╠-----------------------------------------------╣");
-        System.out.println("                                                      ║       Top [Payline 1] = x2 multiplier         ║");
-        System.out.println("                                                      ║      Middle [Payline 2] = x5 multiplier       ║");
-        System.out.println("                                                      ║      Bottom [Payline 3] = x2 multiplier       ║");
-        System.out.println("                                                      ╠-----------------------------------------------╣");
-        System.out.println("                                                      ║      Type EXIT when placing bet to quit       ║");
-        System.out.println("                                                      ╠═══════════════════════════════════════════════╣");
-        System.out.println("                                                      ║ Player: " + String.format("%-30s", player.getUsername()) + "        ║");
-        System.out.println(    
-                "                                                      ║ Balance: " + String.format("%-29s", Formatter.formatCurrency(balance)) + "        ║");
-        System.out.println("                                                      ╚═══════════════════════════════════════════════╝");;
+        System.out.println(
+                "\n                                                      ╔═══════════════════════════════════════════════╗");
+        System.out.println(
+                "                                                      ║                 MOSES BONANZA                 ║");
+        System.out.println(
+                "                                                      ╠═══════════════════════════════════════════════╣");
+        System.out.println(
+                "                                                      ║       Match all 3 symbols horizontally!       ║");
+        System.out.println(
+                "                                                      ╠-----------------------------------------------╣");
+        System.out.println(
+                "                                                      ║       Top [Payline 1] = x2 multiplier         ║");
+        System.out.println(
+                "                                                      ║      Middle [Payline 2] = x5 multiplier       ║");
+        System.out.println(
+                "                                                      ║      Bottom [Payline 3] = x2 multiplier       ║");
+        System.out.println(
+                "                                                      ╠-----------------------------------------------╣");
+        System.out.println(
+                "                                                      ║      Type EXIT when placing bet to quit       ║");
+        System.out.println(
+                "                                                      ╠═══════════════════════════════════════════════╣");
+        System.out.println("                                                      ║ Player: "
+                + String.format("%-30s", player.getUsername()) + "        ║");
+        System.out.println(
+                "                                                      ║ Balance: "
+                        + String.format("%-29s", Formatter.formatCurrency(balance)) + "        ║");
+        System.out.println(
+                "                                                      ╚═══════════════════════════════════════════════╝");
+        ;
     }
 
     @Override
@@ -267,11 +296,13 @@ public class SlotMachine extends Game {
     }
 
     private void exitMessage() {
-        System.out.println("\n                                                      Thanks for playing " + getGameName() + "!");
+        System.out.println(
+                "\n                                                      Thanks for playing " + getGameName() + "!");
         System.out.println("                                                      Saving your balance...");
         playerDatabase.updatePlayer(player);
         ConsoleDisplay.pause(800, "                                                      Balance saved!");
-        InputValidator.waitForUserInput("                                                      Press Enter to continue...");
+        InputValidator
+                .waitForUserInput("                                                      Press Enter to continue...");
         System.out.println("\n                                                      See you next time, gambler!");
     }
 }

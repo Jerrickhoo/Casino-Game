@@ -45,9 +45,21 @@ public class DicePoker extends Game {
             System.out.println("Your balance: " + utilities.Formatter.formatCurrency(player.getBalance()));
             System.out.println("Opponent balance: " + utilities.Formatter.formatCurrency(botBalance));
 
+            // Check if player can afford the minimum bet
+            if (!player.canAfford(1.0)) {
+                System.out.println("You cannot afford the minimum bet of 1.0. Returning to casino.");
+                return;
+            }
+
             // ask for ante / bet amount
             System.out.print("Enter your bet amount (minimum 1.0): ");
             double bet = InputValidator.readDouble(1.0, player.getBalance());
+
+            // Verify player can afford the chosen bet
+            if (!player.canAfford(bet)) {
+                System.out.println("You cannot afford that bet. Please enter a valid amount.");
+                continue;
+            }
 
             // initialize pot and deduct ante from both
             double pot = 0.0;
@@ -248,6 +260,11 @@ public class DicePoker extends Game {
                         // raise amount
                         System.out.print("Enter raise amount: ");
                         double amount = InputValidator.readDouble(1.0, player.getBalance());
+                        // Check if player can afford the raise
+                        if (!player.canAfford(amount)) {
+                            System.out.println("You cannot afford that raise amount. Your action is forfeited.");
+                            return new BettingResult(pot, true, -1);
+                        }
                         // pay amount
                         double pay = Math.min(amount, player.getBalance());
                         player.setBalance(player.getBalance() - pay);
@@ -277,6 +294,12 @@ public class DicePoker extends Game {
                         // raise additional
                         System.out.print("Enter raise amount (additional over call): ");
                         double extra = InputValidator.readDouble(1.0, player.getBalance());
+                        // Check if player can afford the total raise (toCall + extra)
+                        double totalRaise = toCall + extra;
+                        if (!player.canAfford(totalRaise)) {
+                            System.out.println("You cannot afford that raise amount. You fold.");
+                            return new BettingResult(pot, true, -1);
+                        }
                         double pay = Math.min(player.getBalance(), toCall + extra);
                         player.setBalance(player.getBalance() - pay);
                         playerContrib += pay;

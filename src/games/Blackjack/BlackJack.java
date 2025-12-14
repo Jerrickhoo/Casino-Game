@@ -345,12 +345,19 @@ public class BlackJack extends Game {
 
     private double promptBet() {
         double min = 1.0;
-        if (balance < min) {
-            printCentered(formatMessage("LOSS: ", "Insufficient funds."));
+        // Verify player can afford the minimum bet
+        if (player != null && !player.canAfford(min)) {
+            printCentered(formatMessage("ERROR: ", "You cannot afford the minimum bet!"));
             return -1;
         }
         printCenteredBox("Place your bet (min " + Formatter.formatCurrency(min) + ")");
-        return InputValidator.readDouble(min, balance);
+        double bet = InputValidator.readDouble(min, balance);
+        // Double-check that player can afford the bet they chose
+        if (player != null && !player.canAfford(bet)) {
+            printCentered(formatMessage("ERROR: ", "You cannot afford that bet!"));
+            return -1;
+        }
+        return bet;
     }
 
     private void displayInitialHands(Hand dealer, Hand player, double bet) {

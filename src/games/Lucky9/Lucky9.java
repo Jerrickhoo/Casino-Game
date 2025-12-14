@@ -79,7 +79,12 @@ public class Lucky9 extends Game {
 
 				System.out.print("\n                 Enter bet amount: ");
 				double bet = InputValidator.readDouble(1, currentPlayer.getBalance());
-
+				// Verify player can afford the bet they chose
+				if (!currentPlayer.canAfford(bet)) {
+					System.out.println("\n                 ❌ You cannot afford that bet!");
+					InputValidator.waitForUserInput("\n                 Press Enter to continue...");
+					continue;
+				}
 				// Start round flow: deal 2 cards to player and dealer
 				int[] playerCards = drawHand(2);
 				int[] dealerCards = drawHand(2);
