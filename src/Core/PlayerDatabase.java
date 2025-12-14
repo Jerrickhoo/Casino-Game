@@ -123,14 +123,6 @@ public class PlayerDatabase {
     }
 
     /**
-     * Get all players
-     */
-    public List<Player> getAllPlayers() {
-        // Return a LinkedList to reflect a common familiar structure
-        return new LinkedList<>(players.values());
-    }
-
-    /**
      * Get leaderboard sorted using a specified key and order.
      * This replaces the older bubble-sort implementation with a Comparator based
      * sort.
@@ -273,9 +265,9 @@ public class PlayerDatabase {
             return;
         }
 
-        System.out.println("                 ┌──────┬────────────────┬────────────────────┬───────────────┬──────────┐");
-        System.out.println("                 │ Rank │ Player ID      │ Player             │ Balance       │ Games    │");
-        System.out.println("                 ├──────┼────────────────┼────────────────────┼───────────────┼──────────┤");
+        System.out.println("                 ┌──────┬────────────────┬────────────────────┬─────────────────┬──────────┐");
+        System.out.println("                 │ Rank │ Player ID      │ Player             │ Balance         │ Games    │");
+        System.out.println("                 ├──────┼────────────────┼────────────────────┼─────────────────┼──────────┤");
 
         for (int i = 0; i < Math.min(10, leaderboard.size()); i++) {
             Player player = leaderboard.get(i);
@@ -288,14 +280,7 @@ public class PlayerDatabase {
                     player.getGamesPlayed());
         }
 
-        System.out.println("                 └──────┴────────────────┴────────────────────┴───────────────┴──────────┘");
-    }
-
-    /**
-     * Get player count
-     */
-    public int getPlayerCount() {
-        return players.size();
+        System.out.println("                 └──────┴────────────────┴────────────────────┴─────────────────┴──────────┘");
     }
 
     public boolean cashIn(Player player, double amount) {

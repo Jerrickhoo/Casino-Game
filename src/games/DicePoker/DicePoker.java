@@ -47,7 +47,7 @@ public class DicePoker extends Game {
 
             // Check if player can afford the minimum bet
             if (!player.canAfford(1.0)) {
-                System.out.println("You cannot afford the minimum bet of 1.0. Returning to casino.");
+                System.out.println("You cannot afford the minimum bet of 1.0. Returning to The House.");
                 return;
             }
 
@@ -202,13 +202,13 @@ public class DicePoker extends Game {
         if (line == null)
             return selectedPositions;
         String[] parts = line.trim().split("\\s+");
-        for (String p : parts) {
+        for (String part : parts) {
             try {
-                int v = Integer.parseInt(p);
-                if (v == 0)
+                int value = Integer.parseInt(part);
+                if (value == 0)
                     return new ArrayList<>(); // keep all
-                if (v >= 1 && v <= 5)
-                    selectedPositions.add(v - 1);
+                if (value >= 1 && value <= 5)
+                    selectedPositions.add(value - 1);
             } catch (NumberFormatException e) {
                 // ignore invalid token
             }

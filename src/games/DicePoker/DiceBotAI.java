@@ -14,9 +14,9 @@ public class DiceBotAI {
         List<Integer> toReroll = new ArrayList<>();
         int[] dice = hand.getRawDice();
         int[] counts = new int[7];
-        for (int d : dice)
-            if (d >= 1 && d <= 6)
-                counts[d]++;
+        for (int dieValue : dice)
+            if (dieValue >= 1 && dieValue <= 6)
+                counts[dieValue]++;
 
         // if straight -> keep all
         boolean straight = true;

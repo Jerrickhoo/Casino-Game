@@ -65,12 +65,6 @@ public class Hand {
         return cards.size() == 2 && getValue() == 21;
     }
 
-    public boolean canSplit() {
-        if (cards.size() != 2)
-            return false;
-        return cards.get(0).getRank().equals(cards.get(1).getRank());
-    }
-
     public String showFirstCard() {
         if (cards.isEmpty())
             return "";

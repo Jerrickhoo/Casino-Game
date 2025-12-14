@@ -684,7 +684,7 @@ public class AnimationDisplay {
                         System.out.println(
                                         "            ║                                                                                                                        ║");
                         System.out.println(
-                                        "            ║                                         *** Users READY * WELCOME TO GAME HUB ***                                      ║");
+                                        "            ║                                         *** Users READY * WELCOME TO THE HOUSE ***                                     ║");
                         System.out.println(
                                         "            ╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝");
                         ConsoleDisplay.pause(1500);

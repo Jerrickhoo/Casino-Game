@@ -8,10 +8,10 @@ public class Formatter {
 
     public static void showProgressBar(String message, int durationMs) {
         System.out.print(message + " [");
-        int bars = 20;
-        for (int i = 0; i < bars; i++) {
+        int numberOfBars = 20;
+        for (int i = 0; i < numberOfBars; i++) {
             System.out.print("=");
-            ConsoleDisplay.pause(durationMs / bars);
+            ConsoleDisplay.pause(durationMs / numberOfBars);
         }
         System.out.println("] Complete!");
     }

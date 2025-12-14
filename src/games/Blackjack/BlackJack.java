@@ -37,7 +37,7 @@ public class BlackJack extends Game {
         displayRules();
 
         printCentered("");
-        printMenuBox(new String[] { "[1] Continue to Game", "[2] Return to Casino" });
+        printMenuBox(new String[] { "[1] Continue to Game", "[2] Return to The House" });
         printCentered("");
         int menu = readChoice(1, 2);
         if (menu == 2)
@@ -56,14 +56,14 @@ public class BlackJack extends Game {
             playRoundWithBet(bet);
 
             if (balance < 1.0) {
-                printCenteredBox("YOU'RE OUT OF CHIPS - RETURNING TO CASINO");
+                printCenteredBox("YOU'RE OUT OF CHIPS - RETURNING TO THE HOUSE");
                 waitForEnterAndClear();
                 break;
             }
 
             // After each round, ask play again or return
             printCentered("");
-            printMenuBox(new String[] { "[1] Play another hand", "[2] Return to Casino" });
+            printMenuBox(new String[] { "[1] Play another hand", "[2] Return to The House" });
             printCentered("");
             int choice = readChoice(1, 2);
             if (choice == 2)
