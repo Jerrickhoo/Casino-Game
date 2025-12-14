@@ -1,4 +1,4 @@
-package games.DicePoker;
+package games.AceRoll;
 
 import java.util.ArrayList;
 import java.util.List;

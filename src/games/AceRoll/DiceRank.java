@@ -1,4 +1,4 @@
-package games.DicePoker;
+package games.AceRoll;
 
 /**
  * Rank of a dice poker hand. Ordered from lowest to highest.

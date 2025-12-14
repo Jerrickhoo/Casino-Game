@@ -1,4 +1,4 @@
-package games.DicePoker;
+package games.AceRoll;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,12 +14,12 @@ import utilities.InputValidator;
  * rounds, reads player choices (via InputValidator), and compares hands.
  * It no longer performs dice-hand evaluation directly — that lives in DiceSet.
  */
-public class DicePoker extends Game {
-    public DicePoker() {
+public class AceRoll extends Game {
+    public AceRoll() {
         super();
     }
 
-    public DicePoker(Player player) {
+    public AceRoll(Player player) {
         super(player);
     }
 
@@ -31,7 +31,7 @@ public class DicePoker extends Game {
         ConsoleDisplay.clearConsole();
         System.out.println("");
         displayRules();
-        System.out.println("Welcome to Dice Poker! Your first round will be starting...");
+        System.out.println("Welcome to Ace Role! Your first round will be starting...");
         ConsoleDisplay.pause(1500);
 
         boolean keepPlaying = true;
@@ -413,7 +413,7 @@ public class DicePoker extends Game {
 
     @Override
     public String getGameName() {
-        return "Dice Poker";
+        return "AceRoll";
     }
 
     @Override

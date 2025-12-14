@@ -1,4 +1,4 @@
-package games.Blackjack;
+package games.TwentyWon;
 
 public class Card {
     private final String rank;

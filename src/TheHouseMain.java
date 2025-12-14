@@ -6,10 +6,10 @@ import Core.Player;
 import Core.PlayerDatabase;
 import Core.Transaction;
 import games.Game;
-import games.SlotMachine.SlotMachine;
-import games.DicePoker.DicePoker;
-import games.Lucky9.Lucky9;
-import games.Blackjack.BlackJack;
+import games.AceRoll.AceRoll;
+import games.MosesBonanza.MosesBonanza;
+import games.TwentyWon.TwentyWon;
+import games.Unlucky9.Unlucky9;
 
 public class TheHouseMain {
         private static PlayerDatabase playerDatabase;
@@ -237,7 +237,7 @@ public class TheHouseMain {
                 ConsoleDisplay.clearConsole();
                 System.out.println("");
                 System.out.println("            ╔══════════════════════════════════════════════════════════╗");
-                System.out.println("            ║               THE HOUSE: Thanks for playing!                ║");
+                System.out.println("            ║               THE HOUSE: Thanks for playing!             ║");
                 System.out.println("            ║               Data saved successfully!                   ║");
                 System.out.println("            ╚══════════════════════════════════════════════════════════╝");
                 ConsoleDisplay.pause(3000);
@@ -345,16 +345,16 @@ public class TheHouseMain {
 
                         switch (choice) {
                                 case 1:
-                                        playGame(new Lucky9());
+                                        playGame(new Unlucky9());
                                         break;
                                 case 2:
-                                        playGame(new BlackJack());
+                                        playGame(new TwentyWon());
                                         break;
                                 case 3:
-                                        playGame(new SlotMachine());
+                                        playGame(new MosesBonanza());
                                         break;
                                 case 4:
-                                        playGame(new DicePoker());
+                                        playGame(new AceRoll());
                                         break;
                                 case 5:
                                         showPlayerStats();

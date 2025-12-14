@@ -1,4 +1,4 @@
-package games.SlotMachine;
+package games.MosesBonanza;
 
 import java.util.Random;
 

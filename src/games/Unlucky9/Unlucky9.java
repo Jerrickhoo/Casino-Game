@@ -1,4 +1,4 @@
-package games.Lucky9;
+package games.Unlucky9;
 
 import java.util.Random;
 import Core.Player;
@@ -10,7 +10,7 @@ import utilities.InputValidator;
 import games.Game;
 
 /**
- * Lucky9 game
+ * Unlucky9 game
  * - Player places a bet
  * - Player and Dealer each draw 3 digits (1-9)
  * - Hand value = sum of digits % 10 (closest to 9 wins)
@@ -19,23 +19,23 @@ import games.Game;
  * This class provides a static helper `play` that CasinoMain can call,
  * and an instance-style constructor + start() for other uses.
  */
-public class Lucky9 extends Game {
+public class Unlucky9 extends Game {
 	private final Random random = new Random();
 
 	// Use inherited `balance` from Game; do not shadow it here.
 
-	public Lucky9() {
+	public Unlucky9() {
 		super();
 	}
 
-	public Lucky9(double playerBalance) {
+	public Unlucky9(double playerBalance) {
 		super();
 		this.balance = playerBalance;
 	}
 
 	// Static entry point for CasinoMain style usage
 	public static void play(Player currentPlayer, PlayerDatabase playerDB) {
-		Lucky9 game = new Lucky9();
+		Unlucky9 game = new Unlucky9();
 		game.startGame(currentPlayer, playerDB);
 	}
 
@@ -53,7 +53,7 @@ public class Lucky9 extends Game {
 			ConsoleDisplay.clearConsole();
 			System.out.println("\n\n");
 			System.out.println("            ╔══════════════════════════════════════════════════════════╗");
-			System.out.println("            ║                        LUCKY 9                           ║");
+			System.out.println("            ║                        Unlucky 9                        ║");
 			System.out.println("            ╠══════════════════════════════════════════════════════════╣");
 			System.out.println("            ║               Try to reach 9 (mod 10).                   ║");
 			System.out.println("            ╚══════════════════════════════════════════════════════════╝");
@@ -92,7 +92,7 @@ public class Lucky9 extends Game {
 				ConsoleDisplay.clearConsole();
 				System.out.println("\n");
 				System.out.println("            ╔══════════════════════════════════════════════════════════╗");
-				System.out.println("            ║                        LUCKY 9                           ║");
+				System.out.println("            ║                        Unlucky 9                        ║");
 				System.out.println("            ╠══════════════════════════════════════════════════════════╣");
 				System.out.println("            ║               Bet Placed: "
 						+ String.format("%-20s", Formatter.formatCurrency(bet)) + "           ║");
@@ -110,11 +110,11 @@ public class Lucky9 extends Game {
 					// Deduct bet then award jackpot
 					this.balance -= bet;
 					currentPlayer.setBalance(this.balance);
-					Transaction.log(currentPlayer.getUsername(), currentPlayer.getPlayerId(), "Lucky9", "BET", bet,
+					Transaction.log(currentPlayer.getUsername(), currentPlayer.getPlayerId(), "Unlucky9", "BET", bet,
 							this.balance);
 					this.balance += bet * 3.0;
 					currentPlayer.setBalance(this.balance);
-					Transaction.log(currentPlayer.getUsername(), currentPlayer.getPlayerId(), "Lucky9", "WIN",
+					Transaction.log(currentPlayer.getUsername(), currentPlayer.getPlayerId(), "Unlucky9", "WIN",
 							bet * 3.0, this.balance);
 					System.out.println();
 					System.out.println("            ╔══════════════════════════════════════════════════════════╗");
@@ -139,7 +139,7 @@ public class Lucky9 extends Game {
 				// Deduct bet and log before dealer actions
 				this.balance -= bet;
 				currentPlayer.setBalance(this.balance);
-				Transaction.log(currentPlayer.getUsername(), currentPlayer.getPlayerId(), "Lucky9", "BET", bet,
+				Transaction.log(currentPlayer.getUsername(), currentPlayer.getPlayerId(), "Unlucky9", "BET", bet,
 						this.balance);
 
 				// Reveal dealer cards and compute values
@@ -168,7 +168,7 @@ public class Lucky9 extends Game {
 				if (payout > 0) {
 					this.balance += payout;
 					currentPlayer.setBalance(this.balance);
-					Transaction.log(currentPlayer.getUsername(), currentPlayer.getPlayerId(), "Lucky9", "WIN", payout,
+					Transaction.log(currentPlayer.getUsername(), currentPlayer.getPlayerId(), "Unlucky9", "WIN", payout,
 							this.balance);
 					System.out.println("            ╔══════════════════════════════════════════════════════════╗");
 					System.out.println("            ║              YOU WON "
@@ -177,13 +177,13 @@ public class Lucky9 extends Game {
 				} else if (payout == 0 && playerValue == dealerValue) {
 					this.balance += bet;
 					currentPlayer.setBalance(this.balance);
-					Transaction.log(currentPlayer.getUsername(), currentPlayer.getPlayerId(), "Lucky9", "PUSH", bet,
+					Transaction.log(currentPlayer.getUsername(), currentPlayer.getPlayerId(), "Unlucky9", "PUSH", bet,
 							this.balance);
 					System.out.println("            ╔══════════════════════════════════════════════════════════╗");
 					System.out.println("            ║                 PUSH — BET RETURNED                      ║");
 					System.out.println("            ╚══════════════════════════════════════════════════════════╝");
 				} else {
-					Transaction.log(currentPlayer.getUsername(), currentPlayer.getPlayerId(), "Lucky9", "LOSS", bet,
+					Transaction.log(currentPlayer.getUsername(), currentPlayer.getPlayerId(), "Unlucky9", "LOSS", bet,
 							this.balance);
 					currentPlayer.setBalance(this.balance);
 					System.out.println("            ╔══════════════════════════════════════════════════════════╗");
@@ -214,7 +214,7 @@ public class Lucky9 extends Game {
 				System.out.println("            ║    If you draw none, you'll receive 1 card automatically.  ║");
 				System.out.println("            ╚════════════════════════════════════════════════════════════╝");
 				System.out.println("");
-				InputValidator.waitForUserInput("                 Press Enter to return to Lucky9 menu...");
+				InputValidator.waitForUserInput("                 Press Enter to return to Unlucky9 menu...");
 				continue;
 			} else {
 				// Exit to games menu
@@ -355,12 +355,12 @@ public class Lucky9 extends Game {
 	@Override
 	public void displayRules() {
 		ConsoleDisplay.clearConsole();
-		System.out.println("Lucky9 Rules: Draw 3 digits (1-9). Closest to 9 wins. Exact 9 => jackpot x3.");
+		System.out.println("Unlucky9 Rules: Draw 3 digits (1-9). Closest to 9 wins. Exact 9 => jackpot x3.");
 	}
 
 	@Override
 	public String getGameName() {
-		return "Lucky9";
+		return "Unlucky9";
 	}
 
 	@Override

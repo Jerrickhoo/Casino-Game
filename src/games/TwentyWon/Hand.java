@@ -1,4 +1,4 @@
-package games.Blackjack;
+package games.TwentyWon;
 
 import java.util.ArrayList;
 import java.util.List;

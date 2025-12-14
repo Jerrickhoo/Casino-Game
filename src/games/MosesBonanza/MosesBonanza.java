@@ -1,4 +1,4 @@
-package games.SlotMachine;
+package games.MosesBonanza;
 
 import java.util.Random;
 import Core.Player;
@@ -9,7 +9,7 @@ import utilities.Formatter;
 import utilities.InputValidator;
 import games.Game;
 
-public class SlotMachine extends Game {
+public class MosesBonanza extends Game {
     private Reel[] reels;
     private final String[] symbols = { "Moses", "John", "Hermosura" };
     private final int[] multipliers = { 2, 5, 2 };
@@ -17,10 +17,10 @@ public class SlotMachine extends Game {
     private String[][] lastGrid;
     private PlayerDatabase playerDatabase;
 
-    public SlotMachine() {
+    public MosesBonanza() {
     }
 
-    public SlotMachine(Player player, PlayerDatabase playerDB) {
+    public MosesBonanza(Player player, PlayerDatabase playerDB) {
         super(player);
         this.playerDatabase = playerDB;
         setupReels();
@@ -34,11 +34,10 @@ public class SlotMachine extends Game {
     }
 
     @Override
-    public void startGame(Player player, PlayerDatabase playerDB) {
+    public void startGame(Player player, PlayerDatabase playerDatabase) {
         this.player = player;
         this.balance = player.getBalance();
-        this.playerDatabase = playerDB;
-        this.gameName = "Moses Bonanza Slot Machine";
+        this.playerDatabase = playerDatabase;
 
         if (reels == null)
             setupReels();
@@ -278,7 +277,7 @@ public class SlotMachine extends Game {
 
     @Override
     public String getGameName() {
-        return gameName;
+        return "MosesBonanza";
     }
 
     private void reelSpinAnimation() {

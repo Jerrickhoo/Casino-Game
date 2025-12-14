@@ -1,4 +1,4 @@
-package games.Blackjack;
+package games.TwentyWon;
 
 import games.Game;
 import Core.Player;
@@ -9,7 +9,7 @@ import utilities.ConsoleDisplay;
 import utilities.Formatter;
 import ui.AnimationDisplay;
 
-public class BlackJack extends Game {
+public class TwentyWon extends Game {
     private double balance;
     private double lastRoundPayout;
     private Deck deck;
@@ -19,14 +19,14 @@ public class BlackJack extends Game {
     // Fixed left margin to visually match CasinoMain's spacing
     private static final String LEFT_MARGIN = "                                                ";
 
-    public BlackJack(double startingBalance) {
+    public TwentyWon(double startingBalance) {
         this.balance = startingBalance;
         this.lastRoundPayout = 0;
         this.deck = new Deck();
         this.deck.shuffle();
     }
 
-    public BlackJack() {
+    public TwentyWon() {
         this(100.0);
     }
 
@@ -128,7 +128,7 @@ public class BlackJack extends Game {
 
     @Override
     public String getGameName() {
-        return "Twenty Won!";
+        return "TwentyWon";
     }
 
     @Override
@@ -471,26 +471,6 @@ public class BlackJack extends Game {
     // Suppress question marks and show boxed prompt instead
     private int readChoice(int min, int max) {
         return boxedReadChoice(min, max, "Enter choice (" + min + "-" + max + ")");
-    }
-
-    private void printChoiceBox(String text) {
-        printInputBoxPrompt(text);
-    }
-
-    /**
-     * Print a centered single-line boxed prompt for input (used for choices, bet prompt, and Press Enter)
-     */
-    private void printInputBoxPrompt(String text) {
-        int inner = Math.max(BOX_WIDTH, text.length());
-        inner = Math.min(inner, getConsoleWidth() - 8);
-        String top = "╔" + "═".repeat(inner + 2) + "╗";
-        String bottom = "╚" + "═".repeat(inner + 2) + "╝";
-        int totalWidth = inner + 4;
-        String padding = getLeftPadForTotalWidth(totalWidth);
-        System.out.println(padding + top);
-        String padded = " " + text + " ".repeat(Math.max(0, inner - text.length() + 1));
-        System.out.println(padding + "║" + padded + "║");
-        System.out.println(padding + bottom);
     }
 
     /**
