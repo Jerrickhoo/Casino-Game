@@ -30,20 +30,34 @@ public class TheHouseMain {
                 while (true) {
                         ConsoleDisplay.clearConsole();
                         System.out.println("\n\n");
-                        System.out.println("                                      ╔════════════════════════════════════════════════════════════════════════════════╗");
-                        System.out.println("                                      ║                           ████████ ██    ██ ██████                             ║");
-                        System.out.println("                                      ║                              ██    ██    ██ ██                                 ║");
-                        System.out.println("                                      ║                              ██    ████████ ████                               ║");
-                        System.out.println("                                      ║                              ██    ██    ██ ██                                 ║");
-                        System.out.println("                                      ║                              ██    ██    ██ ██████                             ║");
-                        System.out.println("                                      ║                                                                                ║");
-                        System.out.println("                                      ║                ██    ██    ████    ██    ██    ██████  ██████                  ║");
-                        System.out.println("                                      ║                ██    ██  ██    ██  ██    ██  ██        ██                      ║");
-                        System.out.println("                                      ║                ████████  ██    ██  ██    ██    ████    ████                    ║");
-                        System.out.println("                                      ║                ██    ██  ██    ██  ██    ██        ██  ██                      ║");
-                        System.out.println("                                      ║                ██    ██    ████    ████████   ██████   ██████                  ║");
-                        System.out.println("                                      ║                                                                                ║");
-                        System.out.println("                                      ╚════════════════════════════════════════════════════════════════════════════════╝");
+                        System.out.println(
+                                        "                                      ╔════════════════════════════════════════════════════════════════════════════════╗");
+                        System.out.println(
+                                        "                                      ║                           ████████ ██    ██ ██████                             ║");
+                        System.out.println(
+                                        "                                      ║                              ██    ██    ██ ██                                 ║");
+                        System.out.println(
+                                        "                                      ║                              ██    ████████ ████                               ║");
+                        System.out.println(
+                                        "                                      ║                              ██    ██    ██ ██                                 ║");
+                        System.out.println(
+                                        "                                      ║                              ██    ██    ██ ██████                             ║");
+                        System.out.println(
+                                        "                                      ║                                                                                ║");
+                        System.out.println(
+                                        "                                      ║                ██    ██    ████    ██    ██    ██████  ██████                  ║");
+                        System.out.println(
+                                        "                                      ║                ██    ██  ██    ██  ██    ██  ██        ██                      ║");
+                        System.out.println(
+                                        "                                      ║                ████████  ██    ██  ██    ██    ████    ████                    ║");
+                        System.out.println(
+                                        "                                      ║                ██    ██  ██    ██  ██    ██        ██  ██                      ║");
+                        System.out.println(
+                                        "                                      ║                ██    ██    ████    ████████   ██████   ██████                  ║");
+                        System.out.println(
+                                        "                                      ║                                                                                ║");
+                        System.out.println(
+                                        "                                      ╚════════════════════════════════════════════════════════════════════════════════╝");
                         System.out.println("");
 
                         System.out.println(
@@ -146,8 +160,8 @@ public class TheHouseMain {
                 System.out.print("                                                Password: ");
                 String password = InputValidator.readString();
 
-                Player player = playerDatabase.getPlayer(username);
-                if (player != null && player.verifyPassword(password)) {
+                Player player = playerDatabase.authenticate(username, password);
+                if (player != null) {
                         currentPlayer = player;
                         ConsoleDisplay.clearConsole();
                         AnimationDisplay.loginAnimation(true);
@@ -165,9 +179,12 @@ public class TheHouseMain {
                         showGameMenu();
                 } else {
                         System.out.println("");
-                        System.out.println("            ╔══════════════════════════════════════════════════════════╗");
-                        System.out.println("            ║               ERROR: INVALID CREDENTIALS!                ║");
-                        System.out.println("            ╚══════════════════════════════════════════════════════════╝");
+                        System.out.println(
+                                        "                                                ╔══════════════════════════════════════════════════════════╗");
+                        System.out.println(
+                                        "                                                ║               ERROR: INVALID CREDENTIALS!                ║");
+                        System.out.println(
+                                        "                                                ╚══════════════════════════════════════════════════════════╝");
                         InputValidator.waitForUserInput("             Press Enter to continue...");
                 }
         }
@@ -175,9 +192,12 @@ public class TheHouseMain {
         private static void register() {
                 ConsoleDisplay.clearConsole();
                 System.out.println("\n\n");
-                System.out.println("            ╔══════════════════════════════════════════════════════════╗");
-                System.out.println("            ║                      NEW ACCOUNT                         ║");
-                System.out.println("            ╚══════════════════════════════════════════════════════════╝");
+                System.out.println(
+                                "                                                ╔══════════════════════════════════════════════════════════╗");
+                System.out.println(
+                                "                                                ║                      NEW ACCOUNT                         ║");
+                System.out.println(
+                                "                                                ╚══════════════════════════════════════════════════════════╝");
                 System.out.println("");
 
                 System.out.print("                 Choose username: ");
@@ -185,18 +205,24 @@ public class TheHouseMain {
 
                 if (!Player.isValidUsername(username)) {
                         System.out.println("");
-                        System.out.println("            ╔══════════════════════════════════════════════════════════╗");
-                        System.out.println("            ║    ERROR: Username must be 3-20 chars (no : allowed)     ║");
-                        System.out.println("            ╚══════════════════════════════════════════════════════════╝");
+                        System.out.println(
+                                        "                                                ╔══════════════════════════════════════════════════════════╗");
+                        System.out.println(
+                                        "                                                ║    ERROR: Username must be 3-20 chars (no : allowed)     ║");
+                        System.out.println(
+                                        "                                                ╚══════════════════════════════════════════════════════════╝");
                         InputValidator.waitForUserInput("             Press Enter to continue...");
                         return;
                 }
 
                 if (playerDatabase.playerExists(username)) {
                         System.out.println("");
-                        System.out.println("            ╔══════════════════════════════════════════════════════════╗");
-                        System.out.println("            ║               ERROR: USERNAME ALREADY EXISTS!            ║");
-                        System.out.println("            ╚══════════════════════════════════════════════════════════╝");
+                        System.out.println(
+                                        "                                                ╔══════════════════════════════════════════════════════════╗");
+                        System.out.println(
+                                        "                                                ║               ERROR: USERNAME ALREADY EXISTS!            ║");
+                        System.out.println(
+                                        "                                                ╚══════════════════════════════════════════════════════════╝");
                         InputValidator.waitForUserInput("             Press Enter to continue...");
                         return;
                 }
@@ -206,9 +232,12 @@ public class TheHouseMain {
 
                 if (!Player.isValidPassword(password)) {
                         System.out.println("");
-                        System.out.println("            ╔══════════════════════════════════════════════════════════╗");
-                        System.out.println("            ║     ERROR: Password must be 4-30 chars (no : allowed)    ║");
-                        System.out.println("            ╚══════════════════════════════════════════════════════════╝");
+                        System.out.println(
+                                        "                                                ╔══════════════════════════════════════════════════════════╗");
+                        System.out.println(
+                                        "                                                ║     ERROR: Password must be 4-30 chars (no : allowed)    ║");
+                        System.out.println(
+                                        "                                                ╚══════════════════════════════════════════════════════════╝");
                         InputValidator.waitForUserInput("             Press Enter to continue...");
                         return;
                 }
@@ -217,18 +246,24 @@ public class TheHouseMain {
                 if (playerDatabase.addPlayer(newPlayer)) {
                         currentPlayer = newPlayer;
                         System.out.println("");
-                        System.out.println("            ╔══════════════════════════════════════════════════════════╗");
-                        System.out.println("            ║               SUCCESS: ACCOUNT CREATED!                   ║");
-                        System.out.println("            ║        Starting balance: "
+                        System.out.println(
+                                        "                                                ╔══════════════════════════════════════════════════════════╗");
+                        System.out.println(
+                                        "                                                ║               SUCCESS: ACCOUNT CREATED!                  ║");
+                        System.out.println("                                                ║        Starting balance: "
                                         + String.format("%-25s", Formatter.formatCurrency(100.0)) + "       ║");
-                        System.out.println("            ╚══════════════════════════════════════════════════════════╝");
+                        System.out.println(
+                                        "                                                ╚══════════════════════════════════════════════════════════╝");
                         ConsoleDisplay.pause(3000);
                         showMainMenu();
                 } else {
                         System.out.println("");
-                        System.out.println("            ╔══════════════════════════════════════════════════════════╗");
-                        System.out.println("            ║               ERROR: REGISTRATION FAILED!                ║");
-                        System.out.println("            ╚══════════════════════════════════════════════════════════╝");
+                        System.out.println(
+                                        "                                                ╔══════════════════════════════════════════════════════════╗");
+                        System.out.println(
+                                        "                                                ║               ERROR: REGISTRATION FAILED!                ║");
+                        System.out.println(
+                                        "                                                ╚══════════════════════════════════════════════════════════╝");
                         InputValidator.waitForUserInput("             Press Enter to continue...");
                 }
         }
@@ -236,10 +271,14 @@ public class TheHouseMain {
         private static void exitProgramMessage() {
                 ConsoleDisplay.clearConsole();
                 System.out.println("");
-                System.out.println("            ╔══════════════════════════════════════════════════════════╗");
-                System.out.println("            ║               THE HOUSE: Thanks for playing!             ║");
-                System.out.println("            ║               Data saved successfully!                   ║");
-                System.out.println("            ╚══════════════════════════════════════════════════════════╝");
+                System.out.println(
+                                "                                                ╔══════════════════════════════════════════════════════════╗");
+                System.out.println(
+                                "                                                ║               THE HOUSE: Thanks for playing!             ║");
+                System.out.println(
+                                "                                                ║               Data saved successfully!                   ║");
+                System.out.println(
+                                "                                                ╚══════════════════════════════════════════════════════════╝");
                 ConsoleDisplay.pause(3000);
         }
 
@@ -608,11 +647,11 @@ public class TheHouseMain {
                 ConsoleDisplay.clearConsole();
                 System.out.println("");
                 System.out.println(
-                                "            ╔══════════════════════════════════════════════════════════╗");
+                                "                                                ╔══════════════════════════════════════════════════════════╗");
                 System.out.println(
-                                "            ║               SUCCESS: Logged out successfully!          ║");
+                                "                                                ║               SUCCESS: Logged out successfully!          ║");
                 System.out.println(
-                                "            ╚══════════════════════════════════════════════════════════╝");
+                                "                                                ╚══════════════════════════════════════════════════════════╝");
                 ConsoleDisplay.pause(1500);
         }
 }
