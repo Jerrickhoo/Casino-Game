@@ -82,16 +82,16 @@ public class DicePoker extends Game {
             playerHand.showHand();
 
             // Run a full betting round (pre-reroll)
-            BettingResult pre = runBettingRound(player, playerHand, botHand, pot);
-            pot = pre.pot;
-            if (pre.folded) {
+            BettingResult preRound = runBettingRound(player, playerHand, botHand, pot);
+            pot = preRound.pot;
+            if (preRound.folded) {
                 // fold resolved: award pot to winner
-                if (pre.foldWinner == 1) {
+                if (preRound.foldWinner == 1) {
                     // player wins
                     player.setBalance(player.getBalance() + pot);
                     System.out
                             .println("Opponent folded. You win the pot of " + utilities.Formatter.formatCurrency(pot));
-                } else if (pre.foldWinner == -1) {
+                } else if (preRound.foldWinner == -1) {
                     botBalance += pot;
                     System.out
                             .println("You folded. Opponent wins the pot of " + utilities.Formatter.formatCurrency(pot));
@@ -104,27 +104,27 @@ public class DicePoker extends Game {
             // apply exactly one reroll phase for player and bot
             System.out.print("Enter dice positions to reroll (1-5, space-separated), or 0 to keep: ");
             String line = InputValidator.readString();
-            List<Integer> sel = parseSelectionLine(line);
-            playerHand.reroll(sel);
+            List<Integer> selectedPositions = parseSelectionLine(line);
+            playerHand.reroll(selectedPositions);
 
             // bot decides what to reroll using its AI and then rerolls
-            List<Integer> botSel = DiceBotAI.selectReroll(botHand);
-            botHand.reroll(botSel);
+            List<Integer> botSelectedPositions = DiceBotAI.selectReroll(botHand);
+            botHand.reroll(botSelectedPositions);
 
             System.out.println("After your reroll:");
             playerHand.showHand();
 
             // Run a full betting round (pre-reroll)
-            BettingResult post = runBettingRound(player, playerHand, botHand, pot);
-            pot = post.pot;
-            if (post.folded) {
+            BettingResult postRound = runBettingRound(player, playerHand, botHand, pot);
+            pot = postRound.pot;
+            if (postRound.folded) {
                 // fold resolved: award pot to winner
-                if (post.foldWinner == 1) {
+                if (postRound.foldWinner == 1) {
                     // player wins
                     player.setBalance(player.getBalance() + pot);
                     System.out
                             .println("Opponent folded. You win the pot of " + utilities.Formatter.formatCurrency(pot));
-                } else if (post.foldWinner == -1) {
+                } else if (postRound.foldWinner == -1) {
                     botBalance += pot;
                     System.out
                             .println("You folded. Opponent wins the pot of " + utilities.Formatter.formatCurrency(pot));
@@ -134,34 +134,34 @@ public class DicePoker extends Game {
                 continue;
             }
             // evaluate
-            DiceRank pRank = playerHand.evaluateHand();
-            DiceRank bRank = botHand.evaluateHand();
+            DiceRank playerRank = playerHand.evaluateHand();
+            DiceRank botRank = botHand.evaluateHand();
 
             System.out.println("\nOpponent's hand:");
             botHand.showHand();
 
-            System.out.println("You: " + pRank + "  Opponent: " + bRank);
-            int cmp = pRank.compareTo(bRank);
+            System.out.println("You: " + playerRank + "  Opponent: " + botRank);
+            int comparison = playerRank.compareTo(botRank);
             int winner = 0; // 1=player, -1=bot, 0=tie
-            if (cmp > 0) {
+            if (comparison > 0) {
                 System.out.println("Player Wins!");
                 winner = 1;
-            } else if (cmp < 0) {
+            } else if (comparison < 0) {
                 System.out.println("Opponent Wins!");
                 winner = -1;
             } else {
                 // tie-breaker: compare sorted dice descending
-                int[] pSorted = playerHand.getSortedDescending();
-                int[] bSorted = botHand.getSortedDescending();
+                int[] playerSorted = playerHand.getSortedDescending();
+                int[] botSorted = botHand.getSortedDescending();
                 boolean tie = true;
-                for (int i = 0; i < pSorted.length; i++) {
-                    if (pSorted[i] > bSorted[i]) {
+                for (int i = 0; i < playerSorted.length; i++) {
+                    if (playerSorted[i] > botSorted[i]) {
                         System.out.println("Player Wins (tie-break)");
                         winner = 1;
                         tie = false;
                         break;
                     }
-                    if (pSorted[i] < bSorted[i]) {
+                    if (playerSorted[i] < botSorted[i]) {
                         System.out.println("Opponent Wins (tie-break)");
                         winner = -1;
                         tie = false;
@@ -198,9 +198,9 @@ public class DicePoker extends Game {
     }
 
     private List<Integer> parseSelectionLine(String line) {
-        List<Integer> sel = new ArrayList<>();
+        List<Integer> selectedPositions = new ArrayList<>();
         if (line == null)
-            return sel;
+            return selectedPositions;
         String[] parts = line.trim().split("\\s+");
         for (String p : parts) {
             try {
@@ -208,12 +208,12 @@ public class DicePoker extends Game {
                 if (v == 0)
                     return new ArrayList<>(); // keep all
                 if (v >= 1 && v <= 5)
-                    sel.add(v - 1);
+                    selectedPositions.add(v - 1);
             } catch (NumberFormatException e) {
                 // ignore invalid token
             }
         }
-        return sel;
+        return selectedPositions;
     }
 
     // Helper result for betting rounds

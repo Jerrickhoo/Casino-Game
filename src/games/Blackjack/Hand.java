@@ -91,12 +91,12 @@ public class Hand {
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder cardBuilder = new StringBuilder();
         for (int i = 0; i < cards.size(); i++) {
             if (i > 0)
-                stringBuilder.append(" ");
-            stringBuilder.append(cards.get(i));
+                cardBuilder.append(" ");
+            cardBuilder.append(cards.get(i));
         }
-        return stringBuilder.toString();
+        return cardBuilder.toString();
     }
 }

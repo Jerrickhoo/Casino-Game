@@ -30,8 +30,9 @@ public class Player {
 
     // Generate player ID in format: IDyyyyMMddHHmm (e.g., ID202503231530)
     private String generatePlayerId() {
-        java.time.format.DateTimeFormatter fmt = java.time.format.DateTimeFormatter.ofPattern("yyyyMMddHHmm");
-        String datetime = java.time.LocalDateTime.now().format(fmt);
+        java.time.format.DateTimeFormatter dateTimeFormatter = java.time.format.DateTimeFormatter
+                .ofPattern("yyyyMMddHHmm");
+        String datetime = java.time.LocalDateTime.now().format(dateTimeFormatter);
         return "ID" + datetime;
     }
 

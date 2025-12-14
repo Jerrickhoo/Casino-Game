@@ -68,7 +68,7 @@ public class DiceBotAI {
      * Returns: -1 = fold, 0 = call/check, >0 = raise amount (additional over the
      * call)
      */
-    public static double decideBet(double toCall, double pot, double botBalance, DiceRank hand, double oppBalance,
+    public static double decideBet(double toCall, double pot, double botBalance, DiceRank hand, double opponentBalance,
             int raisesRemaining) {
         // Basic heuristics
         if (toCall <= 0) {

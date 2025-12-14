@@ -4,7 +4,6 @@ import java.util.Random;
 import Core.Player;
 import Core.PlayerDatabase;
 import Core.Transaction;
-// Use the project's utilities helpers
 import utilities.ConsoleDisplay;
 import utilities.Formatter;
 import utilities.InputValidator;
@@ -21,7 +20,7 @@ import games.Game;
  * and an instance-style constructor + start() for other uses.
  */
 public class Lucky9 extends Game {
-	private final Random rng = new Random();
+	private final Random random = new Random();
 
 	// Use inherited `balance` from Game; do not shadow it here.
 
@@ -235,7 +234,7 @@ public class Lucky9 extends Game {
 
 	// Draw a single card (1..9)
 	private int drawSingle() {
-		return rng.nextInt(9) + 1;
+		return random.nextInt(9) + 1;
 	}
 
 	// Hand value: (sum of cards) % 10
@@ -246,18 +245,18 @@ public class Lucky9 extends Game {
 		return sum % 10;
 	}
 
-	private void displayHands(int[] player, int[] dealer, int pValue, int dValue) {
+	private void displayHands(int[] player, int[] dealer, int playerValue, int dealerValue) {
 		System.out.println();
 		System.out.println("            ╔════════════════════════════════════════════════════════════╗");
 		System.out.print("            ║  Player: ");
 		for (int v : player)
 			System.out.print("[" + v + "] ");
-		System.out.println("  => " + pValue + "                                ║");
+		System.out.println("  => " + playerValue + "                                ║");
 
 		System.out.print("            ║  Dealer : ");
 		for (int v : dealer)
 			System.out.print("[" + v + "] ");
-		System.out.println("  => " + dValue + "                               ║");
+		System.out.println("  => " + dealerValue + "                               ║");
 		System.out.println("            ╚════════════════════════════════════════════════════════════╝");
 	}
 

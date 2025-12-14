@@ -210,9 +210,9 @@ public class BlackJack extends Game {
             if (firstDecision) {
                 String hit = "[1] Hit";
                 String stand = "[2] Stand";
-                String dbl = canDouble ? "[3] Double" : null;
-                if (dbl != null)
-                    printMenuBox(new String[] { hit, stand, dbl });
+                String doubleOption = canDouble ? "[3] Double" : null;
+                if (doubleOption != null)
+                    printMenuBox(new String[] { hit, stand, doubleOption });
                 else
                     printMenuBox(new String[] { hit, stand });
 
@@ -448,9 +448,9 @@ public class BlackJack extends Game {
         for (String line : lines) {
             if (line == null)
                 line = "";
-            int pad = contentWidth - line.length();
-            String padded = " " + line + " ".repeat(Math.max(0, pad + 1));
-            System.out.println(padding + "║" + padded + "║");
+            int paddingWidth = contentWidth - line.length();
+            String paddedLine = " " + line + " ".repeat(Math.max(0, paddingWidth + 1));
+            System.out.println(padding + "║" + paddedLine + "║");
         }
         System.out.println(padding + bottom);
     }
@@ -471,10 +471,10 @@ public class BlackJack extends Game {
     }
 
     private int getConsoleWidth() {
-        String envColumns = System.getenv("COLUMNS");
+        String environmentColumns = System.getenv("COLUMNS");
         try {
-            if (envColumns != null)
-                return Integer.parseInt(envColumns);
+            if (environmentColumns != null)
+                return Integer.parseInt(environmentColumns);
         } catch (Exception ignored) {
         }
         return 80;
@@ -483,8 +483,8 @@ public class BlackJack extends Game {
     private String centerText(String s, int width) {
         if (s == null)
             return "";
-        int pad = Math.max(0, (width - s.length()) / 2);
-        return " ".repeat(pad) + s;
+        int padding = Math.max(0, (width - s.length()) / 2);
+        return " ".repeat(padding) + s;
     }
 
     private void printCentered(String s) {
@@ -492,8 +492,8 @@ public class BlackJack extends Game {
     }
 
     private String getLeftPadForTotalWidth(int totalWidth) {
-        int pad = Math.max(0, (getConsoleWidth() - totalWidth) / 2);
-        return " ".repeat(pad);
+        int padding = Math.max(0, (getConsoleWidth() - totalWidth) / 2);
+        return " ".repeat(padding);
     }
 
     // Rely on the project-level Card, Deck, and Hand classes in

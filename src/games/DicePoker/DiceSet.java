@@ -14,7 +14,7 @@ import utilities.Formatter;
  */
 public class DiceSet {
     private final int[] dice = new int[5];
-    private final Random rand = new Random();
+    private final Random random = new Random();
 
     public DiceSet() {
         // empty
@@ -26,7 +26,7 @@ public class DiceSet {
     }
 
     public int roll() {
-        return rand.nextInt(6) + 1;
+        return random.nextInt(6) + 1;
     }
 
     /**
@@ -37,11 +37,11 @@ public class DiceSet {
         if (zeroBasedIndices == null || zeroBasedIndices.isEmpty())
             return;
         // ensure unique and within range
-        List<Integer> uniq = zeroBasedIndices.stream()
+        List<Integer> uniqueIndices = zeroBasedIndices.stream()
                 .filter(i -> i >= 0 && i < dice.length)
                 .distinct()
                 .collect(Collectors.toList());
-        for (int i : uniq) {
+        for (int i : uniqueIndices) {
             dice[i] = roll();
         }
     }
@@ -117,9 +117,9 @@ public class DiceSet {
         Arrays.sort(copy);
         // reverse
         for (int i = 0; i < copy.length / 2; i++) {
-            int tmp = copy[i];
+            int tempValue = copy[i];
             copy[i] = copy[copy.length - 1 - i];
-            copy[copy.length - 1 - i] = tmp;
+            copy[copy.length - 1 - i] = tempValue;
         }
         return copy;
     }

@@ -13,7 +13,7 @@ public class SlotMachine extends Game {
     private Reel[] reels;
     private final String[] symbols = { "Moses", "John", "Hermosura" };
     private final int[] multipliers = { 2, 5, 2 };
-    private final Random rand = new Random();
+    private final Random random = new Random();
     private String[][] lastGrid;
     private PlayerDatabase playerDatabase;
 
@@ -126,8 +126,8 @@ public class SlotMachine extends Game {
             String center = reels[column].getSymbol();
             lastGrid[1][column] = center;
 
-            lastGrid[0][column] = symbols[rand.nextInt(symbols.length)];
-            lastGrid[2][column] = symbols[rand.nextInt(symbols.length)];
+            lastGrid[0][column] = symbols[random.nextInt(symbols.length)];
+            lastGrid[2][column] = symbols[random.nextInt(symbols.length)];
         }
 
         // Compute a uniform cell width for nicer alignment
