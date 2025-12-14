@@ -184,8 +184,8 @@ public class Transaction {
             return;
         }
 
-        System.out.println("TRANSACTION HISTORY for " + player.getUsername());
-        System.out.println("╔═══════════════════════════════════════════════════════════════════════════════════════════╗");
+        System.out.println(" TRANSACTION HISTORY for " + player.getUsername());
+        System.out.println(" ╔═══════════════════════════════════════════════════════════════════════════════════════════╗");
 
         int startIndex = Math.max(0, allTransactions.size() - maxEntries);
         for (int i = startIndex; i < allTransactions.size(); i++) {

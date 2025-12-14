@@ -8,7 +8,7 @@ import utilities.ConsoleDisplay;
 import utilities.Formatter;
 import utilities.InputValidator;
 import games.Game;
-
+ 
 public class Unlucky9 extends Game {
 
 	private final Random random = new Random();

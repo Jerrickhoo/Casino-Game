@@ -39,6 +39,9 @@ public class MosesBonanza extends Game {
         this.balance = player.getBalance();
         this.playerDatabase = playerDatabase;
 
+        player.updateGamesPlayed();
+        playerDatabase.updatePlayer(player);
+
         if (reels == null)
             setupReels();
 
@@ -101,14 +104,19 @@ public class MosesBonanza extends Game {
                         "                                                      ==========================================");
                 System.out.println("\n                                                      CONGRATS! PALDO! ");
                 System.out.println();
+
+                // apply winnings and log WIN
+                updateBalance(winAmount);
+                Transaction.log(player.getUsername(), player.getPlayerId(), getGameName(), "WIN", winAmount, balance);
+
             } else {
                 System.out.println();
                 System.out.println("                                                      No matches this round.");
                 updateBalance(-bet);
+                // log LOSE
+                Transaction.log(player.getUsername(), player.getPlayerId(), getGameName(), "LOSE", -bet, balance);
                 System.out.println();
             }
-
-            updateBalance(winAmount);
 
             InputValidator.waitForUserInput(
                     "                                                      Press Enter to continue...");
@@ -232,13 +240,16 @@ public class MosesBonanza extends Game {
 
     @Override
     public void updateBalance(double amount) {
+        double previousBalance = balance;
         balance += amount;
         if (balance < 0)
             balance = 0;
 
         player.setBalance(balance);
         playerDatabase.updatePlayer(player);
-        Transaction.log(player.getUsername(), player.getPlayerId(), getGameName(), "SPIN_RESULT", amount, balance);
+
+        // log PLAYED_GAME with the balance BEFORE the change
+        Transaction.log(player.getUsername(), player.getPlayerId(), getGameName(), "PLAYED_GAME", 0, previousBalance);
     }
 
     @Override
@@ -250,7 +261,7 @@ public class MosesBonanza extends Game {
         System.out.println(
                 "                                                      ╠═══════════════════════════════════════════════╣");
         System.out.println(
-                "                                                      ║       Match all 3 symbols horizontally!       ║");
+                "                                                      ║        Match all 3 names horizontally!        ║");
         System.out.println(
                 "                                                      ╠-----------------------------------------------╣");
         System.out.println(
@@ -277,7 +288,7 @@ public class MosesBonanza extends Game {
 
     @Override
     public String getGameName() {
-        return "MosesBonanza";
+        return "Moses Bonanza";
     }
 
     private void reelSpinAnimation() {
