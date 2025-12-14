@@ -14,7 +14,10 @@ public class BlackJack extends Game {
     private double lastRoundPayout;
     private Deck deck;
     private static final int RESHUFFLE_THRESHOLD = 75;
-    private static final int BOX_WIDTH = 56; // unify box widths
+    private static final int BOX_WIDTH = 70; // wider box widths to match CasinoMain centering
+
+    // Fixed left margin to visually match CasinoMain's spacing
+    private static final String LEFT_MARGIN = "                                                ";
 
     public BlackJack(double startingBalance) {
         this.balance = startingBalance;
@@ -99,13 +102,13 @@ public class BlackJack extends Game {
         printCentered("");
 
         String[] lines = new String[] {
-                "       BLACKJACK RULES       ",
+                "       TWENTY WON! RULES       ",
                 "",
                 "OBJECTIVE: Beat the dealer without going over 21",
                 "",
                 "RULES:",
                 "  * Face cards = 10; Aces = 1 or 11",
-                "  * Blackjack pays 3:2 (1.5x)",
+                "  * TWENTY WON! pays 3:2 (1.5x)",
                 "  * Dealer hits on soft 17",
                 "  * Double allowed on first decision",
                 "",
@@ -125,7 +128,7 @@ public class BlackJack extends Game {
 
     @Override
     public String getGameName() {
-        return "Blackjack";
+        return "Twenty Won!";
     }
 
     @Override
@@ -178,16 +181,16 @@ public class BlackJack extends Game {
             displayHandBox(dealer, player, true);
             printCentered("");
             if (dealer.isBlackjack() && player.isBlackjack()) {
-                printCentered(formatMessage("NOTICE: ", "Push (both blackjack). Bet returned."));
+                printCentered(formatMessage("NOTICE: ", "Push (both TWENTY WON!). Bet returned."));
                 return true;
             } else if (player.isBlackjack()) {
                 double win = bet * 1.5;
                 balance += win;
                 lastRoundPayout = win;
-                printCentered(formatMessage("WIN: ", "BLACKJACK! +" + Formatter.formatCurrency(win)));
+                printCentered(formatMessage("WIN: ", "TWENTY WON! +" + Formatter.formatCurrency(win)));
                 return true;
             } else {
-                printCentered(formatMessage("LOSS: ", "Dealer has blackjack. You lose."));
+                printCentered(formatMessage("LOSS: ", "Dealer has TWENTY WON!. You lose."));
                 balance -= bet;
                 lastRoundPayout = -bet;
                 return true;
@@ -296,14 +299,14 @@ public class BlackJack extends Game {
         printCentered("");
 
         if (dealer.isBlackjack() && player.isBlackjack()) {
-            printCentered(formatMessage("NOTICE: ", "Push (both blackjack). Bet returned."));
+            printCentered(formatMessage("NOTICE: ", "Push (both TWENTY WON!). Bet returned."));
             return;
         }
         if (player.isBlackjack()) {
             double win = bet * 1.5;
             balance += win;
             lastRoundPayout = win;
-            printCentered(formatMessage("WIN: ", "BLACKJACK! +" + Formatter.formatCurrency(win)));
+            printCentered(formatMessage("WIN: ", "TWENTY WON! +" + Formatter.formatCurrency(win)));
             return;
         }
         if (playerValue > 21) {
@@ -350,8 +353,7 @@ public class BlackJack extends Game {
             printCentered(formatMessage("ERROR: ", "You cannot afford the minimum bet!"));
             return -1;
         }
-        printCenteredBox("Place your bet (min " + Formatter.formatCurrency(min) + ")");
-        double bet = InputValidator.readDouble(min, balance);
+        double bet = boxedReadDouble(min, balance, "Place your bet (min " + Formatter.formatCurrency(min) + ")");
         // Double-check that player can afford the bet they chose
         if (player != null && !player.canAfford(bet)) {
             printCentered(formatMessage("ERROR: ", "You cannot afford that bet!"));
@@ -369,19 +371,22 @@ public class BlackJack extends Game {
     }
 
     private void displayHandBox(Hand dealer, Hand player, boolean revealDealer) {
-        int totalWidth = BOX_WIDTH + 2; // top line: corner + BOX_WIDTH '─' + corner
+        int contentWidth = Math.max(BOX_WIDTH, 0);
+        contentWidth = Math.min(contentWidth, getConsoleWidth() - 8);
+        int totalWidth = contentWidth + 4; // corners and left/right spacing
         String padding = getLeftPadForTotalWidth(totalWidth);
-        System.out.println(padding + "┌" + "─".repeat(BOX_WIDTH) + "┐");
+        System.out.println(padding + "┌" + "─".repeat(contentWidth) + "┐");
         String dealerVal = dealer.getValue() + (dealer.isSoftHand() ? " (soft)" : "");
         String dealerDisplayRaw = revealDealer ? dealer.toString() + "  (" + dealerVal + ")" : dealer.showFirstCard();
-        String dealerDisplay = String.format("%-" + (BOX_WIDTH - 10) + "s", dealerDisplayRaw);
+        String dealerDisplay = String.format("%-" + (contentWidth - 10) + "s", dealerDisplayRaw);
         System.out.println(padding + "│ Dealer: " + dealerDisplay + "│");
         if (player != null) {
-            System.out.println(padding + "├" + "─".repeat(BOX_WIDTH) + "┤");
+            System.out.println(padding + "├" + "─".repeat(contentWidth) + "┤");
             String playerStr = player + "  (" + player.getValue() + (player.isSoftHand() ? " soft" : "") + ")";
-            System.out.println(padding + "│ Player: " + String.format("%-" + (BOX_WIDTH - 10) + "s", playerStr) + "│");
+            System.out
+                    .println(padding + "│ Player: " + String.format("%-" + (contentWidth - 10) + "s", playerStr) + "│");
         }
-        System.out.println(padding + "└" + "─".repeat(BOX_WIDTH) + "┘");
+        System.out.println(padding + "└" + "─".repeat(contentWidth) + "┘");
     }
 
     private void clearAndHeader() {
@@ -390,14 +395,15 @@ public class BlackJack extends Game {
     }
 
     private void printHeader() {
-        int width = BOX_WIDTH + 2;
+        int innerWidth = Math.max(BOX_WIDTH, 10);
+        innerWidth = Math.min(innerWidth, getConsoleWidth() - 10);
+        int width = innerWidth + 2;
         int totalWidth = width + 2; // account for corners
         String padding = getLeftPadForTotalWidth(totalWidth);
         String border = "═".repeat(width);
         System.out.println("");
         System.out.println(padding + "╔" + border + "╗");
-        String title = "BLACKJACK";
-        int innerWidth = width - 2; // pad inside
+        String title = "TWENTY WON!";
         int leftPad = Math.max(0, (innerWidth - title.length()) / 2);
         String titleLine = "║" + " ".repeat(leftPad) + title
                 + " ".repeat(Math.max(0, innerWidth - leftPad - title.length())) + "║";
@@ -411,7 +417,7 @@ public class BlackJack extends Game {
         printCentered("");
 
         String[] lines = new String[] {
-                "       WELCOME TO BLACKJACK       ",
+                "       WELCOME TO TWENTY WON!       ",
                 "",
                 "Enjoy the classic card game!",
                 ""
@@ -439,7 +445,8 @@ public class BlackJack extends Game {
         for (String line : lines)
             if (line != null)
                 inner = Math.max(inner, line.length());
-        int contentWidth = Math.min(70, Math.max(BOX_WIDTH, inner));
+        int contentWidth = Math.max(BOX_WIDTH, inner);
+        contentWidth = Math.min(contentWidth, getConsoleWidth() - 8); // clamp to console width
         String top = "╔" + "═".repeat(contentWidth + 2) + "╗";
         String bottom = "╚" + "═".repeat(contentWidth + 2) + "╝";
         int totalWidth = contentWidth + 4; // corner + inner + corners
@@ -455,19 +462,150 @@ public class BlackJack extends Game {
         System.out.println(padding + bottom);
     }
 
+    // Use centered boxed prompts where the user types so the cursor appears inside the box
     private void waitForEnterAndClear() {
-        InputValidator.waitForUserInput(centerText("Press Enter...", getConsoleWidth()));
+        boxedWaitForEnter("Press Enter...");
         clearAndHeader();
     }
 
     // Suppress question marks and show boxed prompt instead
     private int readChoice(int min, int max) {
-        printChoiceBox("Enter choice (" + min + "-" + max + ")");
-        return InputValidator.readInt(min, max);
+        return boxedReadChoice(min, max, "Enter choice (" + min + "-" + max + ")");
     }
 
     private void printChoiceBox(String text) {
-        printBoxLines(new String[] { text });
+        printInputBoxPrompt(text);
+    }
+
+    /**
+     * Print a centered single-line boxed prompt for input (used for choices, bet prompt, and Press Enter)
+     */
+    private void printInputBoxPrompt(String text) {
+        int inner = Math.max(BOX_WIDTH, text.length());
+        inner = Math.min(inner, getConsoleWidth() - 8);
+        String top = "╔" + "═".repeat(inner + 2) + "╗";
+        String bottom = "╚" + "═".repeat(inner + 2) + "╝";
+        int totalWidth = inner + 4;
+        String padding = getLeftPadForTotalWidth(totalWidth);
+        System.out.println(padding + top);
+        String padded = " " + text + " ".repeat(Math.max(0, inner - text.length() + 1));
+        System.out.println(padding + "║" + padded + "║");
+        System.out.println(padding + bottom);
+    }
+
+    /**
+     * Read an int while keeping the box visible and showing validation errors centered.
+     * Uses InputValidator.readString() and parses to control error messages and centering.
+     */
+    private int boxedReadChoice(int min, int max, String boxText) {
+        while (true) {
+            int inner = Math.max(BOX_WIDTH, boxText.length());
+            inner = Math.min(inner, getConsoleWidth() - 8);
+            String top = "╔" + "═".repeat(inner + 2) + "╗";
+            String bottom = "╚" + "═".repeat(inner + 2) + "╝";
+            int totalWidth = inner + 4;
+            String padding = getLeftPadForTotalWidth(totalWidth);
+
+            System.out.println(padding + top);
+            String padded = " " + boxText + " ".repeat(Math.max(0, inner - boxText.length() + 1));
+            System.out.println(padding + "║" + padded + "║");
+
+            // print prompt area and read input (cursor will be inside the box)
+            int promptPos = Math.max(0, (inner - 4) / 2);
+            System.out.print(padding + "║" + " ".repeat(promptPos) + "> ");
+            System.out.flush();
+
+            String input = InputValidator.readString();
+
+            // append spaces and right border on same line so the user's input appears inside the box
+            int remaining = inner - promptPos - 2 - input.length();
+            if (remaining < 0)
+                remaining = 0;
+            System.out.println(" ".repeat(remaining) + "║");
+            System.out.println(padding + bottom);
+
+            try {
+                int val = Integer.parseInt(input);
+                if (val >= min && val <= max) {
+                    return val;
+                } else {
+                    printCenteredBox("ERROR: Enter a number between " + min + " and " + max);
+                    ConsoleDisplay.pause(900);
+                }
+            } catch (NumberFormatException e) {
+                printCenteredBox("ERROR: Invalid number");
+                ConsoleDisplay.pause(900);
+            }
+        }
+    }
+
+    /**
+     * Read a double (for bets) while keeping the box visible and showing validation errors centered.
+     */
+    private double boxedReadDouble(double min, double max, String boxText) {
+        while (true) {
+            int inner = Math.max(BOX_WIDTH, boxText.length());
+            inner = Math.min(inner, getConsoleWidth() - 8);
+            String top = "╔" + "═".repeat(inner + 2) + "╗";
+            String bottom = "╚" + "═".repeat(inner + 2) + "╝";
+            int totalWidth = inner + 4;
+            String padding = getLeftPadForTotalWidth(totalWidth);
+
+            System.out.println(padding + top);
+            String padded = " " + boxText + " ".repeat(Math.max(0, inner - boxText.length() + 1));
+            System.out.println(padding + "║" + padded + "║");
+
+            // print prompt area and read input (cursor will be inside the box)
+            int promptPos = Math.max(0, (inner - 12) / 2);
+            System.out.print(padding + "║" + " ".repeat(promptPos));
+            System.out.flush();
+
+            String input = InputValidator.readString();
+
+            int remaining = inner - promptPos - input.length();
+            if (remaining < 0)
+                remaining = 0;
+            System.out.println(" ".repeat(remaining) + "║");
+            System.out.println(padding + bottom);
+
+            try {
+                double val = Double.parseDouble(input);
+                if (val >= min && val <= max) {
+                    return val;
+                } else {
+                    printCenteredBox("ERROR: Enter a number between " + Formatter.formatCurrency(min) + " and "
+                            + Formatter.formatCurrency(max));
+                    ConsoleDisplay.pause(900);
+                }
+            } catch (NumberFormatException e) {
+                printCenteredBox("ERROR: Invalid number");
+                ConsoleDisplay.pause(900);
+            }
+        }
+    }
+
+    /**
+     * Wait for Enter while keeping the box visible and the cursor positioned inside it
+     */
+    private void boxedWaitForEnter(String boxText) {
+        int inner = Math.max(BOX_WIDTH, boxText.length());
+        inner = Math.min(inner, getConsoleWidth() - 8);
+        String top = "╔" + "═".repeat(inner + 2) + "╗";
+        String bottom = "╚" + "═".repeat(inner + 2) + "╝";
+        int totalWidth = inner + 4;
+        String padding = getLeftPadForTotalWidth(totalWidth);
+
+        System.out.println(padding + top);
+        String padded = " " + boxText + " ".repeat(Math.max(0, inner - boxText.length() + 1));
+        System.out.println(padding + "║" + padded + "║");
+
+        int promptPos = Math.max(0, (inner - 2) / 2);
+        System.out.print(padding + "║" + " ".repeat(promptPos));
+        System.out.flush();
+
+        InputValidator.waitForUserInput("");
+        System.out.println(" ".repeat(inner - promptPos) + "║");
+        System.out.println(padding + bottom);
     }
 
     private int getConsoleWidth() {
@@ -483,8 +621,9 @@ public class BlackJack extends Game {
     private String centerText(String s, int width) {
         if (s == null)
             return "";
-        int padding = Math.max(0, (width - s.length()) / 2);
-        return " ".repeat(padding) + s;
+        // Simpler: always prefix the fixed left margin so output visually matches
+        // CasinoMain
+        return LEFT_MARGIN + s;
     }
 
     private void printCentered(String s) {
@@ -492,8 +631,9 @@ public class BlackJack extends Game {
     }
 
     private String getLeftPadForTotalWidth(int totalWidth) {
-        int padding = Math.max(0, (getConsoleWidth() - totalWidth) / 2);
-        return " ".repeat(padding);
+        int basePad = Math.max(0, (getConsoleWidth() - totalWidth) / 2);
+        int pad = Math.min(basePad, Math.max(0, getConsoleWidth() - totalWidth));
+        return LEFT_MARGIN + " ".repeat(pad);
     }
 
     // Rely on the project-level Card, Deck, and Hand classes in
