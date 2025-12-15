@@ -14,6 +14,7 @@ import games.Unlucky9.Unlucky9;
 public class TheHouseMain {
         private static PlayerDatabase playerDatabase;
         private static Player currentPlayer;
+
         public static void main(String[] args) throws Exception {
                 // Initialize database
                 playerDatabase = new PlayerDatabase();
@@ -140,9 +141,12 @@ public class TheHouseMain {
         private static void login() {
                 ConsoleDisplay.clearConsole();
                 System.out.println("\n\n");
-                System.out.println("                                                 ╔══════════════════════════════════════════════════════════╗");
-                System.out.println("                                                 ║                       PLAYER LOGIN                       ║");
-                System.out.println("                                                 ╚══════════════════════════════════════════════════════════╝");
+                System.out.println(
+                                "                                                 ╔══════════════════════════════════════════════════════════╗");
+                System.out.println(
+                                "                                                 ║                       PLAYER LOGIN                       ║");
+                System.out.println(
+                                "                                                 ╚══════════════════════════════════════════════════════════╝");
                 System.out.println("");
                 System.out.print("                                                 Username: ");
                 String username = InputValidator.readString();
@@ -168,19 +172,26 @@ public class TheHouseMain {
                         showGameMenu();
                 } else {
                         System.out.println("");
-                        System.out.println("                                                ╔══════════════════════════════════════════════════════════╗");
-                        System.out.println("                                                ║               ERROR: INVALID CREDENTIALS!                ║");
-                        System.out.println("                                                ╚══════════════════════════════════════════════════════════╝");
-                        InputValidator.waitForUserInput("                                                Press Enter to continue...");
+                        System.out.println(
+                                        "                                                ╔══════════════════════════════════════════════════════════╗");
+                        System.out.println(
+                                        "                                                ║               ERROR: INVALID CREDENTIALS!                ║");
+                        System.out.println(
+                                        "                                                ╚══════════════════════════════════════════════════════════╝");
+                        InputValidator.waitForUserInput(
+                                        "                                                Press Enter to continue...");
                 }
         }
 
         private static void register() {
                 ConsoleDisplay.clearConsole();
                 System.out.println("\n\n");
-                System.out.println("                                                 ╔══════════════════════════════════════════════════════════╗");
-                System.out.println("                                                 ║                       NEW ACCOUNT                        ║");
-                System.out.println("                                                 ╚══════════════════════════════════════════════════════════╝");
+                System.out.println(
+                                "                                                 ╔══════════════════════════════════════════════════════════╗");
+                System.out.println(
+                                "                                                 ║                       NEW ACCOUNT                        ║");
+                System.out.println(
+                                "                                                 ╚══════════════════════════════════════════════════════════╝");
                 System.out.println("");
 
                 System.out.print("                                                 Choose username: ");
@@ -188,19 +199,27 @@ public class TheHouseMain {
 
                 if (!Player.isValidUsername(username)) {
                         System.out.println("");
-                        System.out.println("                                                 ╔══════════════════════════════════════════════════════════╗");
-                        System.out.println("                                                 ║    ERROR: Username must be 3-20 chars (no : allowed)     ║");
-                        System.out.println("                                                 ╚══════════════════════════════════════════════════════════╝");
-                        InputValidator.waitForUserInput("                                                 Press Enter to continue...");
+                        System.out.println(
+                                        "                                                 ╔══════════════════════════════════════════════════════════╗");
+                        System.out.println(
+                                        "                                                 ║    ERROR: Username must be 3-20 chars (no : allowed)     ║");
+                        System.out.println(
+                                        "                                                 ╚══════════════════════════════════════════════════════════╝");
+                        InputValidator.waitForUserInput(
+                                        "                                                 Press Enter to continue...");
                         return;
                 }
 
                 if (playerDatabase.playerExists(username)) {
                         System.out.println("");
-                        System.out.println("                                                 ╔══════════════════════════════════════════════════════════╗");
-                        System.out.println("                                                 ║               ERROR: USERNAME ALREADY EXISTS!            ║");
-                        System.out.println("                                                 ╚══════════════════════════════════════════════════════════╝");
-                        InputValidator.waitForUserInput("                                                 Press Enter to continue...");
+                        System.out.println(
+                                        "                                                 ╔══════════════════════════════════════════════════════════╗");
+                        System.out.println(
+                                        "                                                 ║               ERROR: USERNAME ALREADY EXISTS!            ║");
+                        System.out.println(
+                                        "                                                 ╚══════════════════════════════════════════════════════════╝");
+                        InputValidator.waitForUserInput(
+                                        "                                                 Press Enter to continue...");
                         return;
                 }
 
@@ -209,39 +228,54 @@ public class TheHouseMain {
 
                 if (!Player.isValidPassword(password)) {
                         System.out.println("");
-                        System.out.println("                                                 ╔══════════════════════════════════════════════════════════╗");
-                        System.out.println("                                                 ║     ERROR: Password must be 4-30 chars (no : allowed)    ║");
-                        System.out.println("                                                 ╚══════════════════════════════════════════════════════════╝");
-                        InputValidator.waitForUserInput("                                                 Press Enter to continue...");
+                        System.out.println(
+                                        "                                                 ╔══════════════════════════════════════════════════════════╗");
+                        System.out.println(
+                                        "                                                 ║     ERROR: Password must be 4-30 chars (no : allowed)    ║");
+                        System.out.println(
+                                        "                                                 ╚══════════════════════════════════════════════════════════╝");
+                        InputValidator.waitForUserInput(
+                                        "                                                 Press Enter to continue...");
                         return;
                 }
 
                 Player newPlayer = new Player(username, password, 100.0);
                 if (playerDatabase.addPlayer(newPlayer)) {
                         System.out.println("");
-                        System.out.println("                                                 ╔══════════════════════════════════════════════════════════╗");
-                        System.out.println("                                                 ║                 SUCCESS: ACCOUNT CREATED!                ║");
+                        System.out.println(
+                                        "                                                 ╔══════════════════════════════════════════════════════════╗");
+                        System.out.println(
+                                        "                                                 ║                 SUCCESS: ACCOUNT CREATED!                ║");
                         System.out.println("                                                 ║  Starting balance: "
                                         + String.format("%-25s", Formatter.formatCurrency(100.0)) + "             ║");
-                        System.out.println("                                                 ╚══════════════════════════════════════════════════════════╝");
+                        System.out.println(
+                                        "                                                 ╚══════════════════════════════════════════════════════════╝");
                         ConsoleDisplay.pause(3000);
                         showMainMenu();
                 } else {
                         System.out.println("");
-                        System.out.println("                                                 ╔══════════════════════════════════════════════════════════╗");
-                        System.out.println("                                                 ║               ERROR: REGISTRATION FAILED!                ║");
-                        System.out.println("                                                 ╚══════════════════════════════════════════════════════════╝");
-                        InputValidator.waitForUserInput("                                                 Press Enter to continue...");
+                        System.out.println(
+                                        "                                                 ╔══════════════════════════════════════════════════════════╗");
+                        System.out.println(
+                                        "                                                 ║               ERROR: REGISTRATION FAILED!                ║");
+                        System.out.println(
+                                        "                                                 ╚══════════════════════════════════════════════════════════╝");
+                        InputValidator.waitForUserInput(
+                                        "                                                 Press Enter to continue...");
                 }
         }
 
         private static void exitProgramMessage() {
                 ConsoleDisplay.clearConsole();
                 System.out.println("");
-                System.out.println("                                                ╔══════════════════════════════════════════════════════════╗");
-                System.out.println("                                                ║               THE HOUSE: Thanks for playing!             ║");
-                System.out.println("                                                ║               Data saved successfully!                   ║");
-                System.out.println("                                                ╚══════════════════════════════════════════════════════════╝");
+                System.out.println(
+                                "                                                ╔══════════════════════════════════════════════════════════╗");
+                System.out.println(
+                                "                                                ║               THE HOUSE: Thanks for playing!             ║");
+                System.out.println(
+                                "                                                ║               Data saved successfully!                   ║");
+                System.out.println(
+                                "                                                ╚══════════════════════════════════════════════════════════╝");
                 ConsoleDisplay.pause(3000);
         }
 
@@ -249,12 +283,22 @@ public class TheHouseMain {
                 while (currentPlayer != null) {
                         ConsoleDisplay.clearConsole();
                         System.out.println("\n\n");
-                        System.out.println("                                                 ╔══════════════════════════════════════════════════════════╗");
-                        System.out.println("                                                 ║                      GAME SELECTION                      ║");
-                        System.out.println("                                                 ╠══════════════════════════════════════════════════════════╣");
-                        System.out.println("                                                 ║ Player: " + String.format("%-40s", currentPlayer.getUsername()) + "         ║");
-                        System.out.println("                                                 ║ Balance: " + String.format("%-39s", Formatter.formatCurrency(currentPlayer.getBalance())) + "         ║");
-                        System.out.println("                                                 ╚══════════════════════════════════════════════════════════╝");
+                        System.out.println(
+                                        "                                                 ╔══════════════════════════════════════════════════════════╗");
+                        System.out.println(
+                                        "                                                 ║                      GAME SELECTION                      ║");
+                        System.out.println(
+                                        "                                                 ╠══════════════════════════════════════════════════════════╣");
+                        System.out.println("                                                 ║ Player: "
+                                        + String.format("%-40s", currentPlayer.getUsername()) + "         ║");
+                        System.out.println(
+                                        "                                                 ║ Balance: "
+                                                        + String.format("%-39s",
+                                                                        Formatter.formatCurrency(
+                                                                                        currentPlayer.getBalance()))
+                                                        + "         ║");
+                        System.out.println(
+                                        "                                                 ╚══════════════════════════════════════════════════════════╝");
                         System.out.println("");
                         System.out.println("                                                      ╔══════════════════════╗ ╔══════════════════════╗");
                         System.out.println("                                                      ║    1. UNLUCKY        ║ ║    2. TWENTY WON     ║");
@@ -272,31 +316,53 @@ public class TheHouseMain {
                         System.out.println("                                                      ║     └─────────┘      ║ ║     └─────────┘      ║");
                         System.out.println("                                                      ╚══════════════════════╝ ╚══════════════════════╝");
                         System.out.println("");
-                        System.out.println("                                                      ╔══════════════════════╗ ╔══════════════════════╗");
-                        System.out.println("                                                      ║   5.   PLAYER        ║ ║   6. Transaction     ║");
-                        System.out.println("                                                      ║        STATS         ║ ║        History       ║");
-                        System.out.println("                                                      ║     ┌─────────┐      ║ ║     ┌─────────┐      ║");
-                        System.out.println("                                                      ║     │  STATS  │      ║ ║     │ HISTORY │      ║");
-                        System.out.println("                                                      ║     └─────────┘      ║ ║     └─────────┘      ║");
-                        System.out.println("                                                      ╚══════════════════════╝ ╚══════════════════════╝");
+                        System.out.println(
+                                        "                                                      ╔══════════════════════╗ ╔══════════════════════╗");
+                        System.out.println(
+                                        "                                                      ║   5.   PLAYER        ║ ║   6. Transaction     ║");
+                        System.out.println(
+                                        "                                                      ║        STATS         ║ ║        History       ║");
+                        System.out.println(
+                                        "                                                      ║     ┌─────────┐      ║ ║     ┌─────────┐      ║");
+                        System.out.println(
+                                        "                                                      ║     │  STATS  │      ║ ║     │ HISTORY │      ║");
+                        System.out.println(
+                                        "                                                      ║     └─────────┘      ║ ║     └─────────┘      ║");
+                        System.out.println(
+                                        "                                                      ╚══════════════════════╝ ╚══════════════════════╝");
                         System.out.println("");
-                        System.out.println("                                                      ╔══════════════════════╗ ╔══════════════════════╗");
-                        System.out.println("                                                      ║   7.  Cash In        ║ ║   8.  Cash Out       ║");
-                        System.out.println("                                                      ║     ┌─────────┐      ║ ║     ┌─────────┐      ║");
-                        System.out.println("                                                      ║     │  CASH   │      ║ ║     │  CASH   │      ║");
-                        System.out.println("                                                      ║     │   IN    │      ║ ║     │   OUT   │      ║");
-                        System.out.println("                                                      ║     └─────────┘      ║ ║     └─────────┘      ║");
-                        System.out.println("                                                      ╚══════════════════════╝ ╚══════════════════════╝");
+                        System.out.println(
+                                        "                                                      ╔══════════════════════╗ ╔══════════════════════╗");
+                        System.out.println(
+                                        "                                                      ║   7.  Cash In        ║ ║   8.  Cash Out       ║");
+                        System.out.println(
+                                        "                                                      ║     ┌─────────┐      ║ ║     ┌─────────┐      ║");
+                        System.out.println(
+                                        "                                                      ║     │  CASH   │      ║ ║     │  CASH   │      ║");
+                        System.out.println(
+                                        "                                                      ║     │   IN    │      ║ ║     │   OUT   │      ║");
+                        System.out.println(
+                                        "                                                      ║     └─────────┘      ║ ║     └─────────┘      ║");
+                        System.out.println(
+                                        "                                                      ╚══════════════════════╝ ╚══════════════════════╝");
                         System.out.println("");
-                        System.out.println("                                                                  ╔══════════════════════╗              ");
-                        System.out.println("                                                                  ║   9. LOGOUT          ║              ");
-                        System.out.println("                                                                  ║     ┌─────────┐      ║              ");
-                        System.out.println("                                                                  ║     │   EXIT  │      ║              ");
-                        System.out.println("                                                                  ║     └─────────┘      ║              ");
-                        System.out.println("                                                                  ╚══════════════════════╝              ");
+                        System.out.println(
+                                        "                                                                  ╔══════════════════════╗              ");
+                        System.out.println(
+                                        "                                                                  ║   9. LOGOUT          ║              ");
+                        System.out.println(
+                                        "                                                                  ║     ┌─────────┐      ║              ");
+                        System.out.println(
+                                        "                                                                  ║     │   EXIT  │      ║              ");
+                        System.out.println(
+                                        "                                                                  ║     └─────────┘      ║              ");
+                        System.out.println(
+                                        "                                                                  ╚══════════════════════╝              ");
                         System.out.println("");
-                        System.out.println("                                                 ╔══════════════════════════════════════════════════════════╗");
-                        System.out.print("                                                           Enter your choice (1-9): ");
+                        System.out.println(
+                                        "                                                 ╔══════════════════════════════════════════════════════════╗");
+                        System.out.print(
+                                        "                                                           Enter your choice (1-9): ");
 
                         int choice = InputValidator.readInt(1, 9);
 
@@ -343,9 +409,12 @@ public class TheHouseMain {
         private static void showPlayerStats() {
                 ConsoleDisplay.clearConsole();
                 System.out.println("\n\n");
-                System.out.println("                                                 ╔══════════════════════════════════════════════════════════╗");
-                System.out.println("                                                 ║                    PLAYER STATISTICS                     ║");
-                System.out.println("                                                 ╚══════════════════════════════════════════════════════════╝");
+                System.out.println(
+                                "                                                 ╔══════════════════════════════════════════════════════════╗");
+                System.out.println(
+                                "                                                 ║                    PLAYER STATISTICS                     ║");
+                System.out.println(
+                                "                                                 ╚══════════════════════════════════════════════════════════╝");
                 System.out.println("");
 
                 String[] stats = currentPlayer.getPlayerStats().split("\n");
@@ -355,11 +424,16 @@ public class TheHouseMain {
 
                 System.out.println("");
                 // Offer delete option here with strong warnings
-                System.out.println("                                                 ╔══════════════════════════════════════════════════════════╗");
-                System.out.println("                                                 ║    Options:                                              ║");
-                System.out.println("                                                 ║      1. Delete Account (PERMANENT)                       ║");
-                System.out.println("                                                 ║      2. Back                                             ║");
-                System.out.println("                                                 ╚══════════════════════════════════════════════════════════╝");
+                System.out.println(
+                                "                                                 ╔══════════════════════════════════════════════════════════╗");
+                System.out.println(
+                                "                                                 ║    Options:                                              ║");
+                System.out.println(
+                                "                                                 ║      1. Delete Account (PERMANENT)                       ║");
+                System.out.println(
+                                "                                                 ║      2. Back                                             ║");
+                System.out.println(
+                                "                                                 ╚══════════════════════════════════════════════════════════╝");
                 System.out.print("                                                 Choose option (1-2): ");
                 int opt = InputValidator.readInt(1, 2);
 
@@ -371,64 +445,93 @@ public class TheHouseMain {
         private static void deleteAccount() {
                 ConsoleDisplay.clearConsole();
                 System.out.println("\n\n");
-                System.out.println("                                                 ╔══════════════════════════════════════════════════════════╗");
-                System.out.println("                                                 ║                  WARNING: DELETE ACCOUNT                 ║");
-                System.out.println("                                                 ╚══════════════════════════════════════════════════════════╝");
+                System.out.println(
+                                "                                                 ╔══════════════════════════════════════════════════════════╗");
+                System.out.println(
+                                "                                                 ║                  WARNING: DELETE ACCOUNT                 ║");
+                System.out.println(
+                                "                                                 ╚══════════════════════════════════════════════════════════╝");
                 System.out.println("");
 
                 // Display current player's information
                 System.out.println("                                                 Account to be deleted:");
-                System.out.println("                                                 Username: " + currentPlayer.getUsername());
-                System.out.println("                                                 Balance: " + Formatter.formatCurrency(currentPlayer.getBalance()));
+                System.out.println("                                                 Username: "
+                                + currentPlayer.getUsername());
+                System.out.println("                                                 Balance: "
+                                + Formatter.formatCurrency(currentPlayer.getBalance()));
                 System.out.println("");
 
                 // Show warning and consequences
-                System.out.println("                                                 ╔══════════════════════════════════════════════════════════╗");
-                System.out.println("                                                 ║                         WARNING                          ║");
-                System.out.println("                                                 ╠══════════════════════════════════════════════════════════╣");
-                System.out.println("                                                 ║  - All game statistics will be permanently lost          ║");
-                System.out.println("                                                 ║  - All balance and transaction history will be deleted   ║");
-                System.out.println("                                                 ║  - This action cannot be undone                          ║");
-                System.out.println("                                                 ║  - You will need to create a new account to play again   ║");
-                System.out.println("                                                 ╚══════════════════════════════════════════════════════════╝");
+                System.out.println(
+                                "                                                 ╔══════════════════════════════════════════════════════════╗");
+                System.out.println(
+                                "                                                 ║                         WARNING                          ║");
+                System.out.println(
+                                "                                                 ╠══════════════════════════════════════════════════════════╣");
+                System.out.println(
+                                "                                                 ║  - All game statistics will be permanently lost          ║");
+                System.out.println(
+                                "                                                 ║  - All balance and transaction history will be deleted   ║");
+                System.out.println(
+                                "                                                 ║  - This action cannot be undone                          ║");
+                System.out.println(
+                                "                                                 ║  - You will need to create a new account to play again   ║");
+                System.out.println(
+                                "                                                 ╚══════════════════════════════════════════════════════════╝");
                 System.out.println("");
 
                 // First confirmation
-                System.out.print("                                                 Are you sure you want to delete your account? (yes/no): ");
+                System.out.print(
+                                "                                                 Are you sure you want to delete your account? (yes/no): ");
                 String confirmation1 = InputValidator.readString().toLowerCase();
 
                 if (!confirmation1.equals("yes")) {
-                        System.out.println("\n                                                 Account deletion cancelled.");
-                        InputValidator.waitForUserInput("                                                 Press Enter to continue...");
+                        System.out.println(
+                                        "\n                                                 Account deletion cancelled.");
+                        InputValidator.waitForUserInput(
+                                        "                                                 Press Enter to continue...");
                         return;
                 }
 
                 // Second confirmation - require password
-                System.out.print("\n                                                 Please enter your password to confirm deletion: ");
+                System.out.print(
+                                "\n                                                 Please enter your password to confirm deletion: ");
                 String passwordConfirm = InputValidator.readString();
                 ConsoleDisplay.clearConsole();
 
                 if (!currentPlayer.verifyPassword(passwordConfirm)) {
-                        System.out.println("\n                                                 ERROR: Password incorrect. Account deletion cancelled.");
-                        InputValidator.waitForUserInput("                                                 Press Enter to continue...");
+                        System.out.println(
+                                        "\n                                                 ERROR: Password incorrect. Account deletion cancelled.");
+                        InputValidator.waitForUserInput(
+                                        "                                                 Press Enter to continue...");
                         return;
                 }
 
                 // Final confirmation with strong warning
-                System.out.println("\n                                                 ╔══════════════════════════════════════════════════════════╗");
-                System.out.println("                                                 ║                      FINAL WARNING                       ║");
-                System.out.println("                                                 ╠══════════════════════════════════════════════════════════╣");
-                System.out.println("                                                 ║      Type 'DELETE MY ACCOUNT' to permanently delete      ║");
-                System.out.println("                                                 ║    all your data including your balance of " +
-                                String.format("%-13s", Formatter.formatCurrency(currentPlayer.getBalance()))
-                                + " ║");
-                System.out.println("                                                 ╚══════════════════════════════════════════════════════════╝");
+                System.out.println(
+                                "\n                                                 ╔══════════════════════════════════════════════════════════╗");
+                System.out.println(
+                                "                                                 ║                      FINAL WARNING                       ║");
+                System.out.println(
+                                "                                                 ╠══════════════════════════════════════════════════════════╣");
+                System.out.println(
+                                "                                                 ║      Type 'DELETE MY ACCOUNT' to permanently delete      ║");
+                System.out.println(
+                                "                                                 ║    all your data including your balance of "
+                                                +
+                                                String.format("%-13s",
+                                                                Formatter.formatCurrency(currentPlayer.getBalance()))
+                                                + " ║");
+                System.out.println(
+                                "                                                 ╚══════════════════════════════════════════════════════════╝");
                 System.out.print("\n                                                 Enter confirmation phrase: ");
                 String finalConfirmation = InputValidator.readString();
 
                 if (!finalConfirmation.equals("DELETE MY ACCOUNT")) {
-                        System.out.println("\n                                                 Account deletion cancelled.");
-                        InputValidator.waitForUserInput("                                                 Press Enter to continue...");
+                        System.out.println(
+                                        "\n                                                 Account deletion cancelled.");
+                        InputValidator.waitForUserInput(
+                                        "                                                 Press Enter to continue...");
                         return;
                 }
 
@@ -437,18 +540,21 @@ public class TheHouseMain {
 
                 if (deleted) {
                         ConsoleDisplay.clearConsole();
-                        System.out.println("\n                                                 SUCCESS: Account '" + currentPlayer.getUsername()
+                        System.out.println("\n                                                 SUCCESS: Account '"
+                                        + currentPlayer.getUsername()
                                         + "' has been permanently deleted.\n");
                         currentPlayer = null; // Clear current player
 
                         // Show animation or message
                         AnimationDisplay.deletionAnimation(true);
 
-                        InputValidator.waitForUserInput("\n                                                 Press Enter to return to main menu...");
+                        InputValidator.waitForUserInput(
+                                        "\n                                                 Press Enter to return to main menu...");
                 } else {
                         System.out.println(
                                         "\n                                                 ERROR: Failed to delete account. Please try again later.");
-                        InputValidator.waitForUserInput("                                                 Press Enter to continue...");
+                        InputValidator.waitForUserInput(
+                                        "                                                 Press Enter to continue...");
                 }
         }
 
@@ -473,13 +579,15 @@ public class TheHouseMain {
         private static void handleCashIn() {
                 ConsoleDisplay.clearConsole();
                 System.out.println("\n\n");
-                System.out.println("                                         ╔═════════════════════════════════════════════════════════════════════════════╗");
-                System.out.println("                                         ║                                 CASH IN                                     ║");
-                System.out.println("                                         ╚═════════════════════════════════════════════════════════════════════════════╝");
+                System.out.println(
+                                "                                         ╔═════════════════════════════════════════════════════════════════════════════╗");
+                System.out.println(
+                                "                                         ║                                  CASH IN                                    ║");
+                System.out.println(
+                                "                                         ║                              ($50 - $10,000)                                ║");
+                System.out.println(
+                                "                                         ╚═════════════════════════════════════════════════════════════════════════════╝");
                 AnimationDisplay.qrCodeCashIn();
-                InputValidator.waitForUserInput(
-                                "\n\n                                         Press Enter to continue...");
-                ConsoleDisplay.clearConsole();
                 System.out.println("");
                 System.out.print(
                                 "                                         Enter amount to add (type 'exit' to cancel): ");
@@ -492,8 +600,9 @@ public class TheHouseMain {
                         System.out.println("                                         New Balance: "
                                         + Formatter.formatCurrency(currentPlayer.getBalance()));
                 } else {
-                        System.out.println("");
-                        System.out.println("                                         ERROR: Invalid amount.");
+                        ConsoleDisplay.clearConsole();
+                        System.out.println("\n\n");
+                        System.out.println("                                         ERROR: Invalid amount ($50 - $10,000).");
                 }
                 InputValidator.waitForUserInput(
                                 "\n\n                                         Press Enter to continue...");
@@ -506,40 +615,65 @@ public class TheHouseMain {
                 System.out.println("                                         ║                                 CASH OUT                                    ║");
                 System.out.println("                                         ╚═════════════════════════════════════════════════════════════════════════════╝");
                 System.out.println("");
+
                 System.out.println("                                         Current Balance: "
                                 + Formatter.formatCurrency(currentPlayer.getBalance()));
                 System.out.println("");
-                System.out.print("                                         Enter amount to cash out (0 for full, type 'exit' to cancel): ");
-                double cashAmount = InputValidator.readDoubleOrExit(0);
-                if (cashAmount == Double.MIN_VALUE) {
-                        System.out.println("\n                                         SUCCESS: Cash out cancelled.");
-                } else if (cashAmount == 0) {
-                        double paid = playerDatabase.cashOutAll(currentPlayer);
-                        if (paid > 0) {
-                                System.out.println("\n                                         SUCCESS: Cash out successful. Amount paid: " + Formatter.formatCurrency(paid));
-                                System.out.println("\n                                         New Balance: " + Formatter.formatCurrency(currentPlayer.getBalance()));
-                        } else {
-                                System.out.println("\n                                         ERROR: Nothing to cash out.");
-                        }
-                } else {
-                        if (playerDatabase.cashOut(currentPlayer, cashAmount)) {
-                                System.out.println("\n                                         SUCCESS: Cash out successful. Amount paid: " + Formatter.formatCurrency(cashAmount));
-                                System.out.println("\n                                         New Balance: " + Formatter.formatCurrency(currentPlayer.getBalance()));
-                        } else {
-                                System.out.println("\n                                         ERROR: Invalid amount (must be >0 and <= balance).");
-                        }
+
+                // If balance is zero, stop immediately
+                if (currentPlayer.getBalance() <= 0) {
+                        System.out.println(
+                                        "                                         ERROR: There is nothing to cash out.");
+                        InputValidator.waitForUserInput(
+                                        "\n                                         Press Enter to continue...");
+                        return;
                 }
+
+                System.out.print(
+                                "                                         Enter amount to cash out (0 = full, type 'exit' to cancel): ");
+                double amount = InputValidator.readDoubleOrExit(0);
+
+                // User cancelled
+                if (amount == Double.MIN_VALUE) {
+                        System.out.println("\n                                         Cash out cancelled.");
+                }
+                // Cash out everything
+                else if (amount == 0) {
+                        double paid = playerDatabase.cashOutAll(currentPlayer);
+                        System.out.println("\n                                         SUCCESS: Cash out successful!");
+                        System.out.println("                                         Amount paid: "
+                                        + Formatter.formatCurrency(paid));
+                        System.out.println("                                         New Balance: "
+                                        + Formatter.formatCurrency(currentPlayer.getBalance()));
+                }
+                // Cash out specific amount
+                else if (playerDatabase.cashOut(currentPlayer, amount)) {
+                        System.out.println("\n                                         SUCCESS: Cash out successful!");
+                        System.out.println("                                         Amount paid: "
+                                        + Formatter.formatCurrency(amount));
+                        System.out.println("                                         New Balance: "
+                                        + Formatter.formatCurrency(currentPlayer.getBalance()));
+                }
+                // Invalid amount
+                else {
+                        System.out.println(
+                                        "\n                                         ERROR: Invalid amount. Must be greater than 0 and not exceed balance.");
+                }
+
                 InputValidator.waitForUserInput(
-                                "\n\n                                         Press Enter to continue...");
+                                "\n                                         Press Enter to continue...");
         }
 
         private static void handleLogout() {
                 currentPlayer = null;
                 ConsoleDisplay.clearConsole();
                 System.out.println("");
-                System.out.println("                                               ╔══════════════════════════════════════════════════════════╗");
-                System.out.println("                                               ║             SUCCESS: Logged out successfully!            ║");
-                System.out.println("                                               ╚══════════════════════════════════════════════════════════╝");
+                System.out.println(
+                                "                                               ╔══════════════════════════════════════════════════════════╗");
+                System.out.println(
+                                "                                               ║             SUCCESS: Logged out successfully!            ║");
+                System.out.println(
+                                "                                               ╚══════════════════════════════════════════════════════════╝");
                 ConsoleDisplay.pause(1500);
         }
 }
