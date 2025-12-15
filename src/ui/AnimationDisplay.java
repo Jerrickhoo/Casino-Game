@@ -519,90 +519,8 @@ public class AnimationDisplay {
                                 // short pause to make it fast/glitchy (~45ms per frame)
                                 ConsoleDisplay.pause(45);
                         }
-
-                        // Attempt to read username reflectively from common static fields/getters
-                        String username = "Player";
-                        String[] candidateClasses = { "Player", "player.Player", "models.Player", "model.Player",
-                                        "users.User", "User", "session.Session", "Session", "Main", "Game", "Casino",
-                                        "Auth", "CurrentPlayer", "UserSession" };
-                        outer: for (String cn : candidateClasses) {
-                                try {
-                                        Class<?> cls = Class.forName(cn);
-                                        String[] fieldNames = { "currentPlayer", "current", "CURRENT_PLAYER",
-                                                        "currentUser", "user", "instance" };
-                                        for (String fn : fieldNames) {
-                                                try {
-                                                        java.lang.reflect.Field f = cls.getDeclaredField(fn);
-                                                        f.setAccessible(true);
-                                                        Object inst = f.get(null);
-                                                        if (inst != null) {
-                                                                String name = extractNameFromObject(inst);
-                                                                if (name != null) {
-                                                                        username = name;
-                                                                        break outer;
-                                                                }
-                                                        }
-                                                } catch (NoSuchFieldException ignore) {
-                                                }
-                                        }
-                                        String[] getterNames = { "getCurrentPlayer", "getCurrentUser", "getInstance",
-                                                        "getCurrent" };
-                                        for (String gm : getterNames) {
-                                                try {
-                                                        java.lang.reflect.Method m = cls.getMethod(gm);
-                                                        Object inst = m.invoke(null);
-                                                        if (inst != null) {
-                                                                String name = extractNameFromObject(inst);
-                                                                if (name != null) {
-                                                                        username = name;
-                                                                        break outer;
-                                                                }
-                                                        }
-                                                } catch (NoSuchMethodException ignore) {
-                                                }
-                                        }
-                                } catch (ClassNotFoundException ignore) {
-                                } catch (Throwable ignore) {
-                                }
-                        }
-
                         ConsoleDisplay.clearConsole();
                 }
-        }
-
-        // helper placed inside method's scope via static-like helper to keep changes
-        // local to this file
-        private static String extractNameFromObject(Object inst) {
-                try {
-                        Class<?> ic = inst.getClass();
-                        // try common getter names
-                        String[] getters = { "getUsername", "getUserName", "getName", "username", "name" };
-                        for (String g : getters) {
-                                // try method first
-                                try {
-                                        java.lang.reflect.Method m = ic.getMethod(g);
-                                        Object val = m.invoke(inst);
-                                        if (val != null)
-                                                return val.toString();
-                                } catch (NoSuchMethodException ignore) {
-                                }
-                                // try field
-                                try {
-                                        java.lang.reflect.Field f = ic.getDeclaredField(g);
-                                        f.setAccessible(true);
-                                        Object val = f.get(inst);
-                                        if (val != null)
-                                                return val.toString();
-                                } catch (NoSuchFieldException ignore) {
-                                }
-                        }
-                        // fallback to toString()
-                        String s = inst.toString();
-                        if (s != null && !s.isEmpty())
-                                return s;
-                } catch (Throwable ignore) {
-                }
-                return null;
         }
 
         public static void qrCodeCashIn() {
@@ -692,10 +610,10 @@ public class AnimationDisplay {
                 if (!enabled)
                         return;
 
-                String[] frames = { "Deleting account...", 
-                "Deleting account data...",
-                "Removing statistics...",
-                "Account deleted successfully!" };
+                String[] frames = { "Deleting account...",
+                                "Deleting account data...",
+                                "Removing statistics...",
+                                "Account deleted successfully!" };
 
                 for (int i = 0; i < frames.length; i++) {
                         System.out.print("\r                                                 " + frames[i]);

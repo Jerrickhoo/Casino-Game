@@ -62,35 +62,27 @@ public class DiceBotAI {
         }
         return toReroll;
     }
+    
+    public static double decideBet(double toCall, double pot, double botBalance, DiceRank hand, double opponentBalance, int raisesRemaining) {
 
-    /**
-     * Decide betting action for the bot.
-     * Returns: -1 = fold, 0 = call/check, >0 = raise amount (additional over the
-     * call)
-     */
-    public static double decideBet(double toCall, double pot, double botBalance, DiceRank hand, double opponentBalance,
-            int raisesRemaining) {
-        // Basic heuristics
         if (toCall <= 0) {
-            // can check or bet
-            if (hand.compareTo(DiceRank.THREE_OF_A_KIND) >= 0) {
-                // strong hand, raise moderately
+            // if wala inog call, pwede mag check or bet ang opponent
+            if (hand.compareTo(DiceRank.THREE_OF_A_KIND) >= 0) { 
+                // if hand is higher or same sa 3 of a kind, consider as strong hand and decide to raise
                 double raise = Math.min(botBalance, Math.max(1.0, pot * 0.2));
                 return raise; // positive => raise
             }
             // otherwise check
             return 0;
         } else {
-            // need to call to stay in
+            // if may inog call, can call or fold
             if (hand.compareTo(DiceRank.PAIR) >= 0) {
-                // keep with pair or better
                 return 0; // call
             }
             // weak hand: fold if toCall large compared to pot/balance
             double affordRatio = toCall / Math.max(1.0, botBalance);
             if (affordRatio > 0.5)
                 return -1; // fold
-            // else maybe call small invites
             if (toCall <= pot * 0.25)
                 return 0; // call
             return -1; // otherwise fold
