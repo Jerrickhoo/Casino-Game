@@ -108,16 +108,16 @@ public class TwentyWon extends Game {
                 "",
                 "RULES:",
                 "  * Face cards = 10; Aces = 1 or 11",
-                "  * TWENTY WON! pays 3:2 (1.5x)",
-                "  * Dealer hits on soft 17",
-                "  * Double allowed on first decision",
+                "  * TWENTY WON! pays 1.5x",
+                "  * Dealer hits only when the value of the card is 17 or below",
+                "  * Double is only allowed on first decision",
                 "",
                 "PLAY OPTIONS:",
                 "  Hit    - Take another card. You may hit repeatedly until you stand or bust.",
-                "  Stand  - End your turn; dealer will then play their hand.",
-                "  Double - Only allowed on your first decision when you have exactly 2 cards.",
-                "           You double your wager, receive exactly one card, and then automatically stand.",
-                "",
+                "  Stand  - End your turn and dealer will then play their hand.",
+                "  Double - Only allowed on your first decision when you have exactly 2",
+                "           cards.Double your bet, receive exactly one card, and ",
+                "           then automatically stand.",
         };
         printBoxLines(lines);
 
