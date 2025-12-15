@@ -1,34 +1,9 @@
 package games.Unlucky9;
 
 import java.util.Random;
-import Core.Player;
-import Core.Transaction;
 
 public class Unlucky9Logic {
     private Random random = new Random();
-    private double balance;
-
-    public void setBalance(double balance) {
-        this.balance = balance;
-    }
-
-    public double getBalance() {
-        return balance;
-    }
-
-    public void applyBet(Player p, double bet) {
-        balance -= bet;
-        p.setBalance(balance);
-        Transaction.log(p.getUsername(), p.getPlayerId(),
-                "Unlucky9", "BET", bet, balance);
-    }
-
-    public void applyWin(Player p, double payout) {
-        balance += payout;
-        p.setBalance(balance);
-        Transaction.log(p.getUsername(), p.getPlayerId(),
-                "Unlucky9", "WIN", payout, balance);
-    }
 
     public int[] drawHand(int n) {
         int[] cards = new int[n];

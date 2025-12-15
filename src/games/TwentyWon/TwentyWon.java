@@ -113,7 +113,7 @@ public class TwentyWon extends Game {
                 "  * Double is only allowed on first decision",
                 "",
                 "PLAY OPTIONS:",
-                "  Hit    - Take another card. You may hit repeatedly until you stand or bust.",
+                "  Hit    - Take another card.You may hit repeatedly until you go over 21.",
                 "  Stand  - End your turn and dealer will then play their hand.",
                 "  Double - Only allowed on your first decision when you have exactly 2",
                 "           cards.Double your bet, receive exactly one card, and ",
@@ -500,28 +500,6 @@ public class TwentyWon extends Game {
     // Suppress question marks and show boxed prompt instead
     private int readChoice(int min, int max) {
         return boxedReadChoice(min, max, "Enter choice (" + min + "-" + max + ")");
-    }
-
-    private void printChoiceBox(String text) {
-        printInputBoxPrompt(text);
-    }
-
-    /**
-     * Print a centered single-line boxed prompt for input (used for choices, bet
-     * prompt, and Press Enter)
-     */
-    private void printInputBoxPrompt(String text) {
-        int inner = Math.max(BOX_WIDTH, text.length());
-        inner = Math.min(inner, Math.max(1, getConsoleWidth() - 8));
-        String top = "╔" + "═".repeat(inner + 2) + "╗";
-        String bottom = "╚" + "═".repeat(inner + 2) + "╝";
-        int totalWidth = inner + 4;
-        String padding = getLeftPadForTotalWidth(totalWidth);
-        System.out.println(padding + top);
-        String display = text.length() > inner ? text.substring(0, inner) : text;
-        String padded = " " + display + " ".repeat(Math.max(0, inner - display.length() + 1));
-        System.out.println(padding + "║" + padded + "║");
-        System.out.println(padding + bottom);
     }
 
     /**
