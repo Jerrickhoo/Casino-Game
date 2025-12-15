@@ -125,7 +125,7 @@ public class Unlucky9 extends Game {
                     return;
                 }
 
-                boolean drawMore = ui.boxedYesNoInput("Draw 3rd card? (Y/N): ");
+                boolean drawMore = ui.boxedYesNoInput("Draw 3rd card? (Y/N)");
 
                 if (drawMore) {
                     int card = logic.drawSingle();
@@ -158,14 +158,11 @@ public class Unlucky9 extends Game {
                 ui.waitForInput("Press Enter...");
 
             } else if (choice == 2) {
-
                 displayRules();
-
             } else if (choice == 3) {
                 exitGame = true;
             }
         } catch (Exception e) {
-            // Debug: Print error to help identify issues
             ConsoleDisplay.clearConsole();
             ui.printTop();
             ui.printLine("ERROR: " + e.getMessage());
@@ -176,32 +173,25 @@ public class Unlucky9 extends Game {
     }
 
     @Override
-    public double calculatePayout() {
-        return 0;
-    }
+    public double calculatePayout() { return 0; }
 
     @Override
     public void displayRules() {
-         ConsoleDisplay.clearConsole();
-                    ui.printTop();
-                    ui.printLine("UNLUCKY 9 - RULES");
-                    ui.printMid();
-                    ui.printLine("> Cards are digits 1-9");
-                    ui.printLine("> Hand value = sum % 10");
-                    ui.printLine("> Closest to 9 wins");
-                    ui.printLine("> Exact 9 pays 3x");
-                    ui.printBot();
-
-                    ui.waitForInput("Press Enter...");
+        ConsoleDisplay.clearConsole();
+        ui.printTop();
+        ui.printLine("UNLUKY 9 - RULES");
+        ui.printMid();
+        ui.printLine("> Cards are digits 1-9");
+        ui.printLine("> Hand value = sum % 10");
+        ui.printLine("> Closest to 9 wins");
+        ui.printLine("> Exact 9 pays 3x");
+        ui.printBot();
+        ui.waitForInput("Press Enter...");
     }
 
     @Override
-    public String getGameName() {
-        return "Unlucky9";
-    }
+    public String getGameName() { return "Unlucky9"; }
 
     @Override
-    public void updateBalance(double amt) {
-        balance += amt;
-    }
+    public void updateBalance(double amt) { balance += amt; }
 }

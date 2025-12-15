@@ -23,8 +23,8 @@ public class PlayerDatabase {
     private static final String DATA_DIRECTORY = "../src/data";
     private String playersFilePath = DATA_DIRECTORY + "/players.txt";
     // Cash limits
-    private static final double MIN_CASH = 50.0;
-    private static final double MAX_CASH_IN = 10000.0;
+    private static final double MIN_CASH = 50.00;
+    private static final double MAX_CASH_IN = 10000.00;
 
     public PlayerDatabase() {
         // Keep usernames ordered and allow case-insensitive lookups/ordering
@@ -61,13 +61,14 @@ public class PlayerDatabase {
                     loadedCount++;
                 }
             }
-            
+
             System.out.println();
             System.out.println();
             System.out.println();
             System.out.println();
             System.out.println();
-            System.out.print("                                                                  SUCCESS: Loaded " + loadedCount + " players");
+            System.out.print("                                                                  SUCCESS: Loaded "
+                    + loadedCount + " players");
             AnimationDisplay.showLoadingAnimation("", 1500);
             ConsoleDisplay.clearConsole();
 
@@ -319,11 +320,21 @@ public class PlayerDatabase {
      * Cash out a specific amount from player's balance. Returns true if successful.
      */
     public boolean cashOut(Player player, double amount) {
-        if (player == null || amount < MIN_CASH || !player.canAfford(amount)) {
+        if (player == null || amount <= 0 || amount > player.getBalance()) {
             return false;
         }
+
         player.setBalance(player.getBalance() - amount);
-        processTransaction(player, "CASH_OUT", amount);
+
+        Transaction.log(
+                player.getUsername(),
+                player.getPlayerId(),
+                "SYSTEM",
+                "CASH_OUT",
+                amount,
+                player.getBalance());
+
+        updatePlayer(player);
         return true;
     }
 
@@ -334,7 +345,7 @@ public class PlayerDatabase {
         if (player == null)
             return 0.0;
         double amount = player.getBalance();
-        if (amount < MIN_CASH || !player.canAfford(amount))
+        if (!player.canAfford(amount))
             return 0.0;
 
         player.setBalance(0.0);

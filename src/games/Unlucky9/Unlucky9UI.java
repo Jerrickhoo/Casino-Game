@@ -8,7 +8,7 @@ public class Unlucky9UI {
     // ===== BOXED INPUT METHODS =====
     public int boxedIntInput(String label, int min, int max) {
         printTop();
-        printLine(label);
+        printLine(centerText(label));
         System.out.print(Unlucky9Constants.LEFT_MARGIN + "║ > ");
         int value = InputValidator.readInt(min, max);
         printBot();
@@ -18,8 +18,8 @@ public class Unlucky9UI {
     public double boxedDoubleInput(String label, double min, double max) {
         while (true) {
             printTop();
-            printLine(label);
-            printLine("Bet Range: $" + String.format("%.1f", min) + " - " + Formatter.formatCurrency(max));
+            printLine(centerText(label));
+            printLine(centerText("Bet Range: $" + String.format("%.1f", min) + " - " + Formatter.formatCurrency(max)));
             System.out.print(Unlucky9Constants.LEFT_MARGIN + "║ > ");
             
             try {
@@ -45,16 +45,29 @@ public class Unlucky9UI {
 
     public boolean boxedYesNoInput(String label) {
         printTop();
-        printLine(label);
-        System.out.print(Unlucky9Constants.LEFT_MARGIN + "║ > ");
-        boolean value = InputValidator.readYesNo();
+        printLine(centerText(label));
+        String input;
+        boolean value;
+        while (true) {
+            System.out.print(Unlucky9Constants.LEFT_MARGIN + "║ > ");
+            input = InputValidator.readString().trim();
+            if (input.equalsIgnoreCase("Y") || input.equalsIgnoreCase("N")) {
+                value = input.equalsIgnoreCase("Y");
+                break;
+            } else {
+                printBot();
+                boxedMessage("ERROR: Please enter Y/N");
+                printTop();
+                printLine(centerText(label));
+            }
+        }
         printBot();
         return value;
     }
 
     public void boxedMessage(String msg) {
         printTop();
-        printLine(msg);
+        printLine(centerText(msg));
         printBot();
     }
 
@@ -107,6 +120,15 @@ public class Unlucky9UI {
         System.out.printf(Unlucky9Constants.LEFT_MARGIN + "║ %-"+Unlucky9Constants.BOX_WIDTH+"s ║%n", text);
     }
 
+    private String centerText(String text) {
+        if (text.length() >= Unlucky9Constants.BOX_WIDTH) return text;
+        int padding = (Unlucky9Constants.BOX_WIDTH - text.length()) / 2;
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < padding; i++) sb.append(" ");
+        sb.append(text);
+        return sb.toString();
+    }
+
     public void loadingAnimation(String msg, int cycles, int delay) {
         String[] frames = { ".", "..", "...", " ..", "  ." };
         for (int i = 0; i < cycles; i++) {
@@ -118,7 +140,6 @@ public class Unlucky9UI {
     }
 
     public void displayNewBalance(double balance) {
-        System.out.println(Unlucky9Constants.LEFT_MARGIN + "New Balance: " + 
-            utilities.Formatter.formatCurrency(balance));
+        System.out.println(Unlucky9Constants.LEFT_MARGIN + "New Balance: " + Formatter.formatCurrency(balance));
     }
 }
