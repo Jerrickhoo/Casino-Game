@@ -60,7 +60,7 @@ public class Unlucky9 extends Game {
             player.setBalance(player.getBalance() + bet);
             Transaction.log(player.getUsername(), player.getPlayerId(), "Unlucky9", "WIN", bet, player.getBalance());
             playerDatabase.updatePlayer(player);
-            ui.boxedMessage("PUSH — BET RETURNED");
+            ui.boxedMessage("PUSH - BET RETURNED");
         } else {
             ui.boxedMessage("YOU LOST " + Formatter.formatCurrency(bet));
         }
