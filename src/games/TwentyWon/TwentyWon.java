@@ -502,28 +502,6 @@ public class TwentyWon extends Game {
         return boxedReadChoice(min, max, "Enter choice (" + min + "-" + max + ")");
     }
 
-    private void printChoiceBox(String text) {
-        printInputBoxPrompt(text);
-    }
-
-    /**
-     * Print a centered single-line boxed prompt for input (used for choices, bet
-     * prompt, and Press Enter)
-     */
-    private void printInputBoxPrompt(String text) {
-        int inner = Math.max(BOX_WIDTH, text.length());
-        inner = Math.min(inner, Math.max(1, getConsoleWidth() - 8));
-        String top = "╔" + "═".repeat(inner + 2) + "╗";
-        String bottom = "╚" + "═".repeat(inner + 2) + "╝";
-        int totalWidth = inner + 4;
-        String padding = getLeftPadForTotalWidth(totalWidth);
-        System.out.println(padding + top);
-        String display = text.length() > inner ? text.substring(0, inner) : text;
-        String padded = " " + display + " ".repeat(Math.max(0, inner - display.length() + 1));
-        System.out.println(padding + "║" + padded + "║");
-        System.out.println(padding + bottom);
-    }
-
     /**
      * Read an int while keeping the box visible and showing validation errors
      * centered.
