@@ -7,12 +7,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.PriorityQueue;
 import java.util.TreeMap;
 import utilities.Formatter;
 import utilities.ConsoleDisplay;
@@ -25,6 +22,9 @@ public class PlayerDatabase {
     private Map<String, Player> players;
     private static final String DATA_DIRECTORY = "../src/data";
     private String playersFilePath = DATA_DIRECTORY + "/players.txt";
+    // Cash limits
+    private static final double MIN_CASH = 50.0;
+    private static final double MAX_CASH_IN = 10000.0;
 
     public PlayerDatabase() {
         // Keep usernames ordered and allow case-insensitive lookups/ordering
@@ -61,8 +61,13 @@ public class PlayerDatabase {
                     loadedCount++;
                 }
             }
-
-            System.out.print("   SUCCESS: Loaded " + loadedCount + " players");
+            
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.print("                                                                  SUCCESS: Loaded " + loadedCount + " players");
             AnimationDisplay.showLoadingAnimation("", 1500);
             ConsoleDisplay.clearConsole();
 
@@ -108,6 +113,20 @@ public class PlayerDatabase {
     }
 
     /**
+     * Authenticate a player using username and password.
+     * Returns the Player object on success, or null on failure.
+     */
+    public Player authenticate(String username, String password) {
+        if (username == null || password == null)
+            return null;
+        Player player = getPlayer(username);
+        if (player != null && player.verifyPassword(password)) {
+            return player;
+        }
+        return null;
+    }
+
+    /**
      * Update player (auto-saves to file)
      */
     public void updatePlayer(Player player) {
@@ -128,29 +147,21 @@ public class PlayerDatabase {
      * sort.
      */
     public List<Player> getLeaderboard(SortKey sortKey, boolean ascending) {
-        Collection<Player> playerCollection = players.values();
-
-        // For BALANCE use a heap (PriorityQueue) for efficient top-N extraction.
-        if (sortKey == SortKey.BALANCE) {
-            Comparator<Player> balanceComparator = Comparator.comparingDouble(Player::getBalance);
-            if (!ascending)
-                balanceComparator = balanceComparator.reversed(); // max-heap by reversing comparator
-            PriorityQueue<Player> priorityQueue = new PriorityQueue<>(balanceComparator);
-            priorityQueue.addAll(playerCollection);
-            List<Player> result = new ArrayList<>(priorityQueue.size());
-            while (!priorityQueue.isEmpty())
-                result.add(priorityQueue.poll());
-            return result;
-        }
+        // Build a mutable list of players and sort it with a comparator
+        List<Player> playerList = new ArrayList<>(players.values());
 
         Comparator<Player> comparator;
         switch (sortKey) {
+            case BALANCE:
+                comparator = Comparator.comparingDouble(Player::getBalance);
+                break;
             case PLAYER_ID:
-                comparator = Comparator.comparing(Player::getPlayerId, Comparator.nullsLast(String::compareTo));
+                comparator = Comparator.comparing(Player::getPlayerId,
+                        Comparator.nullsLast(Comparator.naturalOrder()));
                 break;
             case NAME:
                 comparator = Comparator.comparing(Player::getUsername,
-                        Comparator.nullsLast(String::compareToIgnoreCase));
+                        Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER));
                 break;
             case GAMES_PLAYED:
             default:
@@ -158,14 +169,14 @@ public class PlayerDatabase {
                 break;
         }
 
+        // Stable tie-breaker: case-insensitive username
         comparator = comparator.thenComparing(p -> p.getUsername(), String.CASE_INSENSITIVE_ORDER);
-        if (!ascending)
+        if (!ascending) {
             comparator = comparator.reversed();
+        }
 
-        // Use a LinkedList and sort it explicitly
-        List<Player> playerList = new LinkedList<>(playerCollection);
         playerList.sort(comparator);
-        return new ArrayList<>(playerList);
+        return playerList;
     }
 
     /**
@@ -265,14 +276,17 @@ public class PlayerDatabase {
             return;
         }
 
-        System.out.println("                 ┌──────┬────────────────┬────────────────────┬─────────────────┬──────────┐");
-        System.out.println("                 │ Rank │ Player ID      │ Player             │ Balance         │ Games    │");
-        System.out.println("                 ├──────┼────────────────┼────────────────────┼─────────────────┼──────────┤");
+        System.out.println(
+                "                 ┌──────┬────────────────┬────────────────────┬─────────────────┬──────────┐");
+        System.out.println(
+                "                 │ Rank │ Player ID      │ Player             │ Balance         │ Games    │");
+        System.out.println(
+                "                 ├──────┼────────────────┼────────────────────┼─────────────────┼──────────┤");
 
         for (int i = 0; i < Math.min(10, leaderboard.size()); i++) {
             Player player = leaderboard.get(i);
             String rank = (i == 0) ? " " : (i == 1) ? " " : (i == 2) ? " " : " ";
-            System.out.printf("                 │ %-4s │ %-12s │ %-18s │ %-13s │ %-8d │\n",
+            System.out.printf("                 │ %-4s │ %-12s │ %-18s │ %-15s │ %-8d │\n",
                     rank + (i + 1),
                     player.getPlayerId(),
                     player.getUsername(),
@@ -280,11 +294,12 @@ public class PlayerDatabase {
                     player.getGamesPlayed());
         }
 
-        System.out.println("                 └──────┴────────────────┴────────────────────┴─────────────────┴──────────┘");
+        System.out.println(
+                "                 └──────┴────────────────┴────────────────────┴─────────────────┴──────────┘");
     }
 
     public boolean cashIn(Player player, double amount) {
-        if (player == null || amount <= 0) {
+        if (player == null || amount < MIN_CASH || amount > MAX_CASH_IN) {
             return false;
         }
         // Update balance
@@ -299,14 +314,11 @@ public class PlayerDatabase {
      * Cash out a specific amount from player's balance. Returns true if successful.
      */
     public boolean cashOut(Player player, double amount) {
-        if (player == null || amount <= 0) {
-            return false;
-        }
-        double balance = player.getBalance();
-        if (amount > balance) {
+        if (player == null || amount < MIN_CASH || !player.canAfford(amount)) {
             return false;
         }
 
+        double balance = player.getBalance();
         // Deduct and persist
         player.setBalance(balance - amount);
         Transaction.log(player.getUsername(), player.getPlayerId(), "SYSTEM", "CASH_OUT", amount, player.getBalance());
@@ -321,7 +333,7 @@ public class PlayerDatabase {
         if (player == null)
             return 0.0;
         double amount = player.getBalance();
-        if (amount <= 0)
+        if (amount < MIN_CASH || !player.canAfford(amount))
             return 0.0;
 
         player.setBalance(0.0);

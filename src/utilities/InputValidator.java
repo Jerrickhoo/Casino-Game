@@ -29,10 +29,10 @@ public class InputValidator {
                 if (value >= min && value <= max) {
                     return value;
                 } else {
-                    System.out.print("Please enter a number between " + min + " and " + max + ": ");
+                    System.out.print("                                                Please enter a number between " + min + " and " + max + ": ");
                 }
             } catch (NumberFormatException e) {
-                System.out.print("Invalid input. Please enter a number between " + min + " and " + max + ": ");
+                System.out.print("                                                Invalid input. Please enter a number between " + min + " and " + max + ": ");
             }
         }
     }

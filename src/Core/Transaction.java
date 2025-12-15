@@ -184,8 +184,8 @@ public class Transaction {
             return;
         }
 
-        System.out.println("TRANSACTION HISTORY for " + player.getUsername());
-        System.out.println("╔══════════════════════════════════════════════════════════════════════════════════╗");
+        System.out.println(" TRANSACTION HISTORY for " + player.getUsername());
+        System.out.println(" ╔═══════════════════════════════════════════════════════════════════════════════════════════╗");
 
         int startIndex = Math.max(0, allTransactions.size() - maxEntries);
         for (int i = startIndex; i < allTransactions.size(); i++) {
@@ -194,7 +194,7 @@ public class Transaction {
     }
 
     public String toDisplayString() {
-        return String.format("%s | %s | %s | %s | %s | %s | %s",
+        return String.format(" %s | %s | %s | %s | %s | %s | %s",
                 DATE_FORMAT.format(timestamp), username, playerId == null ? "" : playerId, game, action,
                 Formatter.formatCurrency(amount), Formatter.formatCurrency(balanceAfter));
     }
