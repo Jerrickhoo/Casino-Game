@@ -36,12 +36,19 @@ public class TwentyWon extends Game {
         if (player != null)
             this.balance = player.getBalance();
 
+        // Track games played once per game start
+        if (player != null && playerDB != null) {
+            player.updateGamesPlayed();
+            playerDB.updatePlayer(player);
+        }
+
+        // (removed PLAY_SESSION_START log per new logging rules)
+
         showWelcomeScreen();
         displayRules();
 
         printCentered("");
-        printMenuBox(new String[] 
-            { "[1] Continue to Game", "[2] Return to The House" });
+        printMenuBox(new String[] { "[1] Continue to Game", "[2] Return to The House" });
         printCentered("");
         int menu = readChoice(1, 2);
         if (menu == 2)
@@ -56,6 +63,11 @@ public class TwentyWon extends Game {
             double bet = promptBet();
             if (bet <= 0)
                 break; // Invalid bet, exit to casino
+
+            // Log PLAY_GAME before the round (must precede WIN/LOSE)
+            if (this.player != null)
+                Transaction.log(this.player.getUsername(), this.player.getPlayerId(), getGameName(), "PLAY_GAME", 0,
+                        balance);
 
             playRoundWithBet(bet);
 
@@ -78,8 +90,7 @@ public class TwentyWon extends Game {
             player.setBalance(balance);
             if (playerDB != null) {
                 playerDB.updatePlayer(player);
-                Transaction.log(player.getUsername(), player.getPlayerId(), getGameName(), "PLAY_SESSION_END",
-                        balance, balance);
+                // PLAY_SESSION_END logging removed per updated logging rules
             }
         }
     }
@@ -90,8 +101,6 @@ public class TwentyWon extends Game {
         if (bet > 0)
             playRoundWithBet(bet);
     }
-
- 
 
     @Override
     public void displayRules() {
@@ -114,7 +123,7 @@ public class TwentyWon extends Game {
                 "===========",
                 "Hit",
                 "------",
-                "Stand",    
+                "Stand",
                 "-------",
                 "Double",
                 "",
@@ -167,6 +176,9 @@ public class TwentyWon extends Game {
             balance -= player.lastBet;
             lastRoundPayout = -player.lastBet;
             printCentered(formatMessage("LOSS: ", "Busted! -" + Formatter.formatCurrency(player.lastBet)));
+            if (this.player != null && lastRoundPayout != 0)
+                Transaction.log(this.player.getUsername(), this.player.getPlayerId(), getGameName(),
+                        lastRoundPayout > 0 ? "WIN" : "LOSE", lastRoundPayout, balance);
             waitForEnterAndClear();
             return;
         }
@@ -192,11 +204,17 @@ public class TwentyWon extends Game {
                 balance += win;
                 lastRoundPayout = win;
                 printCentered(formatMessage("WIN: ", "TWENTY WON! +" + Formatter.formatCurrency(win)));
+                if (this.player != null && lastRoundPayout != 0)
+                    Transaction.log(this.player.getUsername(), this.player.getPlayerId(), getGameName(),
+                            lastRoundPayout > 0 ? "WIN" : "LOSE", lastRoundPayout, balance);
                 return true;
             } else {
                 printCentered(formatMessage("LOSS: ", "Dealer has TWENTY WON!. You lose."));
                 balance -= bet;
                 lastRoundPayout = -bet;
+                if (this.player != null && lastRoundPayout != 0)
+                    Transaction.log(this.player.getUsername(), this.player.getPlayerId(), getGameName(),
+                            lastRoundPayout > 0 ? "WIN" : "LOSE", lastRoundPayout, balance);
                 return true;
             }
         }
@@ -235,8 +253,7 @@ public class TwentyWon extends Game {
                         return false;
                 } else if (choice == 2) {
                     return true;
-                } else {
-                    // Double down
+                } else if (canDouble) {
                     balance -= hand.lastBet;
                     hand.lastBet *= 2;
                     Card drawn = deck.draw();
@@ -246,21 +263,10 @@ public class TwentyWon extends Game {
                     return hand.getValue() <= 21;
                 }
             } else {
-                printMenuBox(new String[] { "[1] Hit", "[2] Stand" });
-                int choice = readChoice(1, 2);
-                if (choice == 1) {
-                    Card drawn = deck.draw();
-                    hand.add(drawn);
-                    printCentered(formatMessage("-> ", "You draw: " + drawn));
-                    ConsoleDisplay.pause(1500);
-                    if (hand.getValue() > 21)
-                        return false;
-                } else {
-                    return true;
-                }
+                printCenteredBox("Double is unavailable due to insufficient balance.");
+                ConsoleDisplay.pause(900);
             }
-            firstDecision = false;
-        }
+}
     }
 
     private void playDealerHand(Hand dealer, Hand player) {
@@ -311,24 +317,36 @@ public class TwentyWon extends Game {
             balance += win;
             lastRoundPayout = win;
             printCentered(formatMessage("WIN: ", "TWENTY WON! +" + Formatter.formatCurrency(win)));
+            if (this.player != null && lastRoundPayout != 0)
+                Transaction.log(this.player.getUsername(), this.player.getPlayerId(), getGameName(),
+                        lastRoundPayout > 0 ? "WIN" : "LOSE", lastRoundPayout, balance);
             return;
         }
         if (playerValue > 21) {
             balance -= bet;
             lastRoundPayout = -bet;
             printCentered(formatMessage("LOSS: ", "You busted -" + Formatter.formatCurrency(bet)));
+            if (this.player != null && lastRoundPayout != 0)
+                Transaction.log(this.player.getUsername(), this.player.getPlayerId(), getGameName(),
+                        lastRoundPayout > 0 ? "WIN" : "LOSE", lastRoundPayout, balance);
             return;
         }
         if (dealerValue > 21) {
             balance += bet;
             lastRoundPayout = bet;
             printCentered(formatMessage("WIN: ", "Dealer busted! +" + Formatter.formatCurrency(bet)));
+            if (this.player != null && lastRoundPayout != 0)
+                Transaction.log(this.player.getUsername(), this.player.getPlayerId(), getGameName(),
+                        lastRoundPayout > 0 ? "WIN" : "LOSE", lastRoundPayout, balance);
             return;
         }
         if (playerValue > dealerValue) {
             balance += bet;
             lastRoundPayout = bet;
             printCentered(formatMessage("WIN: ", "You win +" + Formatter.formatCurrency(bet)));
+            if (this.player != null && lastRoundPayout != 0)
+                Transaction.log(this.player.getUsername(), this.player.getPlayerId(), getGameName(),
+                        lastRoundPayout > 0 ? "WIN" : "LOSE", lastRoundPayout, balance);
         } else if (playerValue == dealerValue) {
             lastRoundPayout = 0;
             printCentered(formatMessage("NOTICE: ", "Push. Bet returned."));
@@ -336,6 +354,9 @@ public class TwentyWon extends Game {
             balance -= bet;
             lastRoundPayout = -bet;
             printCentered(formatMessage("LOSS: ", "You lose -" + Formatter.formatCurrency(bet)));
+            if (this.player != null && lastRoundPayout != 0)
+                Transaction.log(this.player.getUsername(), this.player.getPlayerId(), getGameName(),
+                        lastRoundPayout > 0 ? "WIN" : "LOSE", lastRoundPayout, balance);
         }
     }
 
