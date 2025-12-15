@@ -256,7 +256,7 @@ public class CasinoMain {
                     "                                                     ╚══════════════════════╝ ╚══════════════════════╝");
             System.out.println("");
             System.out.println("                                                     ╔══════════════════════╗ ╔══════════════════════╗");
-            System.out.println("                                                     ║   3. SLOT MACHINE    ║ ║   4. CHUCK-A-LUCK    ║");
+            System.out.println("                                                     ║   3. SLOT MACHINE    ║ ║   4. DICE POKER      ║");
             System.out.println("                                                     ║     ┌─────────┐      ║ ║     ┌─────────┐      ║");
             System.out.println("                                                     ║     │  7 7 7  │      ║ ║     │I II III │      ║");
             System.out.println("                                                     ║     │ JACKPOT │      ║ ║     │  DICE   │      ║");

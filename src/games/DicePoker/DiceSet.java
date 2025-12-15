@@ -37,19 +37,16 @@ public class DiceSet {
         if (zeroBasedIndices == null || zeroBasedIndices.isEmpty())
             return;
         // ensure unique and within range
-        List<Integer> uniq = zeroBasedIndices.stream()
-                .filter(i -> i >= 0 && i < dice.length)
-                .distinct()
-                .collect(Collectors.toList());
+        List<Integer> uniq = zeroBasedIndices.stream().filter(i -> i >= 0 && i < dice.length).distinct().collect(Collectors.toList());
         for (int i : uniq) {
             dice[i] = roll();
         }
     }
 
     public void showHand() {
-        System.out.println("Here are the values of your hand:");
+
         for (int i = 0; i < dice.length; i++) {
-            System.out.println(Formatter.numToDice(dice[i]) + " (" + dice[i] + ")");
+            System.out.println(Formatter.numToDice(dice[i], i+1));
         }
     }
 
@@ -113,16 +110,23 @@ public class DiceSet {
      * Return a copy of dice sorted descending for tie-breaking.
      */
     public int[] getSortedDescending() {
-        int[] copy = Arrays.copyOf(dice, dice.length);
-        Arrays.sort(copy);
-        // reverse
-        for (int i = 0; i < copy.length / 2; i++) {
-            int tmp = copy[i];
-            copy[i] = copy[copy.length - 1 - i];
-            copy[copy.length - 1 - i] = tmp;
+    int[] copy = Arrays.copyOf(dice, dice.length);
+
+    boolean swapped;
+    for (int i = 0; i < copy.length - 1; i++) {
+        swapped = false;
+        for (int j = 0; j < copy.length - 1 - i; j++) {
+            if (copy[j] < copy[j + 1]) {
+                int temp = copy[j];
+                copy[j] = copy[j + 1];
+                copy[j + 1] = temp;
+                swapped = true;
+            }
         }
-        return copy;
+        if (!swapped) break;
     }
+    return copy;
+}
 
     public int[] getRawDice() {
         return Arrays.copyOf(dice, dice.length);

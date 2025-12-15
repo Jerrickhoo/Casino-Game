@@ -53,8 +53,7 @@ public class SlotMachine extends Game {
             System.out.println("            ║             MOSES BONANZA              ║");
             System.out.println("            ╠════════════════════════════════════════╣");
             System.out.println("            ║ Player: " + String.format("%-30s", player.getUsername()) + " ║");
-            System.out.println(
-                    "            ║ Balance: " + String.format("%-29s", Formatter.formatCurrency(balance)) + " ║");
+            System.out.println("            ║ Balance: " + String.format("%-29s", Formatter.formatCurrency(balance)) + " ║");
             System.out.println("            ╚════════════════════════════════════════╝");
             System.out.println("");
             System.out.println("            ╔══════════════════════╗ ╔══════════════════════╗");
