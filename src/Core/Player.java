@@ -79,10 +79,10 @@ public class Player {
     // Get player stats
     public String getPlayerStats() {
         return String.format(
-                "👤 Player: %s\n" +
-                        "🆔 ID: %s\n" +
-                        "💰 Balance: %s\n" +
-                        "🎮 Games Played: %d",
+                "Player: %s\n" +
+                        "ID: %s\n" +
+                        "Balance: %s\n" +
+                        "Games Played: %d",
                 username, playerId, Formatter.formatCurrency(balance), gamesPlayed);
     }
 
