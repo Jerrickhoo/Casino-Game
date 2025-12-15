@@ -14,15 +14,11 @@ import games.Unlucky9.Unlucky9;
 public class TheHouseMain {
         private static PlayerDatabase playerDatabase;
         private static Player currentPlayer;
-
         public static void main(String[] args) throws Exception {
                 // Initialize database
                 playerDatabase = new PlayerDatabase();
-
                 AnimationDisplay.startUpGameAnimation(false); // put it false if animation annoying
-
                 showMainMenu();
-
                 InputValidator.closeScanner();
         }
 
@@ -121,9 +117,7 @@ public class TheHouseMain {
                         System.out.println(
                                         "                                                ╔═════════════════════════════════════════════════════════╗");
                         System.out.print("                                                  Enter your choice (1-4): ");
-
                         int choice = InputValidator.readInt(1, 4);
-
                         switch (choice) {
                                 case 1:
                                         login();
@@ -224,7 +218,6 @@ public class TheHouseMain {
 
                 Player newPlayer = new Player(username, password, 100.0);
                 if (playerDatabase.addPlayer(newPlayer)) {
-                        currentPlayer = newPlayer;
                         System.out.println("");
                         System.out.println("                                                 ╔══════════════════════════════════════════════════════════╗");
                         System.out.println("                                                 ║                 SUCCESS: ACCOUNT CREATED!                ║");
@@ -263,21 +256,35 @@ public class TheHouseMain {
                         System.out.println("                                                 ║ Balance: " + String.format("%-39s", Formatter.formatCurrency(currentPlayer.getBalance())) + "         ║");
                         System.out.println("                                                 ╚══════════════════════════════════════════════════════════╝");
                         System.out.println("");
-                        System.out.println("                                                      ╔══════════════════════╗ ╔══════════════════════╗");
-                        System.out.println("                                                      ║    1. LUCKY 9        ║ ║    2. BLACKJACK      ║");
-                        System.out.println("                                                      ║    ┌─────────┐       ║ ║    ┌─────────┐       ║");
-                        System.out.println("                                                      ║    │    9    │       ║ ║    │ K Q J A │       ║");
-                        System.out.println("                                                      ║    │   WIN   │       ║ ║    │  BJACK  │       ║");
-                        System.out.println("                                                      ║    └─────────┘       ║ ║    └─────────┘       ║");
-                        System.out.println("                                                      ╚══════════════════════╝ ╚══════════════════════╝");
+                        System.out.println(
+                                        "                                                     ╔══════════════════════╗ ╔══════════════════════╗");
+                        System.out.println(
+                                        "                                                     ║    1. UNLUCKY        ║ ║    2. TWENTY WON     ║");
+                        System.out.println(
+                                        "                                                     ║    ┌─────────┐       ║ ║    ┌─────────┐       ║");
+                        System.out.println(
+                                        "                                                     ║    │    9    │       ║ ║    │ K Q J A │       ║");
+                        System.out.println(
+                                        "                                                     ║    │   WIN   │       ║ ║    │  BJACK  │       ║");
+                        System.out.println(
+                                        "                                                     ║    └─────────┘       ║ ║    └─────────┘       ║");
+                        System.out.println(
+                                        "                                                     ╚══════════════════════╝ ╚══════════════════════╝");
                         System.out.println("");
-                        System.out.println("                                                      ╔══════════════════════╗ ╔══════════════════════╗");
-                        System.out.println("                                                      ║   3. SLOT MACHINE    ║ ║   4. CHUCK-A-LUCK    ║");
-                        System.out.println("                                                      ║     ┌─────────┐      ║ ║     ┌─────────┐      ║");
-                        System.out.println("                                                      ║     │  7 7 7  │      ║ ║     │I II III │      ║");
-                        System.out.println("                                                      ║     │ JACKPOT │      ║ ║     │  DICE   │      ║");
-                        System.out.println("                                                      ║     └─────────┘      ║ ║     └─────────┘      ║");
-                        System.out.println("                                                      ╚══════════════════════╝ ╚══════════════════════╝");
+                        System.out.println(
+                                        "                                                     ╔══════════════════════╗ ╔══════════════════════╗");
+                        System.out.println(
+                                        "                                                     ║   3. MOSES BONANZA   ║ ║   4. Ace Roll        ║");
+                        System.out.println(
+                                        "                                                     ║     ┌─────────┐      ║ ║     ┌─────────┐      ║");
+                        System.out.println(
+                                        "                                                     ║     │  7 7 7  │      ║ ║     │I II III │      ║");
+                        System.out.println(
+                                        "                                                     ║     │ JACKPOT │      ║ ║     │  DICE   │      ║");
+                        System.out.println(
+                                        "                                                     ║     └─────────┘      ║ ║     └─────────┘      ║");
+                        System.out.println(
+                                        "                                                     ╚══════════════════════╝ ╚══════════════════════╝");
                         System.out.println("");
                         System.out.println("                                                      ╔══════════════════════╗ ╔══════════════════════╗");
                         System.out.println("                                                      ║   5.   PLAYER        ║ ║   6. Transaction     ║");
