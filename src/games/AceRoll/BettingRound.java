@@ -48,7 +48,7 @@ public class BettingRound {
                         + String.format("%-10s", Formatter.formatCurrency(botBalance)) + " ║");
                 System.out.println("            ╚════════════════════════════════╝");
 
-                DicePoker.showHandUI(playerHand);
+                AceRoll.showHandUI(playerHand);
 
                 double toCall = botContrib - playerContrib;
 
@@ -84,7 +84,7 @@ public class BettingRound {
                                 return new BettingResult(pot, true, -1);
                             } else {
                                 // sort hand
-                                DicePoker.showSortedHand(playerHand);
+                                AceRoll.showSortedHand(playerHand);
                                 continue;
                             }
                         }
@@ -101,7 +101,7 @@ public class BettingRound {
                                 System.out.print("        Your action: 1) Check 2) Bet/Raise 3) Fold 4) Sort Hand: ");
                                 choice = InputValidator.readInt(1, 4);
                                 if (choice == 4) {
-                                    DicePoker.showSortedHand(playerHand);
+                                    AceRoll.showSortedHand(playerHand);
                                     continue;
                                 }
                                 break;
@@ -161,7 +161,7 @@ public class BettingRound {
                                     return new BettingResult(pot, true, -1);
                                 } else {
                                     // sort hand
-                                    DicePoker.showSortedHand(playerHand);
+                                    AceRoll.showSortedHand(playerHand);
                                     continue;
                                 }
                             }
@@ -188,7 +188,7 @@ public class BettingRound {
                                     + " 2) Raise 3) Fold 4) Sort Hand: ");
                             choice = InputValidator.readInt(1, 4);
                             if (choice == 4) {
-                                DicePoker.showSortedHand(playerHand);
+                                AceRoll.showSortedHand(playerHand);
                                 continue;
                             }
                             break;
@@ -239,7 +239,7 @@ public class BettingRound {
                                     + " 2) Fold 3) Sort Hand: ");
                             choice = InputValidator.readInt(1, 3);
                             if (choice == 3) {
-                                DicePoker.showSortedHand(playerHand);
+                                AceRoll.showSortedHand(playerHand);
                                 continue;
                             }
                             break;
@@ -255,7 +255,7 @@ public class BettingRound {
                             System.out.println("               ╔════════════════════════════╗");
                             System.out.println("               ║         You Called         ║");
                             System.out.println("               ╚════════════════════════════╝");
-                            DicePoker.showHandUI(playerHand);
+                            AceRoll.showHandUI(playerHand);
                         } else {
                             // fold -> bot wins
                             return new BettingResult(pot, true, -1);
