@@ -6,8 +6,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -144,36 +143,48 @@ public class PlayerDatabase {
      * sort.
      */
     public List<Player> getLeaderboard(SortKey sortKey, boolean ascending) {
-        // Build a mutable list of players and sort it with a comparator
-        List<Player> playerList = new ArrayList<>(players.values());
 
-        Comparator<Player> comparator;
-        switch (sortKey) {
+        // Convert players to a LinkedList
+        LinkedList<Player> leaderboard = new LinkedList<>(players.values());
+
+        // Manual insertion sort for LinkedList
+        for (int i = 1; i < leaderboard.size(); i++) {
+            Player current = leaderboard.get(i);
+            int j = i - 1;
+
+            while (j >= 0 && shouldSwap(leaderboard.get(j), current, sortKey, ascending)) {
+                leaderboard.set(j + 1, leaderboard.get(j));
+                j--;
+            }
+            leaderboard.set(j + 1, current);
+        }
+        return leaderboard;
+    }
+
+    private boolean shouldSwap(Player player1, Player player2, SortKey key, boolean ascending) {
+        int result = 0;
+
+        switch (key) {
             case BALANCE:
-                comparator = Comparator.comparingDouble(Player::getBalance);
+                result = Double.compare(player1.getBalance(), player2.getBalance());
                 break;
             case PLAYER_ID:
-                comparator = Comparator.comparing(Player::getPlayerId,
-                        Comparator.nullsLast(Comparator.naturalOrder()));
+                result = player1.getPlayerId().compareToIgnoreCase(player2.getPlayerId());
                 break;
             case NAME:
-                comparator = Comparator.comparing(Player::getUsername,
-                        Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER));
+                result = player1.getUsername().compareToIgnoreCase(player2.getUsername());
                 break;
             case GAMES_PLAYED:
             default:
-                comparator = Comparator.comparingInt(Player::getGamesPlayed);
+                result = Integer.compare(player1.getGamesPlayed(), player2.getGamesPlayed());
                 break;
         }
-
-        // Stable tie-breaker: case-insensitive username
-        comparator = comparator.thenComparing(p -> p.getUsername(), String.CASE_INSENSITIVE_ORDER);
-        if (!ascending) {
-            comparator = comparator.reversed();
+        // Tie-breaker: username (stable ordering)
+        if (result == 0) {
+            result = player1.getUsername().compareToIgnoreCase(player2.getUsername());
         }
-
-        playerList.sort(comparator);
-        return playerList;
+        // Ascending or descending
+        return ascending ? result > 0 : result < 0;
     }
 
     /**
@@ -296,7 +307,8 @@ public class PlayerDatabase {
     }
 
     /**
-     * Helper method to handle common transaction pattern: update balance, log, and persist.
+     * Helper method to handle common transaction pattern: update balance, log, and
+     * persist.
      */
     private void processTransaction(Player player, String action, double amount) {
         Transaction.log(player.getUsername(), player.getPlayerId(), "SYSTEM", action, amount, player.getBalance());
