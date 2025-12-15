@@ -1,299 +1,180 @@
 package games.Unlucky9;
 
-import java.util.Random;
 import Core.Player;
 import Core.PlayerDatabase;
-import Core.Transaction;
 import utilities.ConsoleDisplay;
 import utilities.Formatter;
-import utilities.InputValidator;
 import games.Game;
 
 public class Unlucky9 extends Game {
 
-	private final Random random = new Random();
+    private Unlucky9UI ui;
+    private Unlucky9Logic logic;
 
-	// ===== UI CONSTANTS =====
-	private static final int BOX_WIDTH = 56;
-	private static final String LEFT_MARGIN = "                                                ";
-	private static final String H_LINE =
-			"══════════════════════════════════════════════════════════";
+    public Unlucky9() {
+        super();
+        this.ui = new Unlucky9UI();
+        this.logic = new Unlucky9Logic();
+    }
 
-	public Unlucky9() {
-		super();
-	}
+    public static void play(Player currentPlayer, PlayerDatabase playerDB) {
+        new Unlucky9().startGame(currentPlayer, playerDB);
+    }
 
-	public static void play(Player currentPlayer, PlayerDatabase playerDB) {
-		new Unlucky9().startGame(currentPlayer, playerDB);
-	}
+    // ===== MAIN GAME LOOP =====
+    private void playWithPlayer(Player currentPlayer, PlayerDatabase playerDB) {
 
-	// ===== MAIN GAME LOOP =====
-	private void playWithPlayer(Player currentPlayer, PlayerDatabase playerDB) {
+        this.player = currentPlayer;
+        this.balance = currentPlayer.getBalance();
+        logic.setBalance(balance);
 
-		this.player = currentPlayer;
-		this.balance = currentPlayer.getBalance();
+        while (true) {
+            try {
+                ConsoleDisplay.clearConsole();
 
-		while (true) {
-			try {
-				ConsoleDisplay.clearConsole();
+                ui.printTop();
+                ui.printLine("UNLUCKY 9");
+                ui.printMid();
+                ui.printLine("Player: " + currentPlayer.getUsername());
+                ui.printLine("Balance: " + Formatter.formatCurrency(balance));
+                ui.printBot();
 
-				printTop();
-				printLine("UNLUCKY 9");
-				printMid();
-				printLine("Player: " + currentPlayer.getUsername());
-				printLine("Balance: " + Formatter.formatCurrency(balance));
-				printBot();
+                System.out.println();
 
-				System.out.println();
+                ui.printTop();
+                ui.printLine("1. PLAY");
+                ui.printLine("2. TUTORIAL");
+                ui.printLine("3. EXIT GAME");
+                ui.printBot();
 
-				printTop();
-				printLine("1. PLAY");
-				printLine("2. TUTORIAL");
-				printLine("3. EXIT GAME");
-				printBot();
+                int choice = ui.boxedIntInput("Choose (1-3): ", 1, 3);
 
-				int choice = boxedIntInput("Choose (1-3): ", 1, 3);
+                if (choice == 1) {
 
-				if (choice == 1) {
+                    if (balance <= 0) {
+                        ui.boxedMessage("NO FUNDS AVAILABLE");
+                        ui.waitForInput("Press Enter...");
+                        continue;
+                    }
 
-					if (balance <= 0) {
-						boxedMessage("NO FUNDS AVAILABLE");
-						waitForInput("Press Enter...");
-						continue;
-					}
+                    double bet = ui.boxedDoubleInput(
+                            "Enter bet amount:",
+                            1,
+                            balance
+                    );
 
-					double bet = boxedDoubleInput(
-							"Enter bet amount:",
-							1,
-							balance
-					);
+                    int[] playerCards = logic.drawHand(2);
+                    int[] dealerCards = logic.drawHand(2);
 
-					int[] playerCards = drawHand(2);
-					int[] dealerCards = drawHand(2);
+                    ConsoleDisplay.clearConsole();
 
-					ConsoleDisplay.clearConsole();
+                    ui.printTop();
+                    ui.printLine("UNLUCKY 9");
+                    ui.printMid();
+                    ui.printLine("Bet Placed: " + Formatter.formatCurrency(bet));
+                    ui.printBot();
 
-					printTop();
-					printLine("UNLUCKY 9");
-					printMid();
-					printLine("Bet Placed: " + Formatter.formatCurrency(bet));
-					printBot();
+                    ui.loadingAnimation("Dealing", 12, 140);
+                    ui.displayPlayerWithOneDealer(playerCards, dealerCards, logic.handValue(playerCards));
 
-					loadingAnimation("Dealing", 12, 140);
-					displayPlayerWithOneDealer(playerCards, dealerCards);
+                    if (logic.handValue(playerCards) == 9) {
+                        logic.applyBet(currentPlayer, bet);
+                        balance = logic.getBalance();
+                        logic.applyWin(currentPlayer, bet * 3);
+                        balance = logic.getBalance();
+                        ui.boxedMessage("JACKPOT! WON " + Formatter.formatCurrency(bet * 3));
+                        ui.waitForInput("Press Enter...");
+                        continue;
+                    }
 
-					if (handValue(playerCards) == 9) {
-						applyBet(currentPlayer, bet);
-						applyWin(currentPlayer, bet * 3, "JACKPOT!");
-						waitForInput("Press Enter...");
-						continue;
-					}
+                    boolean drawMore = ui.boxedYesNoInput("Draw 3rd card? (Y/N): ");
 
-					boolean drawMore = boxedYesNoInput("Draw 3rd card? (Y/N): ");
+                    if (drawMore) {
+                        int card = logic.drawSingle();
+                        playerCards = logic.appendCard(playerCards, card);
+                        ui.boxedMessage("You drew: [" + card + "]");
+                        ui.loadingAnimation("Processing", 10, 140);
+                    }
 
-					if (drawMore) {
-						int card = drawSingle();
-						playerCards = appendCard(playerCards, card);
-						boxedMessage("You drew: [" + card + "]");
-						loadingAnimation("Processing", 10, 140);
-					}
+                    logic.applyBet(currentPlayer, bet);
+                    balance = logic.getBalance();
 
-					applyBet(currentPlayer, bet);
+                    ui.loadingAnimation("Revealing dealer", 10, 140);
 
-					loadingAnimation("Revealing dealer", 10, 140);
+                    int playerValue = logic.handValue(playerCards);
+                    int dealerValue = logic.handValue(dealerCards);
 
-					int playerValue = handValue(playerCards);
-					int dealerValue = handValue(dealerCards);
+                    ui.displayHands(playerCards, dealerCards, playerValue, dealerValue);
 
-					displayHands(playerCards, dealerCards, playerValue, dealerValue);
+                    if (dealerValue <= 5) {
+                        int card = logic.drawSingle();
+                        dealerCards = logic.appendCard(dealerCards, card);
+                        dealerValue = logic.handValue(dealerCards);
+                        ui.loadingAnimation("Dealer drawing", 10, 140);
+                        ui.displayHands(playerCards, dealerCards, playerValue, dealerValue);
+                    }
 
-					if (dealerValue <= 5) {
-						int card = drawSingle();
-						dealerCards = appendCard(dealerCards, card);
-						dealerValue = handValue(dealerCards);
-						loadingAnimation("Dealer drawing", 10, 140);
-						displayHands(playerCards, dealerCards, playerValue, dealerValue);
-					}
+                    resolveRound(currentPlayer, bet, playerValue, dealerValue);
 
-					resolveRound(currentPlayer, bet, playerValue, dealerValue);
+                    ui.waitForInput("Press Enter...");
 
-					waitForInput("Press Enter...");
+                } else if (choice == 2) {
 
-				} else if (choice == 2) {
+                    ConsoleDisplay.clearConsole();
+                    ui.printTop();
+                    ui.printLine("UNLUCKY 9 - RULES");
+                    ui.printMid();
+                    ui.printLine("> Cards are digits 1-9");
+                    ui.printLine("> Hand value = sum % 10");
+                    ui.printLine("> Closest to 9 wins");
+                    ui.printLine("> Exact 9 pays 3x");
+                    ui.printBot();
 
-					ConsoleDisplay.clearConsole();
-					printTop();
-					printLine("UNLUCKY 9 - RULES");
-					printMid();
-					printLine("> Cards are digits 1-9");
-					printLine("> Hand value = sum % 10");
-					printLine("> Closest to 9 wins");
-					printLine("> Exact 9 pays 3x");
-					printBot();
+                    ui.waitForInput("Press Enter...");
 
-					waitForInput("Press Enter...");
+                } else {
+                    return;
+                }
+            } catch (Exception e) {
+                // Debug: Print error to help identify issues
+                ConsoleDisplay.clearConsole();
+                ui.printTop();
+                ui.printLine("ERROR: " + e.getMessage());
+                ui.printLine("The game encountered an unexpected error.");
+                ui.printBot();
+                ui.waitForInput("Press Enter to return...");
+                return;
+            }
+        }
+    }
 
-				} else {
-					return;
-				}
-			} catch (Exception e) {
-				// Debug: Print error to help identify issues
-				ConsoleDisplay.clearConsole();
-				printTop();
-				printLine("ERROR: " + e.getMessage());
-				printLine("The game encountered an unexpected error.");
-				printBot();
-				waitForInput("Press Enter to return...");
-				return;
-			}
-		}
-	}
+    // ===== GAME LOGIC =====
+    private void resolveRound(Player p, double bet, int pv, int dv) {
+        double payout = logic.resolvePayout(bet, pv, dv);
 
-	// ===== BOXED INPUT METHODS =====
-	private int boxedIntInput(String label, int min, int max) {
-		printTop();
-		printLine(label);
-		System.out.print(LEFT_MARGIN + "║ > ");
-		int value = InputValidator.readInt(min, max);
-		printBot();
-		return value;
-	}
+        ui.loadingAnimation("Calculating result", 14, 160);
 
-	private double boxedDoubleInput(String label, double min, double max) {
-		printTop();
-		printLine(label);
-		System.out.print(LEFT_MARGIN + "║ > ");
-		double value = InputValidator.readDouble(min, max);
-		printBot();
-		return value;
-	}
+        if (payout > 0) {
+            logic.applyWin(p, payout);
+            balance = logic.getBalance();
+            ui.boxedMessage("YOU WON " + Formatter.formatCurrency(payout));
+        }
+        else if (payout == 0) {
+            logic.applyWin(p, bet);
+            balance = logic.getBalance();
+            ui.boxedMessage("PUSH — BET RETURNED");
+        }
+        else {
+            ui.boxedMessage("YOU LOST " + Formatter.formatCurrency(bet));
+        }
 
-	private boolean boxedYesNoInput(String label) {
-		printTop();
-		printLine(label);
-		System.out.print(LEFT_MARGIN + "║ > ");
-		boolean value = InputValidator.readYesNo();
-		printBot();
-		return value;
-	}
+        ui.displayNewBalance(balance);
+    }
 
-	private void boxedMessage(String msg) {
-		printTop();
-		printLine(msg);
-		printBot();
-	}
-
-	private void waitForInput(String message) {
-		InputValidator.waitForUserInput(LEFT_MARGIN + message);
-	}
-
-	// ===== GAME LOGIC =====
-	private void applyBet(Player p, double bet) {
-		balance -= bet;
-		p.setBalance(balance);
-		Transaction.log(p.getUsername(), p.getPlayerId(),
-				"Unlucky9", "BET", bet, balance);
-	}
-
-	private void applyWin(Player p, double payout, String msg) {
-		balance += payout;
-		p.setBalance(balance);
-		Transaction.log(p.getUsername(), p.getPlayerId(),
-				"Unlucky9", "WIN", payout, balance);
-		boxedMessage(msg + " WON " + Formatter.formatCurrency(payout));
-	}
-
-	private void resolveRound(Player p, double bet, int pv, int dv) {
-		double payout = resolvePayout(bet, pv, dv);
-
-		loadingAnimation("Calculating result", 14, 160);
-
-		if (payout > 0) applyWin(p, payout, "YOU");
-		else if (payout == 0) applyWin(p, bet, "PUSH — BET RETURNED");
-		else boxedMessage("YOU LOST " + Formatter.formatCurrency(bet));
-
-		System.out.println(LEFT_MARGIN + "New Balance: " + Formatter.formatCurrency(balance));
-	}
-
-	private int[] drawHand(int n) {
-		int[] cards = new int[n];
-		for (int i = 0; i < n; i++) cards[i] = drawSingle();
-		return cards;
-	}
-
-	private int drawSingle() { return random.nextInt(9) + 1; }
-
-	private int handValue(int[] cards) {
-		int sum = 0;
-		for (int c : cards) sum += c;
-		return sum % 10;
-	}
-
-	private double resolvePayout(double bet, int pv, int dv) {
-		if (pv == 9) return bet * 3;
-		if (pv > dv) return bet * 2;
-		if (pv == dv) return 0;
-		return -1;
-	}
-
-	// ===== DISPLAY =====
-	private void displayHands(int[] p, int[] d, int pv, int dv) {
-		printTop();
-		printLine("PLAYER HAND");
-		printLine(formatHand(p) + " => " + pv);
-		printMid();
-		printLine("DEALER HAND");
-		printLine(formatHand(d) + " => " + dv);
-		printBot();
-	}
-
-	private void displayPlayerWithOneDealer(int[] p, int[] d) {
-		printTop();
-		printLine("PLAYER HAND");
-		printLine(formatHand(p) + " => " + handValue(p));
-		printMid();
-		printLine("DEALER HAND");
-		printLine("[" + d[0] + "] [?]");
-		printBot();
-	}
-
-	private String formatHand(int[] h) {
-		StringBuilder sb = new StringBuilder();
-		for (int v : h) sb.append("[").append(v).append("] ");
-		return sb.toString().trim();
-	}
-
-	// ===== UI CORE =====
-	private void printTop() { System.out.println(LEFT_MARGIN + "╔" + H_LINE + "╗"); }
-	private void printMid() { System.out.println(LEFT_MARGIN + "╠" + H_LINE + "╣"); }
-	private void printBot() { System.out.println(LEFT_MARGIN + "╚" + H_LINE + "╝"); }
-
-	private void printLine(String text) {
-		if (text.length() > BOX_WIDTH) text = text.substring(0, BOX_WIDTH);
-		System.out.printf(LEFT_MARGIN + "║ %-"+BOX_WIDTH+"s ║%n", text);
-	}
-
-	private void loadingAnimation(String msg, int cycles, int delay) {
-		String[] frames = { ".", "..", "...", " ..", "  ." };
-		for (int i = 0; i < cycles; i++) {
-			System.out.print("\r" + LEFT_MARGIN + msg + frames[i % frames.length]);
-			try { Thread.sleep(delay); }
-			catch (InterruptedException e) { Thread.currentThread().interrupt(); }
-		}
-		System.out.println();
-	}
-
-	private int[] appendCard(int[] arr, int card) {
-		int[] out = new int[arr.length + 1];
-		System.arraycopy(arr, 0, out, 0, arr.length);
-		out[arr.length] = card;
-		return out;
-	}
-
-	@Override public void startGame(Player p, PlayerDatabase db) { playWithPlayer(p, db); }
-	@Override public void playRound() {}
-	@Override public double calculatePayout() { return 0; }
-	@Override public void displayRules() {}
-	@Override public String getGameName() { return "Unlucky9"; }
-	@Override public void updateBalance(double amt) { balance += amt; }
+    @Override public void startGame(Player p, PlayerDatabase db) { playWithPlayer(p, db); }
+    @Override public void playRound() {}
+    @Override public double calculatePayout() { return 0; }
+    @Override public void displayRules() {}
+    @Override public String getGameName() { return "Unlucky9"; }
+    @Override public void updateBalance(double amt) { balance += amt; }
 }
