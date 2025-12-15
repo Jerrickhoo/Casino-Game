@@ -61,8 +61,13 @@ public class PlayerDatabase {
                     loadedCount++;
                 }
             }
-
-            System.out.print("   SUCCESS: Loaded " + loadedCount + " players");
+            
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.print("                                                                  SUCCESS: Loaded " + loadedCount + " players");
             AnimationDisplay.showLoadingAnimation("", 1500);
             ConsoleDisplay.clearConsole();
 

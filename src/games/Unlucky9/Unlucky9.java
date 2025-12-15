@@ -14,190 +14,207 @@ public class Unlucky9 extends Game {
 	private final Random random = new Random();
 
 	// ===== UI CONSTANTS =====
-	private static final int BOX_WIDTH = 58;
-	private static final String H_LINE = "════════════════════════════════════════════════════════════";
+	private static final int BOX_WIDTH = 56;
+	private static final String LEFT_MARGIN = "                                                ";
+	private static final String H_LINE =
+			"══════════════════════════════════════════════════════════";
 
 	public Unlucky9() {
 		super();
 	}
 
-	public Unlucky9(double playerBalance) {
-		super();
-		this.balance = playerBalance;
-	}
-
 	public static void play(Player currentPlayer, PlayerDatabase playerDB) {
-		Unlucky9 game = new Unlucky9();
-		game.startGame(currentPlayer, playerDB);
+		new Unlucky9().startGame(currentPlayer, playerDB);
 	}
 
 	// ===== MAIN GAME LOOP =====
 	private void playWithPlayer(Player currentPlayer, PlayerDatabase playerDB) {
 
-		if (currentPlayer != null) {
-			this.player = currentPlayer;
-			this.balance = currentPlayer.getBalance();
-		}
+		this.player = currentPlayer;
+		this.balance = currentPlayer.getBalance();
 
 		while (true) {
-			ConsoleDisplay.clearConsole();
-
-			printTop();
-			printLine("UNLUCKY 9");
-			printMid();
-			printLine("Player: " + currentPlayer.getUsername());
-			printLine("Balance: " + Formatter.formatCurrency(currentPlayer.getBalance()));
-			printBot();
-
-			System.out.println();
-			printTop();
-			printLine("1. PLAY");
-			printLine("2. TUTORIAL");
-			printLine("3. EXIT GAME");
-			printBot();
-
-			int choice = InputValidator.readInt(1, 3);
-
-			if (choice == 1) {
-
-				if (currentPlayer.getBalance() <= 0) {
-					System.out.println("\n❌ No funds available.");
-					InputValidator.waitForUserInput("Press Enter...");
-					continue;
-				}
-
-				System.out.print("\nEnter bet amount: ");
-				double bet = InputValidator.readDouble(1, currentPlayer.getBalance());
-
-				if (!currentPlayer.canAfford(bet)) {
-					System.out.println("\n❌ You cannot afford that bet.");
-					InputValidator.waitForUserInput("Press Enter...");
-					continue;
-				}
-
-				int[] playerCards = drawHand(2);
-				int[] dealerCards = drawHand(2);
-
+			try {
 				ConsoleDisplay.clearConsole();
 
 				printTop();
 				printLine("UNLUCKY 9");
 				printMid();
-				printLine("Bet Placed: " + Formatter.formatCurrency(bet));
+				printLine("Player: " + currentPlayer.getUsername());
+				printLine("Balance: " + Formatter.formatCurrency(balance));
 				printBot();
 
-				loadingAnimation("Dealing", 8, 120);
-				displayPlayerWithOneDealer(playerCards, dealerCards);
+				System.out.println();
 
-				int shownValue = handValue(playerCards);
-				if (shownValue == 9) {
-					this.balance -= bet;
-					currentPlayer.setBalance(this.balance);
-					Transaction.log(currentPlayer.getUsername(), currentPlayer.getPlayerId(),
-							"Unlucky9", "BET", bet, this.balance);
+				printTop();
+				printLine("1. PLAY");
+				printLine("2. TUTORIAL");
+				printLine("3. EXIT GAME");
+				printBot();
 
-					this.balance += bet * 3;
-					currentPlayer.setBalance(this.balance);
-					Transaction.log(currentPlayer.getUsername(), currentPlayer.getPlayerId(),
-							"Unlucky9", "WIN", bet * 3, this.balance);
+				int choice = boxedIntInput("Choose (1-3): ", 1, 3);
+
+				if (choice == 1) {
+
+					if (balance <= 0) {
+						boxedMessage("NO FUNDS AVAILABLE");
+						waitForInput("Press Enter...");
+						continue;
+					}
+
+					double bet = boxedDoubleInput(
+							"Enter bet amount:",
+							1,
+							balance
+					);
+
+					int[] playerCards = drawHand(2);
+					int[] dealerCards = drawHand(2);
+
+					ConsoleDisplay.clearConsole();
 
 					printTop();
-					printLine("JACKPOT! INSTANT 9!");
+					printLine("UNLUCKY 9");
+					printMid();
+					printLine("Bet Placed: " + Formatter.formatCurrency(bet));
 					printBot();
 
-					InputValidator.waitForUserInput("Press Enter...");
-					continue;
-				}
+					loadingAnimation("Dealing", 12, 140);
+					displayPlayerWithOneDealer(playerCards, dealerCards);
 
-				System.out.print("\nDraw 3rd card? (Y/N): ");
-				if (InputValidator.readYesNo()) {
-					int card = drawSingle();
-					playerCards = appendCard(playerCards, card);
-					System.out.println("You drew: [" + card + "]");
-					loadingAnimation("Processing", 6, 120);
-				}
+					if (handValue(playerCards) == 9) {
+						applyBet(currentPlayer, bet);
+						applyWin(currentPlayer, bet * 3, "JACKPOT!");
+						waitForInput("Press Enter...");
+						continue;
+					}
 
-				this.balance -= bet;
-				currentPlayer.setBalance(this.balance);
-				Transaction.log(currentPlayer.getUsername(), currentPlayer.getPlayerId(),
-						"Unlucky9", "BET", bet, this.balance);
+					boolean drawMore = boxedYesNoInput("Draw 3rd card? (Y/N): ");
 
-				loadingAnimation("Revealing dealer", 6, 120);
+					if (drawMore) {
+						int card = drawSingle();
+						playerCards = appendCard(playerCards, card);
+						boxedMessage("You drew: [" + card + "]");
+						loadingAnimation("Processing", 10, 140);
+					}
 
-				int playerValue = handValue(playerCards);
-				int dealerValue = handValue(dealerCards);
+					applyBet(currentPlayer, bet);
 
-				displayHands(playerCards, dealerCards, playerValue, dealerValue);
+					loadingAnimation("Revealing dealer", 10, 140);
 
-				if (dealerValue <= 5) {
-					int dealerCard = drawSingle();
-					dealerCards = appendCard(dealerCards, dealerCard);
-					dealerValue = handValue(dealerCards);
-					loadingAnimation("Dealer drawing", 6, 120);
+					int playerValue = handValue(playerCards);
+					int dealerValue = handValue(dealerCards);
+
 					displayHands(playerCards, dealerCards, playerValue, dealerValue);
-				}
 
-				double payout = resolvePayout(bet, playerValue, dealerValue);
+					if (dealerValue <= 5) {
+						int card = drawSingle();
+						dealerCards = appendCard(dealerCards, card);
+						dealerValue = handValue(dealerCards);
+						loadingAnimation("Dealer drawing", 10, 140);
+						displayHands(playerCards, dealerCards, playerValue, dealerValue);
+					}
 
-				loadingAnimation("Calculating result", 8, 120);
+					resolveRound(currentPlayer, bet, playerValue, dealerValue);
 
-				if (payout > 0) {
-					this.balance += payout;
-					currentPlayer.setBalance(this.balance);
-					Transaction.log(currentPlayer.getUsername(), currentPlayer.getPlayerId(),
-							"Unlucky9", "WIN", payout, this.balance);
+					waitForInput("Press Enter...");
 
+				} else if (choice == 2) {
+
+					ConsoleDisplay.clearConsole();
 					printTop();
-					printLine("YOU WON " + Formatter.formatCurrency(payout));
+					printLine("UNLUCKY 9 - RULES");
+					printMid();
+					printLine("> Cards are digits 1-9");
+					printLine("> Hand value = sum % 10");
+					printLine("> Closest to 9 wins");
+					printLine("> Exact 9 pays 3x");
 					printBot();
 
-				} else if (payout == 0) {
-					this.balance += bet;
-					currentPlayer.setBalance(this.balance);
-					Transaction.log(currentPlayer.getUsername(), currentPlayer.getPlayerId(),
-							"Unlucky9", "PUSH", bet, this.balance);
-
-					printTop();
-					printLine("PUSH — BET RETURNED");
-					printBot();
+					waitForInput("Press Enter...");
 
 				} else {
-					Transaction.log(currentPlayer.getUsername(), currentPlayer.getPlayerId(),
-							"Unlucky9", "LOSS", bet, this.balance);
-
-					printTop();
-					printLine("YOU LOST " + Formatter.formatCurrency(bet));
-					printBot();
+					return;
 				}
-
-				System.out.println("\nNew Balance: " +
-						Formatter.formatCurrency(this.balance));
-
-				currentPlayer.updateGamesPlayed();
-				playerDB.updatePlayer(currentPlayer);
-
-				InputValidator.waitForUserInput("Press Enter...");
-
-			} else if (choice == 2) {
-
+			} catch (Exception e) {
+				// Debug: Print error to help identify issues
 				ConsoleDisplay.clearConsole();
 				printTop();
-				printLine("UNLUCKY 9 - TUTORIAL");
-				printMid();
-				printLine("• Cards are digits 1–9");
-				printLine("• Hand value = sum % 10");
-				printLine("• Closest to 9 wins");
-				printLine("• Exact 9 pays 3x");
+				printLine("ERROR: " + e.getMessage());
+				printLine("The game encountered an unexpected error.");
 				printBot();
-
-				InputValidator.waitForUserInput("Press Enter...");
-			} else {
+				waitForInput("Press Enter to return...");
 				return;
 			}
 		}
 	}
 
+	// ===== BOXED INPUT METHODS =====
+	private int boxedIntInput(String label, int min, int max) {
+		printTop();
+		printLine(label);
+		System.out.print(LEFT_MARGIN + "║ > ");
+		int value = InputValidator.readInt(min, max);
+		printBot();
+		return value;
+	}
+
+	private double boxedDoubleInput(String label, double min, double max) {
+		printTop();
+		printLine(label);
+		System.out.print(LEFT_MARGIN + "║ > ");
+		double value = InputValidator.readDouble(min, max);
+		printBot();
+		return value;
+	}
+
+	private boolean boxedYesNoInput(String label) {
+		printTop();
+		printLine(label);
+		System.out.print(LEFT_MARGIN + "║ > ");
+		boolean value = InputValidator.readYesNo();
+		printBot();
+		return value;
+	}
+
+	private void boxedMessage(String msg) {
+		printTop();
+		printLine(msg);
+		printBot();
+	}
+
+	private void waitForInput(String message) {
+		InputValidator.waitForUserInput(LEFT_MARGIN + message);
+	}
+
 	// ===== GAME LOGIC =====
+	private void applyBet(Player p, double bet) {
+		balance -= bet;
+		p.setBalance(balance);
+		Transaction.log(p.getUsername(), p.getPlayerId(),
+				"Unlucky9", "BET", bet, balance);
+	}
+
+	private void applyWin(Player p, double payout, String msg) {
+		balance += payout;
+		p.setBalance(balance);
+		Transaction.log(p.getUsername(), p.getPlayerId(),
+				"Unlucky9", "WIN", payout, balance);
+		boxedMessage(msg + " WON " + Formatter.formatCurrency(payout));
+	}
+
+	private void resolveRound(Player p, double bet, int pv, int dv) {
+		double payout = resolvePayout(bet, pv, dv);
+
+		loadingAnimation("Calculating result", 14, 160);
+
+		if (payout > 0) applyWin(p, payout, "YOU");
+		else if (payout == 0) applyWin(p, bet, "PUSH — BET RETURNED");
+		else boxedMessage("YOU LOST " + Formatter.formatCurrency(bet));
+
+		System.out.println(LEFT_MARGIN + "New Balance: " + Formatter.formatCurrency(balance));
+	}
+
 	private int[] drawHand(int n) {
 		int[] cards = new int[n];
 		for (int i = 0; i < n; i++)
@@ -205,9 +222,7 @@ public class Unlucky9 extends Game {
 		return cards;
 	}
 
-	private int drawSingle() {
-		return random.nextInt(9) + 1;
-	}
+	private int drawSingle() { return random.nextInt(9) + 1; }
 
 	private int handValue(int[] cards) {
 		int sum = 0;
@@ -226,24 +241,24 @@ public class Unlucky9 extends Game {
 		return -1;
 	}
 
-	// ===== DISPLAY HELPERS =====
-	private void displayHands(int[] player, int[] dealer, int playerValue, int dealerValue) {
+	// ===== DISPLAY =====
+	private void displayHands(int[] p, int[] d, int pv, int dv) {
 		printTop();
 		printLine("PLAYER HAND");
-		printLine(formatHand(player) + " => " + playerValue);
+		printLine(formatHand(p) + " => " + pv);
 		printMid();
 		printLine("DEALER HAND");
-		printLine(formatHand(dealer) + " => " + dealerValue);
+		printLine(formatHand(d) + " => " + dv);
 		printBot();
 	}
 
-	private void displayPlayerWithOneDealer(int[] player, int[] dealer) {
+	private void displayPlayerWithOneDealer(int[] p, int[] d) {
 		printTop();
 		printLine("PLAYER HAND");
-		printLine(formatHand(player) + " => " + handValue(player));
+		printLine(formatHand(p) + " => " + handValue(p));
 		printMid();
 		printLine("DEALER HAND");
-		printLine("[" + dealer[0] + "] [?]");
+		printLine("[" + d[0] + "] [?]");
 		printBot();
 	}
 
@@ -255,33 +270,21 @@ public class Unlucky9 extends Game {
 	}
 
 	// ===== UI CORE =====
-	private void printTop() {
-		System.out.println("            ╔" + H_LINE + "╗");
-	}
-
-	private void printMid() {
-		System.out.println("            ╠" + H_LINE + "╣");
-	}
-
-	private void printBot() {
-		System.out.println("            ╚" + H_LINE + "╝");
-	}
+	private void printTop() { System.out.println(LEFT_MARGIN + "╔" + H_LINE + "╗"); }
+	private void printMid() { System.out.println(LEFT_MARGIN + "╠" + H_LINE + "╣"); }
+	private void printBot() { System.out.println(LEFT_MARGIN + "╚" + H_LINE + "╝"); }
 
 	private void printLine(String text) {
-		if (text.length() > BOX_WIDTH)
-			text = text.substring(0, BOX_WIDTH);
-		System.out.printf("            ║ %-" + BOX_WIDTH + "s ║%n", text);
+		if (text.length() > BOX_WIDTH) text = text.substring(0, BOX_WIDTH);
+		System.out.printf(LEFT_MARGIN + "║ %-"+BOX_WIDTH+"s ║%n", text);
 	}
 
-	private void loadingAnimation(String message, int cycles, int delayMs) {
-		String[] frames = { ".", "..", "...", " ..", "  .", "   " };
+	private void loadingAnimation(String msg, int cycles, int delay) {
+		String[] frames = { ".", "..", "...", " ..", "  ." };
 		for (int i = 0; i < cycles; i++) {
-			System.out.print("\r" + message + frames[i % frames.length]);
-			try {
-				Thread.sleep(delayMs);
-			} catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-			}
+			System.out.print("\r" + LEFT_MARGIN + msg + frames[i % frames.length]);
+			try { Thread.sleep(delay); }
+			catch (InterruptedException e) { Thread.currentThread().interrupt(); }
 		}
 		System.out.println();
 	}

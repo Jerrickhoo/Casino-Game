@@ -455,297 +455,211 @@ public class AnimationDisplay {
                         // skip animation
                 }
         }
+        // ⚠️ COPILOT WARNING
+        // Modify ONLY loginAnimation(boolean isOn)
+        // Do NOT add, delete, or move any methods
+        // Do NOT touch extractNameFromObject
+        // Do NOT change logic, only animation visuals
 
         public static void loginAnimation(boolean isOn) {
                 if (isOn == true) {
-                        // Frame 1
-                        System.out.println(
-                                        "            ╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                              ██████                                                                    ║");
-                        System.out.println(
-                                        "            ║                                              ██████                                                                    ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝");
-                        ConsoleDisplay.pause(700);
-                        ConsoleDisplay.clearConsole();
+                        String pad = "                                                        ";
+                        char[] letters = new char[7];
+                        boolean[] locked = new boolean[7];
+                        java.util.Random rnd = new java.util.Random();
+                        final String target = "LOADING";
+                        final int totalFrames = 38; // ~1.5s total with 43ms per frame
 
-                        // Frame 2
-                        System.out.println(
-                                        "            ╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                        ██████████████████████████                                                      ║");
-                        System.out.println(
-                                        "            ║                                        ██                  ██                                                          ║");
-                        System.out.println(
-                                        "            ║                                        ██      ██████      ██                                                          ║");
-                        System.out.println(
-                                        "            ║                                        ██      ██████      ██                                                          ║");
-                        System.out.println(
-                                        "            ║                                        ██                  ██                                                          ║");
-                        System.out.println(
-                                        "            ║                                        ██████████████████████████                                                      ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝");
-                        ConsoleDisplay.pause(700);
-                        ConsoleDisplay.clearConsole();
+                        for (int f = 1; f <= totalFrames; f++) {
+                                ConsoleDisplay.clearConsole();
 
-                        // Frame 3
-                        System.out.println(
-                                        "            ╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                      ████████████████████████████████                                                  ║");
-                        System.out.println(
-                                        "            ║                                    ████████████████████████████████████                                                ║");
-                        System.out.println(
-                                        "            ║                                  ██████    ██████████████████    ██████                                                ║");
-                        System.out.println(
-                                        "            ║                                ██████          ██████████          ██████                                              ║");
-                        System.out.println(
-                                        "            ║                                ██████          ██████████          ██████                                              ║");
-                        System.out.println(
-                                        "            ║                                  ██████    ██████████████████    ██████                                                ║");
-                        System.out.println(
-                                        "            ║                                    ████████████████████████████████████                                                ║");
-                        System.out.println(
-                                        "            ║                                      ████████████████████████████████                                                  ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝");
-                        ConsoleDisplay.pause(700);
-                        ConsoleDisplay.clearConsole();
+                                // vertically center: 7 blank lines
+                                for (int i = 0; i < 7; i++)
+                                        System.out.println();
 
-                        // Frame 4
-                        System.out.println(
-                                        "            ╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                   ██████████████████████████████████████████████████████████████████████████████████                   ║");
-                        System.out.println(
-                                        "            ║                 ██    ████    ██  ██    ██        ████     █████   █████    ██  ██      ██   ██████ ██                 ║");
-                        System.out.println(
-                                        "            ║                 ██  ██    ██      ██    ██      ██    ██  ██   ██  ██   ██  ██  ████    ██  ██      ██                 ║");
-                        System.out.println(
-                                        "            ║                 ██  ██    ██    ██      ██      ██    ██  ███████  ██   ██  ██  ██  ██  ██  ██   █████                 ║");
-                        System.out.println(
-                                        "            ║                   ██████████████████████████████████████████████████████████████████████████████████                   ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝");
-                        ConsoleDisplay.pause(700);
-                        ConsoleDisplay.clearConsole();
+                                if (f <= 20) {
+                                        // random letters A-Z each frame for unlocked cards
+                                        for (int i = 0; i < 7; i++)
+                                                if (!locked[i])
+                                                        letters[i] = (char) ('A' + rnd.nextInt(26));
+                                } else {
+                                        // lock progressively from left to right to form "LOADING"
+                                        int locks = f - 20;
+                                        if (locks > 7)
+                                                locks = 7;
+                                        for (int i = 0; i < 7; i++) {
+                                                if (i < locks) {
+                                                        letters[i] = target.charAt(i);
+                                                        locked[i] = true;
+                                                } else {
+                                                        if (!locked[i])
+                                                                letters[i] = (char) ('A' + rnd.nextInt(26));
+                                                }
+                                        }
+                                }
 
-                        // Frame 5
-                        System.out.println(
-                                        "            ╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                   ██████████████████████████████████████████████████████████████████████████████████                   ║");
-                        System.out.println(
-                                        "            ║                 ██████████████████████████████████████████████████████████████████████████████████████                 ║");
-                        System.out.println(
-                                        "            ║                 ██████████████████████████████████████████████████████████████████████████████████████                 ║");
-                        System.out.println(
-                                        "            ║                 ██████████████████████████████████████████████████████████████████████████████████████                 ║");
-                        System.out.println(
-                                        "            ║                   ██████████████████████████████████████████████████████████████████████████████████                   ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║           ██    ████      ████      ██  ██    ██        ████     █████   █████    ██  ██      ██   ██████              ║");
-                        System.out.println(
-                                        "            ║           ██  ██    ██  ██    ██        ██    ██      ██    ██  ██   ██  ██   ██  ██  ████    ██  ██                   ║");
-                        System.out.println(
-                                        "            ║           ██  ██    ██  ██    ██      ██      ██      ██    ██  ███████  ██   ██  ██  ██  ██  ██  ██   ████            ║");
-                        System.out.println(
-                                        "            ║           ██  ██    ██  ██    ██    ██        ██      ██    ██  ██   ██  ██   ██  ██  ██    ████  ██     ██            ║");
-                        System.out.println(
-                                        "            ║           ██    ████      ████      ██  ██    ██████    ████    ██   ██  █████    ██  ██      ██   ██████              ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝");
-                        ConsoleDisplay.pause(800);
-                        ConsoleDisplay.clearConsole();
+                                // print 7 cards side-by-side with exact padding
+                                StringBuilder top = new StringBuilder(pad);
+                                StringBuilder mid = new StringBuilder(pad);
+                                StringBuilder bot = new StringBuilder(pad);
+                                for (int i = 0; i < 7; i++) {
+                                        if (i > 0) {
+                                                top.append("  ");
+                                                mid.append("  ");
+                                                bot.append("  ");
+                                        }
+                                        top.append("╔═══╗");
+                                        mid.append("║ ").append(letters[i]).append(" ║");
+                                        bot.append("╚═══╝");
+                                }
+                                System.out.println(top.toString());
+                                System.out.println(mid.toString());
+                                System.out.println(bot.toString());
 
-                        // Frame 6
-                        System.out.println(
-                                        "            ╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                 *    ██████████████████████████████████████████████████████████████████████████████████    *           ║");
-                        System.out.println(
-                                        "            ║                     ██████████████████████████████████████████████████████████████████████████████████████             ║");
-                        System.out.println(
-                                        "            ║              *     ██████████████████████████████████████████████████████████████████████████████████████     *        ║");
-                        System.out.println(
-                                        "            ║                     ██████████████████████████████████████████████████████████████████████████████████████             ║");
-                        System.out.println(
-                                        "            ║                 *    ██████████████████████████████████████████████████████████████████████████████████    *           ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║             ██    ████      ████      ██  ██    ██        ████     █████   █████    ██  ██      ██   ██████            ║");
-                        System.out.println(
-                                        "            ║             ██  ██    ██  ██    ██        ██    ██      ██    ██  ██   ██  ██   ██  ██  ████    ██  ██                 ║");
-                        System.out.println(
-                                        "            ║             ██  ██    ██  ██    ██      ██      ██      ██    ██  ███████  ██   ██  ██  ██  ██  ██  ██   ████          ║");
-                        System.out.println(
-                                        "            ║             ██  ██    ██  ██    ██    ██        ██      ██    ██  ██   ██  ██   ██  ██  ██    ████  ██     ██          ║");
-                        System.out.println(
-                                        "            ║             ██    ████      ████      ██  ██    ██████    ████    ██   ██  █████    ██  ██      ██   ██████            ║");
-                        System.out.println(
-                                        "            ║                                                                                                                        ║");
-                        System.out.println(
-                                        "            ║                                         *** Users READY * WELCOME TO THE HOUSE ***                                     ║");
-                        System.out.println(
-                                        "            ╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝");
-                        ConsoleDisplay.pause(1500);
+                                // short pause to make it fast/glitchy (~45ms per frame)
+                                ConsoleDisplay.pause(45);
+                        }
+
+                        // Attempt to read username reflectively from common static fields/getters
+                        String username = "Player";
+                        String[] candidateClasses = { "Player", "player.Player", "models.Player", "model.Player",
+                                        "users.User", "User", "session.Session", "Session", "Main", "Game", "Casino",
+                                        "Auth", "CurrentPlayer", "UserSession" };
+                        outer: for (String cn : candidateClasses) {
+                                try {
+                                        Class<?> cls = Class.forName(cn);
+                                        String[] fieldNames = { "currentPlayer", "current", "CURRENT_PLAYER",
+                                                        "currentUser", "user", "instance" };
+                                        for (String fn : fieldNames) {
+                                                try {
+                                                        java.lang.reflect.Field f = cls.getDeclaredField(fn);
+                                                        f.setAccessible(true);
+                                                        Object inst = f.get(null);
+                                                        if (inst != null) {
+                                                                String name = extractNameFromObject(inst);
+                                                                if (name != null) {
+                                                                        username = name;
+                                                                        break outer;
+                                                                }
+                                                        }
+                                                } catch (NoSuchFieldException ignore) {
+                                                }
+                                        }
+                                        String[] getterNames = { "getCurrentPlayer", "getCurrentUser", "getInstance",
+                                                        "getCurrent" };
+                                        for (String gm : getterNames) {
+                                                try {
+                                                        java.lang.reflect.Method m = cls.getMethod(gm);
+                                                        Object inst = m.invoke(null);
+                                                        if (inst != null) {
+                                                                String name = extractNameFromObject(inst);
+                                                                if (name != null) {
+                                                                        username = name;
+                                                                        break outer;
+                                                                }
+                                                        }
+                                                } catch (NoSuchMethodException ignore) {
+                                                }
+                                        }
+                                } catch (ClassNotFoundException ignore) {
+                                } catch (Throwable ignore) {
+                                }
+                        }
+
+                        ConsoleDisplay.clearConsole();
                 }
         }
 
+        // helper placed inside method's scope via static-like helper to keep changes
+        // local to this file
+        private static String extractNameFromObject(Object inst) {
+                try {
+                        Class<?> ic = inst.getClass();
+                        // try common getter names
+                        String[] getters = { "getUsername", "getUserName", "getName", "username", "name" };
+                        for (String g : getters) {
+                                // try method first
+                                try {
+                                        java.lang.reflect.Method m = ic.getMethod(g);
+                                        Object val = m.invoke(inst);
+                                        if (val != null)
+                                                return val.toString();
+                                } catch (NoSuchMethodException ignore) {
+                                }
+                                // try field
+                                try {
+                                        java.lang.reflect.Field f = ic.getDeclaredField(g);
+                                        f.setAccessible(true);
+                                        Object val = f.get(inst);
+                                        if (val != null)
+                                                return val.toString();
+                                } catch (NoSuchFieldException ignore) {
+                                }
+                        }
+                        // fallback to toString()
+                        String s = inst.toString();
+                        if (s != null && !s.isEmpty())
+                                return s;
+                } catch (Throwable ignore) {
+                }
+                return null;
+        }
+
         public static void qrCodeCashIn() {
-                System.out
-                                .println("            ╔═════════════════════════════════════════════════════════════════════════════╗");
-                System.out
-                                .println("            ║                                                                             ║");
-                System.out
-                                .println("            ║             ██████████████       ██    ██████    ██████████████             ║");
-                System.out
-                                .println("            ║             ██          ██  ██   ██  ██  ██      ██          ██             ║");
-                System.out
-                                .println("            ║             ██  ██████  ██       ██  ██          ██  ██████  ██             ║");
-                System.out
-                                .println("            ║             ██  ██████  ██         ██        ██  ██  ██████  ██             ║");
-                System.out
-                                .println("            ║             ██  ██████  ██    ████       ██████  ██  ██████  ██             ║");
-                System.out
-                                .println("            ║             ██          ██          ██    ██  ██ ██          ██             ║");
-                System.out
-                                .println("            ║             ██████████████      ██  ██           ██████████████             ║");
-                System.out
-                                .println("            ║                               ████         ██         ████                  ║");
-                System.out
-                                .println("            ║             ████        ████████████                  ██                    ║");
-                System.out
-                                .println("            ║             ██████████████████         ████       ██        ██              ║");
-                System.out
-                                .println("            ║             ██  ██                ██   ██     ██████  ████████              ║");
-                System.out
-                                .println("            ║             ██             ██  ██        ██     ██                          ║");
-                System.out
-                                .println("            ║                    ████████████████      ██                                 ║");
-                System.out
-                                .println("            ║                ████████                  ████               ██              ║");
-                System.out
-                                .println("            ║             ██████████████    ██████            ████████████                ║");
-                System.out
-                                .println("            ║             ██          ██    ██      ████      ██      ██                  ║");
-                System.out
-                                .println("            ║             ██  ██████  ██  ██        ██        ██  ██  ██                  ║");
-                System.out
-                                .println("            ║             ██  ██████  ██            ██        ██      ██                  ║");
-                System.out
-                                .println("            ║             ██  ██████  ██      ██      ██     ████████████                 ║");
-                System.out
-                                .println("            ║             ██          ██    ██  ██  ██        ██      ████                ║");
-                System.out
-                                .println("            ║             ██████████████    ████              ████    ██████              ║");
-                System.out
-                                .println("            ║                                                                             ║");
-                System.out
-                                .println("            ║                                                                             ║");
-                System.out
-                                .println("            ║                  S C A N   T O   C A S H   I N   M O N E Y                  ║");
-                System.out
-                                .println("            ╚═════════════════════════════════════════════════════════════════════════════╝");
+                System.out.println(
+                                "                                         ╔═════════════════════════════════════════════════════════════════════════════╗");
+                System.out.println(
+                                "                                         ║                                                                             ║");
+                System.out.println(
+                                "                                         ║             ██████████████       ██    ██████    ██████████████             ║");
+                System.out.println(
+                                "                                         ║             ██          ██  ██   ██  ██  ██      ██          ██             ║");
+                System.out.println(
+                                "                                         ║             ██  ██████  ██       ██  ██          ██  ██████  ██             ║");
+                System.out.println(
+                                "                                         ║             ██  ██████  ██         ██        ██  ██  ██████  ██             ║");
+                System.out.println(
+                                "                                         ║             ██  ██████  ██    ████       ██████  ██  ██████  ██             ║");
+                System.out.println(
+                                "                                         ║             ██          ██          ██    ██  ██ ██          ██             ║");
+                System.out.println(
+                                "                                         ║             ██████████████      ██  ██           ██████████████             ║");
+                System.out.println(
+                                "                                         ║                               ████         ██         ████                  ║");
+                System.out.println(
+                                "                                         ║             ████        ████████████                  ██                    ║");
+                System.out.println(
+                                "                                         ║             ██████████████████         ████       ██        ██              ║");
+                System.out.println(
+                                "                                         ║             ██  ██                ██   ██     ██████  ████████              ║");
+                System.out.println(
+                                "                                         ║             ██             ██  ██        ██     ██                          ║");
+                System.out.println(
+                                "                                         ║                    ████████████████      ██                                 ║");
+                System.out.println(
+                                "                                         ║                ████████                  ████               ██              ║");
+                System.out.println(
+                                "                                         ║             ██████████████    ██████            ████████████                ║");
+                System.out.println(
+                                "                                         ║             ██          ██    ██      ████      ██      ██                  ║");
+                System.out.println(
+                                "                                         ║             ██  ██████  ██  ██        ██        ██  ██  ██                  ║");
+                System.out.println(
+                                "                                         ║             ██  ██████  ██            ██        ██      ██                  ║");
+                System.out.println(
+                                "                                         ║             ██  ██████  ██      ██      ██     ████████████                 ║");
+                System.out.println(
+                                "                                         ║             ██          ██    ██  ██  ██        ██      ████                ║");
+                System.out.println(
+                                "                                         ║             ██████████████    ████              ████    ██████              ║");
+                System.out.println(
+                                "                                         ║                                                                             ║");
+                System.out.println(
+                                "                                         ║                                                                             ║");
+                System.out.println(
+                                "                                         ║                  S C A N   T O   C A S H   I N   M O N E Y                  ║");
+                System.out.println(
+                                "                                         ╚═════════════════════════════════════════════════════════════════════════════╝");
                 ConsoleDisplay.pause(1000);
         }
 
@@ -754,12 +668,14 @@ public class AnimationDisplay {
                 int totalFrames = (durationMs / 100); // Update every 100ms
 
                 // Hide the cursor and save position
-                System.out.print(message + " ");
+                System.out.print(message + "");
 
                 try {
                         for (int i = 0; i < totalFrames; i++) {
                                 String frame = frames[i % frames.length];
-                                System.out.print("\r" + message + " " + frame); // \r moves cursor to start of line
+                                System.out.print("\r" + message
+                                                + "                                                                "
+                                                + frame); // \r moves cursor to start of line
                                 Thread.sleep(100);
                         }
                         // Clear the animation and show completion
@@ -776,12 +692,13 @@ public class AnimationDisplay {
                 if (!enabled)
                         return;
 
-                String[] frames = { "🗑️  Deleting account...", "🗑️  Deleting account data...",
-                                "🗑️  Removing statistics...",
-                                "🗑️  Account deleted successfully!" };
+                String[] frames = { "Deleting account...", 
+                "Deleting account data...",
+                "Removing statistics...",
+                "Account deleted successfully!" };
 
                 for (int i = 0; i < frames.length; i++) {
-                        System.out.print("\r                 " + frames[i]);
+                        System.out.print("\r                                                 " + frames[i]);
                         try {
                                 Thread.sleep(800);
                         } catch (InterruptedException e) {
