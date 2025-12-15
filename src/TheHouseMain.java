@@ -14,15 +14,11 @@ import games.Unlucky9.Unlucky9;
 public class TheHouseMain {
         private static PlayerDatabase playerDatabase;
         private static Player currentPlayer;
-
         public static void main(String[] args) throws Exception {
                 // Initialize database
                 playerDatabase = new PlayerDatabase();
-
                 AnimationDisplay.startUpGameAnimation(false); // put it false if animation annoying
-
                 showMainMenu();
-
                 InputValidator.closeScanner();
         }
 
@@ -121,9 +117,7 @@ public class TheHouseMain {
                         System.out.println(
                                         "                                                ╔═════════════════════════════════════════════════════════╗");
                         System.out.print("                                                  Enter your choice (1-4): ");
-
                         int choice = InputValidator.readInt(1, 4);
-
                         switch (choice) {
                                 case 1:
                                         login();
@@ -153,10 +147,8 @@ public class TheHouseMain {
                 System.out.println(
                                 "                                                ╚══════════════════════════════════════════════════════════╝");
                 System.out.println("");
-
                 System.out.print("                                                Username: ");
                 String username = InputValidator.readString();
-
                 System.out.print("                                                Password: ");
                 String password = InputValidator.readString();
 
@@ -244,7 +236,6 @@ public class TheHouseMain {
 
                 Player newPlayer = new Player(username, password, 100.0);
                 if (playerDatabase.addPlayer(newPlayer)) {
-                        currentPlayer = newPlayer;
                         System.out.println("");
                         System.out.println(
                                         "                                                ╔══════════════════════════════════════════════════════════╗");
@@ -305,7 +296,7 @@ public class TheHouseMain {
                         System.out.println(
                                         "                                                     ╔══════════════════════╗ ╔══════════════════════╗");
                         System.out.println(
-                                        "                                                     ║    1. LUCKY 9        ║ ║    2. BLACKJACK      ║");
+                                        "                                                     ║    1. UNLUCKY        ║ ║    2. TWENTY WON     ║");
                         System.out.println(
                                         "                                                     ║    ┌─────────┐       ║ ║    ┌─────────┐       ║");
                         System.out.println(
@@ -320,7 +311,7 @@ public class TheHouseMain {
                         System.out.println(
                                         "                                                     ╔══════════════════════╗ ╔══════════════════════╗");
                         System.out.println(
-                                        "                                                     ║   3. SLOT MACHINE    ║ ║   4. CHUCK-A-LUCK    ║");
+                                        "                                                     ║   3. MOSES BONANZA   ║ ║   4. Ace Roll        ║");
                         System.out.println(
                                         "                                                     ║     ┌─────────┐      ║ ║     ┌─────────┐      ║");
                         System.out.println(
@@ -379,7 +370,6 @@ public class TheHouseMain {
                                         "                                                ╔══════════════════════════════════════════════════════════╗");
                         System.out.print(
                                         "                                                           Enter your choice (1-9): ");
-
                         int choice = InputValidator.readInt(1, 9);
 
                         switch (choice) {

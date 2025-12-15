@@ -15,8 +15,7 @@ public class Unlucky9 extends Game {
 
 	// ===== UI CONSTANTS =====
 	private static final int BOX_WIDTH = 58;
-	private static final String H_LINE =
-			"════════════════════════════════════════════════════════════";
+	private static final String H_LINE = "════════════════════════════════════════════════════════════";
 
 	public Unlucky9() {
 		super();
@@ -201,7 +200,8 @@ public class Unlucky9 extends Game {
 	// ===== GAME LOGIC =====
 	private int[] drawHand(int n) {
 		int[] cards = new int[n];
-		for (int i = 0; i < n; i++) cards[i] = drawSingle();
+		for (int i = 0; i < n; i++)
+			cards[i] = drawSingle();
 		return cards;
 	}
 
@@ -211,14 +211,18 @@ public class Unlucky9 extends Game {
 
 	private int handValue(int[] cards) {
 		int sum = 0;
-		for (int c : cards) sum += c;
+		for (int c : cards)
+			sum += c;
 		return sum % 10;
 	}
 
 	private double resolvePayout(double bet, int playerValue, int dealerValue) {
-		if (playerValue == 9) return bet * 3;
-		if (playerValue > dealerValue) return bet * 2;
-		if (playerValue == dealerValue) return 0;
+		if (playerValue == 9)
+			return bet * 3;
+		if (playerValue > dealerValue)
+			return bet * 2;
+		if (playerValue == dealerValue)
+			return 0;
 		return -1;
 	}
 
@@ -245,7 +249,8 @@ public class Unlucky9 extends Game {
 
 	private String formatHand(int[] hand) {
 		StringBuilder sb = new StringBuilder();
-		for (int v : hand) sb.append("[").append(v).append("] ");
+		for (int v : hand)
+			sb.append("[").append(v).append("] ");
 		return sb.toString().trim();
 	}
 
@@ -265,15 +270,18 @@ public class Unlucky9 extends Game {
 	private void printLine(String text) {
 		if (text.length() > BOX_WIDTH)
 			text = text.substring(0, BOX_WIDTH);
-		System.out.printf("            ║ %-"+BOX_WIDTH+"s ║%n", text);
+		System.out.printf("            ║ %-" + BOX_WIDTH + "s ║%n", text);
 	}
 
 	private void loadingAnimation(String message, int cycles, int delayMs) {
 		String[] frames = { ".", "..", "...", " ..", "  .", "   " };
 		for (int i = 0; i < cycles; i++) {
 			System.out.print("\r" + message + frames[i % frames.length]);
-			try { Thread.sleep(delayMs); }
-			catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+			try {
+				Thread.sleep(delayMs);
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+			}
 		}
 		System.out.println();
 	}
@@ -285,13 +293,31 @@ public class Unlucky9 extends Game {
 		return out;
 	}
 
-	@Override public void startGame(Player p, PlayerDatabase db) {
+	@Override
+	public void startGame(Player p, PlayerDatabase db) {
 		playWithPlayer(p, db);
 	}
 
-	@Override public void playRound() {}
-	@Override public double calculatePayout() { return 0; }
-	@Override public void displayRules() {}
-	@Override public String getGameName() { return "Unlucky9"; }
-	@Override public void updateBalance(double amount) { balance += amount; }
+	@Override
+	public void playRound() {
+	}
+
+	@Override
+	public double calculatePayout() {
+		return 0;
+	}
+
+	@Override
+	public void displayRules() {
+	}
+
+	@Override
+	public String getGameName() {
+		return "Unlucky9";
+	}
+
+	@Override
+	public void updateBalance(double amount) {
+		balance += amount;
+	}
 }
