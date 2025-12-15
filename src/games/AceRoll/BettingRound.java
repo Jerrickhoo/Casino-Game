@@ -14,11 +14,7 @@ public class BettingRound {
     private double pot;
     private double botBalance;
 
-    public BettingRound(Player player,
-            DiceSet playerHand,
-            DiceSet botHand,
-            double pot,
-            double botBalance) {
+    public BettingRound(Player player, DiceSet playerHand, DiceSet botHand, double pot, double botBalance) {
         this.player = player;
         this.playerHand = playerHand;
         this.botHand = botHand;
@@ -34,41 +30,39 @@ public class BettingRound {
 
         boolean playerDone = false;
         boolean botDone = false;
-        boolean playerTurn = true; // player acts first
+        boolean playerTurn = true; // player ma una do action
 
         while (true) {
             if (playerTurn) {
-                // show round summary so player can make an informed decision
-                System.out.println("            ╔════════════════════════════════╗");
-                System.out.println("            ║   Current pot: "
-                        + String.format("%-15s", Formatter.formatCurrency(pot)) + " ║");
-                System.out.println("            ║   Your balance: "
-                        + String.format("%-14s", Formatter.formatCurrency(player.getBalance())) + " ║");
-                System.out.println("            ║   Opponent balance: "
-                        + String.format("%-10s", Formatter.formatCurrency(botBalance)) + " ║");
-                System.out.println("            ╚════════════════════════════════╝");
+                // summary sang pot kag player and opponent balance
+                System.out.println("            ╔═════════════════════════════════════╗");
+                System.out.println("            ║   Current pot: " + String.format("%-20s", Formatter.formatCurrency(pot)) + " ║");
+                System.out.println("            ║   Your balance: " + String.format("%-19s", Formatter.formatCurrency(player.getBalance())) + " ║");
+                System.out.println("            ║   Opponent balance: " + String.format("%-15s", Formatter.formatCurrency(botBalance)) + " ║");
+                System.out.println("            ╚═════════════════════════════════════╝");
 
-                DicePoker.showHandUI(playerHand);
+                AceRoll.showHandUI(playerHand);
 
                 double toCall = botContrib - playerContrib;
 
-                // if player has no funds they cannot raise or call
+                // if bankrupt and player, bawal raise or call
                 if (player.getBalance() <= 0.0) {
-                    if (toCall > 0) {
+                    if (toCall > 0) { // if may inog call, fold only
                         System.out.println("                 ╔═══════════════════════════════════════════════╗");
                         System.out.println("                 ║   You have no funds to call; you must fold.   ║");
                         System.out.println("                 ╚═══════════════════════════════════════════════╝");
                         System.out.println("                 ╔═══════════════════════════════════════════════╗");
-                        System.out.println("                  ");
-                        InputValidator.waitForUserInput();
+                        InputValidator.waitForUserInput("                  Press Enter to Fold");
+                        ConsoleDisplay.clearConsole();
                         return new BettingResult(pot, true, -1);
                     } else {
-                        // only allow check, fold, or sort hand
+                        //  if wala sang inog call, since bankrupt si player - check, fold, and sort only
                         while (true) {
                             System.out.println("       ╔══════════════════════════════════════════════╗");
                             System.out.print("       Your action: 1) Check 2) Fold 3) Sort Hand: ");
                             int c = InputValidator.readInt(1, 3);
                             if (c == 1) {
+                                // check
                                 ConsoleDisplay.clearConsole();
                                 System.out.println("                 ╔════════════════════════════╗");
                                 System.out.println("                 ║         You Checked        ║");
@@ -84,29 +78,31 @@ public class BettingRound {
                                 return new BettingResult(pot, true, -1);
                             } else {
                                 // sort hand
-                                DicePoker.showSortedHand(playerHand);
+                                AceRoll.showSortedHand(playerHand);
                                 continue;
                             }
                         }
                     }
                 }
-
+                // if may money pa si player and wala inog call -- can check, bet, fold, and sort 
                 if (toCall <= 0) {
-                    // can check or bet
-                    if (player.getBalance() > 0.0) {
-                        if (botBalance > 0.0) {
+                    // can check, bet, fold, sort
+                    if (player.getBalance() > 0.0) { // if may balance, proceed
+                        if (botBalance > 0.0) { // if opponent has balance, proceed
                             int choice;
                             while (true) {
                                 System.out.println("       ╔════════════════════════════════════════════════════════╗");
                                 System.out.print("        Your action: 1) Check 2) Bet/Raise 3) Fold 4) Sort Hand: ");
                                 choice = InputValidator.readInt(1, 4);
                                 if (choice == 4) {
-                                    DicePoker.showSortedHand(playerHand);
+                                    // sort 
+                                    AceRoll.showSortedHand(playerHand);
                                     continue;
                                 }
                                 break;
                             }
                             if (choice == 1) {
+                                // check
                                 ConsoleDisplay.clearConsole();
                                 System.out.println("                 ╔════════════════════════════╗");
                                 System.out.println("                 ║         You Checked        ║");
@@ -117,7 +113,7 @@ public class BettingRound {
                                 ConsoleDisplay.pause(1500);
                                 playerDone = true;
                             } else if (choice == 2) {
-                                // raise amount
+                                // raise 
                                 ConsoleDisplay.clearConsole();
                                 System.out.println("       ╔════════════════════════════╗");
                                 System.out.print("        Enter raise amount: ");
@@ -140,9 +136,9 @@ public class BettingRound {
                                 return new BettingResult(pot, true, -1);
                             }
                         } else {
-                            // bot has zero funds - disallow raising
+                            // if bankrupt ang bot, bawal na mag raise
                             while (true) {
-                                System.out.println("       ╔══════════════════════════════════════════╗");
+                                System.out.println("       ╔═════════════════════════════════════════════╗");
                                 System.out.print("        Your action: 1) Check 2) Fold 3) Sort Hand: ");
                                 int c = InputValidator.readInt(1, 3);
                                 if (c == 1) {
@@ -161,39 +157,38 @@ public class BettingRound {
                                     return new BettingResult(pot, true, -1);
                                 } else {
                                     // sort hand
-                                    DicePoker.showSortedHand(playerHand);
+                                    AceRoll.showSortedHand(playerHand);
                                     continue;
                                 }
                             }
                         }
                     }
-                } else {
-                    // must call, raise, or fold
+                } else { // if may inog call
+                    // either ma-call, raise, or fold
                     if (player.getBalance() <= 0.0) {
-                        // Should have been handled earlier, but safeguard
+                        // if bankrupt ang player, fold only (for safe guard kay shouldve been handled earlier)
                         System.out.println("                 ╔═══════════════════════════════════════════════╗");
                         System.out.println("                 ║   You have no funds to call; you must fold.   ║");
                         System.out.println("                 ╚═══════════════════════════════════════════════╝");
                         System.out.println("                 ╔═══════════════════════════════════════════════╗");
-                        System.out.println("                  ");
-                        InputValidator.waitForUserInput();
+                        InputValidator.waitForUserInput("                  Press Enter to Fold");
                         return new BettingResult(pot, true, -1);
                     }
-                    if (botBalance > 0.0) {
+                    if (botBalance > 0.0) { // if may balance pa ang bot
                         int choice;
                         while (true) {
-                            System.out.println(
-                                    "       ╔═════════════════════════════════════════════════════════════════════╗");
-                            System.out.print("       Your action: 1) Call " + Formatter.formatCurrency(toCall)
-                                    + " 2) Raise 3) Fold 4) Sort Hand: ");
+                            System.out.println("       ╔═══════════════════════════════════════════════════════════════╗");
+                            System.out.print("       Your action: 1) Call " + Formatter.formatCurrency(toCall) + " 2) Raise 3) Fold 4) Sort Hand: ");
                             choice = InputValidator.readInt(1, 4);
                             if (choice == 4) {
-                                DicePoker.showSortedHand(playerHand);
+                                // sort
+                                AceRoll.showSortedHand(playerHand);
                                 continue;
                             }
                             break;
                         }
                         if (choice == 1) {
+                            // call the raised amount
                             double pay = Math.min(toCall, player.getBalance());
                             player.setBalance(player.getBalance() - pay);
                             playerContrib += pay;
@@ -205,9 +200,8 @@ public class BettingRound {
                             System.out.println("               ╚════════════════════════════╝");
                             ConsoleDisplay.pause(1500);
                         } else if (choice == 2) {
-                            // raise additional
-
-                            System.out.println("       ╔═══════════════════════════════════════╗");
+                            // ma raise sa pot + the already raised money. bale opponent raise + call + player raise
+                            System.out.println("       ╔═══════════════════════════════════════════╗");
                             System.out.print("       Enter raise amount (additional over call): ");
                             double extra = InputValidator.readDouble(1.0, player.getBalance());
                             double pay = Math.min(player.getBalance(), toCall + extra);
@@ -226,25 +220,25 @@ public class BettingRound {
                             ConsoleDisplay.pause(1500);
 
                         } else {
-                            // fold -> bot wins
+                            // fold
                             return new BettingResult(pot, true, -1);
                         }
                     } else {
-                        // bot has no funds — cannot raise, allow Call, Fold, Sort Hand
+                        // if bankrupt opponent — cannot raise, allow call, fold, and sort
                         int choice;
                         while (true) {
                             System.out.println(
                                     "       ╔═════════════════════════════════════════════════════════════════════╗");
-                            System.out.print("       Your action: 1) Call " + Formatter.formatCurrency(toCall)
-                                    + " 2) Fold 3) Sort Hand: ");
+                            System.out.print("       Your action: 1) Call " + Formatter.formatCurrency(toCall) + " 2) Fold 3) Sort Hand: ");
                             choice = InputValidator.readInt(1, 3);
                             if (choice == 3) {
-                                DicePoker.showSortedHand(playerHand);
+                                AceRoll.showSortedHand(playerHand);
                                 continue;
                             }
                             break;
                         }
                         if (choice == 1) {
+                            // call raised amount
                             double pay = Math.min(toCall, player.getBalance());
                             player.setBalance(player.getBalance() - pay);
                             playerContrib += pay;
@@ -255,17 +249,15 @@ public class BettingRound {
                             System.out.println("               ╔════════════════════════════╗");
                             System.out.println("               ║         You Called         ║");
                             System.out.println("               ╚════════════════════════════╝");
-                            DicePoker.showHandUI(playerHand);
+                            AceRoll.showHandUI(playerHand);
                         } else {
-                            // fold -> bot wins
+                            // fold
                             return new BettingResult(pot, true, -1);
                         }
                     }
                 }
             } else {
                 // bot's turn
-                // small pause and clear to show bot's thinking cleanly
-                ConsoleDisplay.pause(700);
                 ConsoleDisplay.clearConsole();
                 double toCall = playerContrib - botContrib;
                 DiceRank botRank = botHand.evaluateHand();
@@ -274,7 +266,7 @@ public class BettingRound {
                 if (toCall <= 0) {
                     // toCall==0, botDecision>0 => raise, 0 => check
                     if (botDecision > 0 && raises < maxRaises) {
-                        double raise = Math.min(botDecision, botBalance);
+                        double raise = Math.min(botDecision, botBalance); // pili which one and lowest
                         botBalance -= raise;
                         botContrib += raise;
                         pot += raise;
@@ -282,8 +274,7 @@ public class BettingRound {
                         playerDone = false;
                         botDone = true;
                         System.out.println("               ╔════════════════════════════╗");
-                        System.out.println("               ║    Opponent Bets "
-                                + String.format("%-9s", Formatter.formatCurrency(raise)) + " ║");
+                        System.out.println("               ║    Opponent Bets " + String.format("%-9s", Formatter.formatCurrency(raise)) + " ║");
                         System.out.println("               ╚════════════════════════════╝");
                         ConsoleDisplay.pause(2000);
                         ConsoleDisplay.clearConsole();
