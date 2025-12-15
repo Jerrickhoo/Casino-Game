@@ -171,7 +171,7 @@ public class Unlucky9 extends Game {
         ui.displayNewBalance(balance);
     }
 
-    @Override public void startGame(Player p, PlayerDatabase db) { playWithPlayer(p, db); }
+    @Override public void startGame(Player player, PlayerDatabase database) { playWithPlayer(player, database); }
     @Override public void playRound() {}
     @Override public double calculatePayout() { return 0; }
     @Override public void displayRules() {}

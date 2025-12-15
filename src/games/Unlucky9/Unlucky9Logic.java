@@ -3,7 +3,6 @@ package games.Unlucky9;
 import java.util.Random;
 import Core.Player;
 import Core.Transaction;
-import utilities.Formatter;
 
 public class Unlucky9Logic {
     private Random random = new Random();
