@@ -113,7 +113,7 @@ public class TwentyWon extends Game {
                 "  * Double is only allowed on first decision",
                 "",
                 "PLAY OPTIONS:",
-                "  Hit    - Take another card. You may hit repeatedly until you stand or bust.",
+                "  Hit    - Take another card.You may hit repeatedly until you go over 21.",
                 "  Stand  - End your turn and dealer will then play their hand.",
                 "  Double - Only allowed on your first decision when you have exactly 2",
                 "           cards.Double your bet, receive exactly one card, and ",
