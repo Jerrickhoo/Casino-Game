@@ -29,6 +29,9 @@ public class Transaction {
     private double balanceAfter;
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    // --- File I/O helpers ---
+    private static final Path TRANSACTIONS_FILE_PATH = Paths.get("../src/data/transactions.log");
+    private static final Path DATA_DIRECTORY = TRANSACTIONS_FILE_PATH.getParent();
 
     public Transaction(Date timestamp, String username, String playerId, String game, String action, double amount,
             double balanceAfter) {
@@ -63,10 +66,6 @@ public class Transaction {
             return null;
         }
     }
-
-    // --- File I/O helpers ---
-    private static final Path TRANSACTIONS_FILE_PATH = Paths.get("../src/data/transactions.log");
-    private static final Path DATA_DIRECTORY = TRANSACTIONS_FILE_PATH.getParent();
 
     private static void ensureDataDirectory() {
         try {
@@ -113,15 +112,15 @@ public class Transaction {
     }
 
     public static List<Transaction> forPlayer(Player player) {
-        List<Transaction> all = readAll();
-        List<Transaction> filtered = new ArrayList<>();
+        List<Transaction> allTransactions = readAll();
+        List<Transaction> filteredTransactions = new ArrayList<>();
         if (player == null)
-            return filtered;
-        for (Transaction t : all) {
-            if (t.getPlayerId() != null && t.getPlayerId().equals(player.getPlayerId()))
-                filtered.add(t);
+            return filteredTransactions;
+        for (Transaction transaction : allTransactions) {
+            if (transaction.playerId != null && transaction.playerId.equals(player.getPlayerId()))
+                filteredTransactions.add(transaction);
         }
-        return filtered;
+        return filteredTransactions;
     }
 
     /**
@@ -137,9 +136,9 @@ public class Transaction {
         if (!sourceFile.exists())
             return true; // nothing to do
 
-        File tempFile = new File(sourceFile.getAbsolutePath() + ".tmp");
+        File temporaryFile = new File(sourceFile.getAbsolutePath() + ".tmp");
         try (BufferedReader reader = new BufferedReader(new FileReader(sourceFile));
-                PrintWriter writer = new PrintWriter(new FileWriter(tempFile))) {
+                PrintWriter writer = new PrintWriter(new FileWriter(temporaryFile))) {
             String line;
             String username = player.getUsername();
             String playerId = player.getPlayerId();
@@ -160,17 +159,17 @@ public class Transaction {
             }
         } catch (IOException e) {
             System.out.println("ERROR: Failed to delete transactions for player: " + e.getMessage());
-            if (tempFile.exists())
-                tempFile.delete();
+            if (temporaryFile.exists())
+                temporaryFile.delete();
             return false;
         }
 
-        // Replace original file with cleaned temp file
+        // Replace original file with cleaned temporary file
         try {
             Path sourcePath = sourceFile.toPath();
-            Path tempPath = tempFile.toPath();
+            Path temporaryPath = temporaryFile.toPath();
             Files.delete(sourcePath);
-            Files.move(tempPath, sourcePath);
+            Files.move(temporaryPath, sourcePath);
             return true;
         } catch (IOException e) {
             System.out.println("ERROR: Failed to finalize transaction deletion: " + e.getMessage());
@@ -179,53 +178,24 @@ public class Transaction {
     }
 
     public static void displayForPlayer(Player player, int maxEntries) {
-        List<Transaction> all = forPlayer(player);
-        if (all.isEmpty()) {
+        List<Transaction> allTransactions = forPlayer(player);
+        if (allTransactions.isEmpty()) {
             System.out.println("No transactions found for " + (player == null ? "" : player.getUsername()) + ".");
             return;
         }
 
-        System.out.println("TRANSACTION HISTORY for " + player.getUsername());
-        System.out.println("╔══════════════════════════════════════════════════════════════════════════════════╗");
+        System.out.println(" TRANSACTION HISTORY for " + player.getUsername());
+        System.out.println(" ╔═══════════════════════════════════════════════════════════════════════════════════════════╗");
 
-        int start = Math.max(0, all.size() - maxEntries);
-        for (int i = start; i < all.size(); i++) {
-            System.out.println(all.get(i).toDisplayString());
+        int startIndex = Math.max(0, allTransactions.size() - maxEntries);
+        for (int i = startIndex; i < allTransactions.size(); i++) {
+            System.out.println(allTransactions.get(i).toDisplayString());
         }
     }
 
     public String toDisplayString() {
-        return String.format("%s | %s | %s | %s | %s | %s | %s",
+        return String.format(" %s | %s | %s | %s | %s | %s | %s",
                 DATE_FORMAT.format(timestamp), username, playerId == null ? "" : playerId, game, action,
                 Formatter.formatCurrency(amount), Formatter.formatCurrency(balanceAfter));
-    }
-
-    // Getters
-    public Date getTimestamp() {
-        return timestamp;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPlayerId() {
-        return playerId;
-    }
-
-    public String getGame() {
-        return game;
-    }
-
-    public String getAction() {
-        return action;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-
-    public double getBalanceAfter() {
-        return balanceAfter;
     }
 }

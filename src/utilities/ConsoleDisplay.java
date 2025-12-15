@@ -7,15 +7,12 @@ public class ConsoleDisplay {
             String operatingSystem = System.getProperty("os.name").toLowerCase();
 
             if (operatingSystem.contains("windows")) {
-                // For Windows
                 new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
             } else {
-                // For Unix-based systems (macOS, Linux)
                 System.out.print("\033[H\033[2J");
                 System.out.flush();
             }
         } catch (Exception e) {
-            // If clearing fails, print several newlines as a fallback
             for (int i = 0; i < 50; i++) {
                 System.out.println();
             }

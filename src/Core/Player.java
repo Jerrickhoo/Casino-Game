@@ -28,10 +28,33 @@ public class Player {
         this.gamesPlayed = gamesPlayed;
     }
 
+    // Getters
+    public String getUsername() {
+        return username;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public String getPlayerId() {
+        return playerId;
+    }
+
+    public int getGamesPlayed() {
+        return gamesPlayed;
+    }
+
+    // Setters
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+
     // Generate player ID in format: IDyyyyMMddHHmm (e.g., ID202503231530)
     private String generatePlayerId() {
-        java.time.format.DateTimeFormatter fmt = java.time.format.DateTimeFormatter.ofPattern("yyyyMMddHHmm");
-        String datetime = java.time.LocalDateTime.now().format(fmt);
+        java.time.format.DateTimeFormatter dateTimeFormatter = java.time.format.DateTimeFormatter
+                .ofPattern("yyyyMMddHHmm");
+        String datetime = java.time.LocalDateTime.now().format(dateTimeFormatter);
         return "ID" + datetime;
     }
 
@@ -89,28 +112,6 @@ public class Player {
     // Check if player can afford a bet
     public boolean canAfford(double amount) {
         return balance >= amount;
-    }
-
-    // Getters
-    public String getUsername() {
-        return username;
-    }
-
-    public double getBalance() {
-        return balance;
-    }
-
-    public String getPlayerId() {
-        return playerId;
-    }
-
-    public int getGamesPlayed() {
-        return gamesPlayed;
-    }
-
-    // Setters
-    public void setBalance(double balance) {
-        this.balance = balance;
     }
 
     // Validation methods

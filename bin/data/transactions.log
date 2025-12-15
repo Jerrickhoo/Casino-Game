@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 2025-11-09 21:44:48 | yer | SYSTEM | ACCOUNT_CREATION | 1000.00 | 1000.00
 2025-11-09 21:51:57 | jaja | SYSTEM | ACCOUNT_CREATION | 1000.00 | 1000.00
 2025-11-09 21:52:35 | asdf | SYSTEM | ACCOUNT_CREATION | 1000.00 | 1000.00
@@ -68,7 +67,6 @@
 2025-12-13 16:31:50 | bom | SYSTEM | CASH_IN | 10000.00 | 59900.00
 2025-12-13 16:40:41 | bom | Lucky9 | BET | 2.00 | 59898.00
 2025-12-13 16:40:41 | bom | Lucky9 | LOSS | 2.00 | 59898.00
-=======
 2025-12-07 21:54:33 | yer | ID202511270737 | Lucky9 | BET | 100.00 | 900.00
 2025-12-07 21:54:33 | yer | ID202511270737 | Lucky9 | WIN | 200.00 | 1100.00
 2025-12-08 16:54:05 | yer | ID202511270737 | Lucky9 | BET | 300.00 | 800.00
@@ -201,6 +199,7 @@
 2025-12-13 17:04:21 | jaja | ID202512131702 | Moses Bonanza Slot Machine | SPIN_RESULT | 40000000.00 | 50000000.00
 2025-12-13 17:04:43 | jaja | ID202512131702 | Lucky9 | BET | 10000000.00 | 40000000.00
 2025-12-13 17:04:45 | jaja | ID202512131702 | Lucky9 | LOSS | 10000000.00 | 40000000.00
+<<<<<<< HEAD
 >>>>>>> 034bbc7dd97a667db308f9d521feb922305f96cc
 2025-12-14 00:09:28 | Gian | ID202512011709 | SYSTEM | CASH_IN | 12000.00 | 18160.00
 2025-12-14 12:42:47 | Gian | ID202512011709 | Moses Bonanza Slot Machine | SPIN_RESULT | 800.00 | 18960.00
@@ -212,3 +211,196 @@
 2025-12-14 15:23:44 | 123 | ID202512141438 | SYSTEM | CASH_IN | 16.80 | 10000.00
 2025-12-14 15:26:17 | 123 | ID202512141438 | SYSTEM | CASH_OUT | 9100.00 | 900.00
 2025-12-14 22:29:48 | 123 | ID202512141438 | SYSTEM | CASH_IN | 10000.00 | 10000.00
+=======
+2025-12-14 01:42:22 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -2000.00 | 2000.00
+2025-12-14 01:42:22 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 2000.00
+2025-12-14 01:42:36 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 2000.00 | 4000.00
+2025-12-14 01:42:50 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -4000.00 | 0.00
+2025-12-14 01:42:50 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 0.00
+2025-12-14 01:43:04 | mjherms | ID202511271837 | SYSTEM | CASH_IN | 10000.00 | 10000.00
+2025-12-14 01:43:24 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -5000.00 | 5000.00
+2025-12-14 01:43:24 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 5000.00
+2025-12-14 01:43:41 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 2000.00 | 7000.00
+2025-12-14 01:45:00 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -3000.00 | 4000.00
+2025-12-14 01:45:00 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 4000.00
+2025-12-14 01:47:14 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 2000.00 | 6000.00
+2025-12-14 01:47:56 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 2000.00 | 8000.00
+2025-12-14 01:48:51 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 5000.00 | 13000.00
+2025-12-14 01:59:07 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 5000.00 | 18000.00
+2025-12-14 02:00:01 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 20000.00 | 38000.00
+2025-12-14 02:17:41 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 10000.00 | 48000.00
+2025-12-14 02:24:10 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -10000.00 | 38000.00
+2025-12-14 02:24:10 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 38000.00
+2025-12-14 02:47:52 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -20000.00 | 18000.00
+2025-12-14 02:47:54 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 18000.00
+2025-12-14 02:48:06 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -1000.00 | 17000.00
+2025-12-14 02:48:06 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 17000.00
+2025-12-14 02:48:15 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -1000.00 | 16000.00
+2025-12-14 02:48:16 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 16000.00
+2025-12-14 02:48:23 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -1000.00 | 15000.00
+2025-12-14 02:48:24 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 15000.00
+2025-12-14 02:49:26 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -1000.00 | 14000.00
+2025-12-14 02:49:34 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 14000.00
+2025-12-14 02:52:08 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 5000.00 | 19000.00
+2025-12-14 02:52:47 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -1000.00 | 18000.00
+2025-12-14 02:52:47 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 18000.00
+2025-12-14 02:52:56 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 2000.00 | 20000.00
+2025-12-14 03:44:23 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 5000.00 | 25000.00
+2025-12-14 04:04:46 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -1000.00 | 24000.00
+2025-12-14 04:04:46 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 24000.00
+2025-12-14 04:04:58 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -1000.00 | 23000.00
+2025-12-14 04:04:58 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 23000.00
+2025-12-14 04:05:07 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -1000.00 | 22000.00
+2025-12-14 04:05:07 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 22000.00
+2025-12-14 04:05:13 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -1000.00 | 21000.00
+2025-12-14 04:05:13 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 21000.00
+2025-12-14 04:05:19 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -1000.00 | 20000.00
+2025-12-14 04:05:19 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 20000.00
+2025-12-14 04:05:25 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -4000.00 | 16000.00
+2025-12-14 04:05:25 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 16000.00
+2025-12-14 04:05:31 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -3000.00 | 13000.00
+2025-12-14 04:05:31 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 13000.00
+2025-12-14 04:05:36 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -1000.00 | 12000.00
+2025-12-14 04:05:36 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 12000.00
+2025-12-14 04:05:43 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -2000.00 | 10000.00
+2025-12-14 04:05:43 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 10000.00
+2025-12-14 04:15:51 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -9000.00 | 1000.00
+2025-12-14 04:15:51 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 1000.00
+2025-12-14 04:15:56 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -100.00 | 900.00
+2025-12-14 04:15:56 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 900.00
+2025-12-14 04:16:02 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -100.00 | 800.00
+2025-12-14 04:16:02 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 800.00
+2025-12-14 04:19:05 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 500.00 | 1300.00
+2025-12-14 04:21:37 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -100.00 | 1200.00
+2025-12-14 04:21:37 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 1200.00
+2025-12-14 04:34:12 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -100.00 | 1100.00
+2025-12-14 04:34:12 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 1100.00
+2025-12-14 04:34:25 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 200.00 | 1300.00
+2025-12-14 04:35:05 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -300.00 | 1000.00
+2025-12-14 04:35:05 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 1000.00
+2025-12-14 04:35:11 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -300.00 | 700.00
+2025-12-14 04:35:11 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 700.00
+2025-12-14 04:35:19 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -300.00 | 400.00
+2025-12-14 04:35:19 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 400.00
+2025-12-14 04:35:24 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -1.00 | 399.00
+2025-12-14 04:35:24 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 399.00
+2025-12-14 04:35:32 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 796.00 | 1195.00
+2025-12-14 04:37:27 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -195.00 | 1000.00
+2025-12-14 04:37:27 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 1000.00
+2025-12-14 04:37:35 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 500.00 | 1500.00
+2025-12-14 04:37:52 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -100.00 | 1400.00
+2025-12-14 04:37:52 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 1400.00
+2025-12-14 04:41:55 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -1000.00 | 400.00
+2025-12-14 04:41:55 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 400.00
+2025-12-14 04:42:02 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -100.00 | 300.00
+2025-12-14 04:42:02 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 300.00
+2025-12-14 04:42:09 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -100.00 | 200.00
+2025-12-14 04:42:09 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 200.00
+2025-12-14 04:42:14 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -50.00 | 150.00
+2025-12-14 04:42:14 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 150.00
+2025-12-14 04:42:22 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -100.00 | 50.00
+2025-12-14 04:42:22 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 50.00
+2025-12-14 04:42:29 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 100.00 | 150.00
+2025-12-14 04:42:46 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -50.00 | 100.00
+2025-12-14 04:42:46 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 100.00
+2025-12-14 04:42:52 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -100.00 | 0.00
+2025-12-14 04:42:52 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 0.00
+2025-12-14 04:43:07 | mjherms | ID202511271837 | SYSTEM | CASH_IN | 10000.00 | 10000.00
+2025-12-14 04:43:16 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -3000.00 | 7000.00
+2025-12-14 04:43:16 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 7000.00
+2025-12-14 04:43:22 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -1000.00 | 6000.00
+2025-12-14 04:43:22 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 6000.00
+2025-12-14 04:43:29 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -1000.00 | 5000.00
+2025-12-14 04:43:29 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 5000.00
+2025-12-14 04:43:35 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 2000.00 | 7000.00
+2025-12-14 04:44:02 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -1000.00 | 6000.00
+2025-12-14 04:44:02 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 6000.00
+2025-12-14 04:45:31 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -1000.00 | 5000.00
+2025-12-14 04:45:31 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 5000.00
+2025-12-14 04:45:37 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 21000.00 | 26000.00
+2025-12-14 04:47:08 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -10000.00 | 16000.00
+2025-12-14 04:47:08 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 16000.00
+2025-12-14 04:47:14 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -5000.00 | 11000.00
+2025-12-14 04:47:14 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 11000.00
+2025-12-14 04:47:20 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -1000.00 | 10000.00
+2025-12-14 04:47:20 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 10000.00
+2025-12-14 04:47:25 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -1000.00 | 9000.00
+2025-12-14 04:47:25 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 9000.00
+2025-12-14 04:47:31 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -1000.00 | 8000.00
+2025-12-14 04:47:31 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 8000.00
+2025-12-14 04:47:36 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 2000.00 | 10000.00
+2025-12-14 04:49:36 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 5000.00 | 15000.00
+2025-12-14 04:50:31 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -1000.00 | 14000.00
+2025-12-14 04:50:31 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 14000.00
+2025-12-14 04:50:36 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -1000.00 | 13000.00
+2025-12-14 04:50:36 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 13000.00
+2025-12-14 04:50:45 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -1000.00 | 12000.00
+2025-12-14 04:50:45 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 12000.00
+2025-12-14 04:50:50 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 2000.00 | 14000.00
+2025-12-14 04:52:00 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 5000.00 | 19000.00
+2025-12-14 04:57:10 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -3000.00 | 16000.00
+2025-12-14 04:57:10 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 16000.00
+2025-12-14 05:02:18 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 30000.00 | 46000.00
+2025-12-14 05:04:52 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 20000.00 | 66000.00
+2025-12-14 05:05:04 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -10000.00 | 56000.00
+2025-12-14 05:05:04 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 56000.00
+2025-12-14 05:05:11 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | -10000.00 | 46000.00
+2025-12-14 05:05:11 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 0.00 | 46000.00
+2025-12-14 05:15:32 | mjherms | ID202511271837 | Moses Bonanza Slot Machine | SPIN_RESULT | 6000.00 | 52000.00
+2025-12-14 21:15:49 | qwerty | ID202512142115 | SYSTEM | ACCOUNT_CREATION | 100.00 | 100.00
+2025-12-14 21:22:21 | yer | ID202511270737 | SYSTEM | CASH_IN | 10.00 | 1710.00
+2025-12-14 21:22:31 | yer | ID202511270737 | SYSTEM | CASH_OUT_ALL | 1710.00 | 0.00
+2025-12-15 00:25:36 | mjherms | ID202511271837 | Unlucky9 | BET | 2000.00 | 50000.00
+2025-12-15 00:25:38 | mjherms | ID202511271837 | Unlucky9 | LOSS | 2000.00 | 50000.00
+2025-12-15 00:25:55 | mjherms | ID202511271837 | MosesBonanza | GAME_STARTED | 0.00 | 40000.00
+2025-12-15 00:25:55 | mjherms | ID202511271837 | MosesBonanza | GAME_STARTED | 0.00 | 40000.00
+2025-12-15 00:26:01 | mjherms | ID202511271837 | MosesBonanza | GAME_STARTED | 0.00 | 35000.00
+2025-12-15 00:26:01 | mjherms | ID202511271837 | MosesBonanza | GAME_STARTED | 0.00 | 35000.00
+2025-12-15 00:26:07 | mjherms | ID202511271837 | MosesBonanza | GAME_STARTED | 0.00 | 30000.00
+2025-12-15 00:26:07 | mjherms | ID202511271837 | MosesBonanza | GAME_STARTED | 0.00 | 30000.00
+2025-12-15 00:26:14 | mjherms | ID202511271837 | MosesBonanza | GAME_STARTED | 0.00 | 25000.00
+2025-12-15 00:26:14 | mjherms | ID202511271837 | MosesBonanza | GAME_STARTED | 0.00 | 25000.00
+2025-12-15 00:26:19 | mjherms | ID202511271837 | MosesBonanza | GAME_STARTED | 0.00 | 20000.00
+2025-12-15 00:26:19 | mjherms | ID202511271837 | MosesBonanza | GAME_STARTED | 0.00 | 20000.00
+2025-12-15 00:26:24 | mjherms | ID202511271837 | MosesBonanza | GAME_STARTED | 0.00 | 15000.00
+2025-12-15 00:26:24 | mjherms | ID202511271837 | MosesBonanza | GAME_STARTED | 0.00 | 15000.00
+2025-12-15 00:26:30 | mjherms | ID202511271837 | MosesBonanza | GAME_STARTED | 0.00 | 13000.00
+2025-12-15 00:26:30 | mjherms | ID202511271837 | MosesBonanza | GAME_STARTED | 0.00 | 13000.00
+2025-12-15 00:26:36 | mjherms | ID202511271837 | MosesBonanza | GAME_STARTED | 0.00 | 11000.00
+2025-12-15 00:26:36 | mjherms | ID202511271837 | MosesBonanza | GAME_STARTED | 0.00 | 11000.00
+2025-12-15 00:26:46 | mjherms | ID202511271837 | MosesBonanza | GAME_STARTED | 0.00 | 1000.00
+2025-12-15 00:26:46 | mjherms | ID202511271837 | MosesBonanza | GAME_STARTED | 0.00 | 1000.00
+2025-12-15 00:26:58 | mjherms | ID202511271837 | MosesBonanza | GAME_STARTED | 0.00 | 999.00
+2025-12-15 00:26:58 | mjherms | ID202511271837 | MosesBonanza | GAME_STARTED | 0.00 | 999.00
+2025-12-15 00:27:04 | mjherms | ID202511271837 | MosesBonanza | GAME_STARTED | 0.00 | 1001.00
+2025-12-15 00:51:35 | mjherms | ID202511271837 | MosesBonanza | GAME_STARTED | 0.00 | 1003.00
+2025-12-15 00:53:21 | mjherms | ID202511271837 | Unlucky9 | BET | 5.00 | 998.00
+2025-12-15 00:53:23 | mjherms | ID202511271837 | Unlucky9 | LOSS | 5.00 | 998.00
+2025-12-15 00:53:41 | mjherms | ID202511271837 | MosesBonanza | GAME_STARTED | 0.00 | 1000.00
+2025-12-15 00:53:47 | mjherms | ID202511271837 | MosesBonanza | GAME_STARTED | 0.00 | 900.00
+2025-12-15 00:53:47 | mjherms | ID202511271837 | MosesBonanza | GAME_STARTED | 0.00 | 900.00
+2025-12-15 00:54:06 | mjherms | ID202511271837 | MosesBonanza | GAME_STARTED | 0.00 | 800.00
+2025-12-15 00:54:06 | mjherms | ID202511271837 | MosesBonanza | GAME_STARTED | 0.00 | 800.00
+2025-12-15 00:54:41 | mjherms | ID202511271837 | MosesBonanza | GAME_STARTED | 0.00 | 700.00
+2025-12-15 00:54:41 | mjherms | ID202511271837 | MosesBonanza | GAME_STARTED | 0.00 | 700.00
+2025-12-15 00:54:46 | mjherms | ID202511271837 | MosesBonanza | GAME_STARTED | 0.00 | 600.00
+2025-12-15 00:54:46 | mjherms | ID202511271837 | MosesBonanza | GAME_STARTED | 0.00 | 600.00
+2025-12-15 00:54:51 | mjherms | ID202511271837 | MosesBonanza | GAME_STARTED | 0.00 | 1100.00
+2025-12-15 03:57:20 | mjherms | ID202511271837 | MosesBonanza | GAME_STARTED | 0.00 | 100.00
+2025-12-15 03:57:20 | mjherms | ID202511271837 | MosesBonanza | GAME_STARTED | 0.00 | 100.00
+2025-12-15 04:07:05 | mjherms | ID202511271837 | MosesBonanza | GAME_STARTED | 0.00 | 0.00
+2025-12-15 04:07:05 | mjherms | ID202511271837 | MosesBonanza | GAME_STARTED | 0.00 | 0.00
+2025-12-15 04:28:13 | mjherms | ID202511271837 | SYSTEM | CASH_IN | 10000.00 | 10000.00
+2025-12-15 05:42:52 | cassie | ID202512150509 | Moses Bonanza | PLAYED_GAME | 0.00 | 100.00
+2025-12-15 05:42:52 | cassie | ID202512150509 | Moses Bonanza | WIN | 200.00 | 300.00
+2025-12-15 05:43:16 | cassie | ID202512150509 | Unlucky9 | BET | 300.00 | 0.00
+2025-12-15 05:43:18 | cassie | ID202512150509 | Unlucky9 | LOSS | 300.00 | 0.00
+2025-12-15 05:43:27 | cassie | ID202512150509 | SYSTEM | CASH_IN | 100.00 | 100.00
+2025-12-15 05:43:38 | cassie | ID202512150509 | Unlucky9 | BET | 100.00 | 0.00
+2025-12-15 05:43:40 | cassie | ID202512150509 | Unlucky9 | WIN | 200.00 | 200.00
+2025-12-15 05:43:50 | cassie | ID202512150509 | Moses Bonanza | PLAYED_GAME | 0.00 | 200.00
+2025-12-15 05:43:50 | cassie | ID202512150509 | Moses Bonanza | LOSE | -100.00 | 100.00
+2025-12-15 05:43:55 | cassie | ID202512150509 | Moses Bonanza | PLAYED_GAME | 0.00 | 100.00
+2025-12-15 05:43:55 | cassie | ID202512150509 | Moses Bonanza | WIN | 200.00 | 300.00
+2025-12-15 05:44:18 | cassie | ID202512150509 | SYSTEM | CASH_OUT | 150.00 | 150.00
+>>>>>>> 8e2bbabd0c44d696dfd90d5209b61abf7362c3f0
