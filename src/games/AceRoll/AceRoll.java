@@ -301,31 +301,45 @@ public class AceRoll extends Game {
         DiceRank bRank = botHand.evaluateHand();
         ConsoleDisplay.clearConsole();
         showHandUI(playerHand);
-        System.out.println("                                                                   ╔═══════════════════════╗");
-        System.out.println("                                                                   ║    OPPONENT'S HAND    ║");
-        System.out.println("                                                                   ╚═══════════════════════╝");
-        System.out.println("                                                                   ╔═══════════════════════╗");
-        botHand.showHand();
-        System.out.println("                                                                   ╚═══════════════════════╝");
-
-        System.out.println("                                                              ╔════════════════════════════════╗");
         System.out.println(
-                "                                                              ║    You: " + String.format("%-22s", pRank) + " ║");
+                "                                                                   ╔═══════════════════════╗");
+        System.out.println(
+                "                                                                   ║    OPPONENT'S HAND    ║");
+        System.out.println(
+                "                                                                   ╚═══════════════════════╝");
+        System.out.println(
+                "                                                                   ╔═══════════════════════╗");
+        botHand.showHand();
+        System.out.println(
+                "                                                                   ╚═══════════════════════╝");
+
+        System.out.println(
+                "                                                              ╔════════════════════════════════╗");
+        System.out.println(
+                "                                                              ║    You: "
+                        + String.format("%-22s", pRank) + " ║");
         System.out.println("                                                              ║    Opponent: "
                 + String.format("%-17s", bRank) + " ║");
-        System.out.println("                                                              ╚════════════════════════════════╝");
+        System.out.println(
+                "                                                              ╚════════════════════════════════╝");
 
         int cmp = pRank.compareTo(bRank);
         int winner = 0; // 1=player, -1=bot, 0=tie
         if (cmp > 0) {
-            System.out.println("                                                                   ╔════════════════════════╗");
-            System.out.println("                                                                   ║      Player Wins!      ║");
-            System.out.println("                                                                   ╚════════════════════════╝");
+            System.out.println(
+                    "                                                                   ╔════════════════════════╗");
+            System.out.println(
+                    "                                                                   ║      Player Wins!      ║");
+            System.out.println(
+                    "                                                                   ╚════════════════════════╝");
             winner = 1;
         } else if (cmp < 0) {
-            System.out.println("                                                                   ╔════════════════════════╗");
-            System.out.println("                                                                   ║     Opponent Wins!     ║");
-            System.out.println("                                                                   ╚════════════════════════╝");
+            System.out.println(
+                    "                                                                   ╔════════════════════════╗");
+            System.out.println(
+                    "                                                                   ║     Opponent Wins!     ║");
+            System.out.println(
+                    "                                                                   ╚════════════════════════╝");
             winner = -1;
         } else {
             // tie-breaker: compare sorted dice descending
@@ -334,29 +348,40 @@ public class AceRoll extends Game {
             boolean tie = true;
             for (int i = 0; i < pSorted.length; i++) {
                 if (pSorted[i] > bSorted[i]) {
-                    System.out.println("                                                                   ╔═════════════════════════╗");
-                    System.out.println("                                                                   ║       Player Wins!      ║");
-                    System.out.println("                                                                   ║       (tie-break)       ║");
-                    System.out.println("                                                                   ╚═════════════════════════╝");
+                    System.out.println(
+                            "                                                                   ╔═════════════════════════╗");
+                    System.out.println(
+                            "                                                                   ║       Player Wins!      ║");
+                    System.out.println(
+                            "                                                                   ║       (tie-break)       ║");
+                    System.out.println(
+                            "                                                                   ╚═════════════════════════╝");
 
                     winner = 1;
                     tie = false;
                     break;
                 }
                 if (pSorted[i] < bSorted[i]) {
-                    System.out.println("                                                                   ╔═════════════════════════╗");
-                    System.out.println("                                                                   ║      Opponent Wins!     ║");
-                    System.out.println("                                                                   ║       (tie-break)       ║");
-                    System.out.println("                                                                   ╚═════════════════════════╝");
+                    System.out.println(
+                            "                                                                   ╔═════════════════════════╗");
+                    System.out.println(
+                            "                                                                   ║      Opponent Wins!     ║");
+                    System.out.println(
+                            "                                                                   ║       (tie-break)       ║");
+                    System.out.println(
+                            "                                                                   ╚═════════════════════════╝");
                     winner = -1;
                     tie = false;
                     break;
                 }
             }
             if (tie) {
-                System.out.println("                                                                   ╔═══════════════════════╗");
-                System.out.println("                                                                   ║          Tie!         ║");
-                System.out.println("                                                                   ╚═══════════════════════╝");
+                System.out.println(
+                        "                                                                   ╔═══════════════════════╗");
+                System.out.println(
+                        "                                                                   ║          Tie!         ║");
+                System.out.println(
+                        "                                                                   ╚═══════════════════════╝");
                 winner = 0;
             }
         }
@@ -366,35 +391,41 @@ public class AceRoll extends Game {
             player.setBalance(player.getBalance() + pot);
             Transaction.log(player.getUsername(), player.getPlayerId(), "AceRoll", "Win", pot, player.getBalance());
             System.out
-                    .println("                                                              ╔══════════════════════════════════╗");
+                    .println(
+                            "                                                              ╔══════════════════════════════════╗");
             System.out.println("                                                              ║  You win "
                     + String.format("%-23s", utilities.Formatter.formatCurrency(pot)) + " ║");
             System.out.println("                                                              ║  New balance: "
                     + String.format("%-18s", utilities.Formatter.formatCurrency(player.getBalance())) + " ║");
             System.out
-                    .println("                                                              ╚══════════════════════════════════╝");
+                    .println(
+                            "                                                              ╚══════════════════════════════════╝");
         } else if (winner == -1) {
             botBalance += pot;
             Transaction.log(player.getUsername(), player.getPlayerId(), "AceRoll", "Loss", -pot, player.getBalance());
             System.out
-                    .println("                                                              ╔══════════════════════════════════╗");
+                    .println(
+                            "                                                              ╔══════════════════════════════════╗");
             System.out.println("                                                              ║  Opponent wins "
                     + String.format("%-17s", utilities.Formatter.formatCurrency(pot)) + " ║");
             System.out.println("                                                              ║  Opponent balance: "
                     + String.format("%-13s", utilities.Formatter.formatCurrency(botBalance)) + " ║");
             System.out
-                    .println("                                                              ╚══════════════════════════════════╝");
+                    .println(
+                            "                                                              ╚══════════════════════════════════╝");
         } else {
             double half = Math.floor(pot * 100.0 / 2.0) / 100.0; // split cents evenly
             player.setBalance(player.getBalance() + half);
             botBalance += (pot - half);
             Transaction.log(player.getUsername(), player.getPlayerId(), "AceRoll", "Tie", half, player.getBalance());
-            System.out.println("                                                              ╔══════════════════════════════════╗");
+            System.out.println(
+                    "                                                              ╔══════════════════════════════════╗");
             System.out.println("                                                              ║  Pot split. You get "
                     + String.format("%-12s", utilities.Formatter.formatCurrency(half)) + " ║");
             System.out.println("                                                              ║  New balance: "
                     + String.format("%-18s", utilities.Formatter.formatCurrency(player.getBalance())) + " ║");
-            System.out.println("                                                              ╚══════════════════════════════════╝");
+            System.out.println(
+                    "                                                              ╚══════════════════════════════════╝");
         }
 
         db.updatePlayer(player);
@@ -404,26 +435,37 @@ public class AceRoll extends Game {
     }
 
     public static void showHandUI(DiceSet playerHand) {
-        System.out.println("                                                                   ╔═══════════════════════╗");
-        System.out.println("                                                                   ║   YOUR CURRENT HAND   ║");
-        System.out.println("                                                                   ╚═══════════════════════╝");
-        System.out.println("                                                                   ╔═══════════════════════╗");
+        System.out.println(
+                "                                                                   ╔═══════════════════════╗");
+        System.out.println(
+                "                                                                   ║   YOUR CURRENT HAND   ║");
+        System.out.println(
+                "                                                                   ╚═══════════════════════╝");
+        System.out.println(
+                "                                                                   ╔═══════════════════════╗");
         playerHand.showHand();
-        System.out.println("                                                                   ╚═══════════════════════╝");
+        System.out.println(
+                "                                                                   ╚═══════════════════════╝");
     }
 
     public static void showSortedHand(DiceSet playerHand) {
         ConsoleDisplay.clearConsole();
-        System.out.println("                                                                   ╔═══════════════════════╗");
-        System.out.println("                                                                   ║   YOUR CURRENT HAND   ║");
-        System.out.println("                                                                   ║     (SORTED DESC)     ║");
-        System.out.println("                                                                   ╚═══════════════════════╝");
-        System.out.println("                                                                   ╔═══════════════════════╗");
+        System.out.println(
+                "                                                                   ╔═══════════════════════╗");
+        System.out.println(
+                "                                                                   ║   YOUR CURRENT HAND   ║");
+        System.out.println(
+                "                                                                   ║     (SORTED DESC)     ║");
+        System.out.println(
+                "                                                                   ╚═══════════════════════╝");
+        System.out.println(
+                "                                                                   ╔═══════════════════════╗");
         int[] sorted = playerHand.getSortedDescending();
         for (int i = 0; i < sorted.length; i++) {
             System.out.println(utilities.Formatter.numToDice(sorted[i], i + 1));
         }
-        System.out.println("                                                                   ╚═══════════════════════╝");
+        System.out.println(
+                "                                                                   ╚═══════════════════════╝");
     }
 
     private List<Integer> parseSelectionLine(String line) {
