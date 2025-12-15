@@ -91,10 +91,7 @@ public class TwentyWon extends Game {
             playRoundWithBet(bet);
     }
 
-    @Override
-    public double calculatePayout() {
-        return lastRoundPayout;
-    }
+ 
 
     @Override
     public void displayRules() {

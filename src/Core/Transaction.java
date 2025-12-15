@@ -30,7 +30,7 @@ public class Transaction {
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     // --- File I/O helpers ---
-    private static final Path TRANSACTIONS_FILE_PATH = Paths.get("../src/data/transactions.log");
+    private static final Path TRANSACTIONS_FILE_PATH = Paths.get("../data/transactions.log");
     private static final Path DATA_DIRECTORY = TRANSACTIONS_FILE_PATH.getParent();
 
     public Transaction(Date timestamp, String username, String playerId, String game, String action, double amount,
@@ -185,7 +185,8 @@ public class Transaction {
         }
 
         System.out.println(" TRANSACTION HISTORY for " + player.getUsername());
-        System.out.println(" ╔═══════════════════════════════════════════════════════════════════════════════════════════╗");
+        System.out.println(
+                " ╔═══════════════════════════════════════════════════════════════════════════════════════════╗");
 
         int startIndex = Math.max(0, allTransactions.size() - maxEntries);
         for (int i = startIndex; i < allTransactions.size(); i++) {

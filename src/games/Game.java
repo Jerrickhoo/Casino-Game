@@ -28,8 +28,8 @@ public abstract class Game {
     // Play a single round (if applicable)
     public abstract void playRound();
 
-    // Calculate payout for the last played round
-    public abstract double calculatePayout();
+ 
+   
 
     // Print/display game rules
     public abstract void displayRules();

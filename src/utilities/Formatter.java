@@ -20,41 +20,41 @@ public class Formatter {
         // valid for 1..6 only
         switch (num) {
             case 1:
-                System.out.println("                                                  ║    " + i + ") " + "┌─────────┐"  + "     ║");
-                System.out.println("                                                  ║    " +  "   │         │"  + "     ║");
-                System.out.println("                                                  ║    " +  "   │    ●    │"  + "     ║");
-                System.out.println("                                                  ║    " +  "   │         │"  + "     ║");
-                            return "                                                  ║    " +  "   └─────────┘"  + "     ║";
+                System.out.println("                                                                   ║    " + i + ") " + "┌─────────┐"  + "     ║");
+                System.out.println("                                                                   ║    " +  "   │         │"  + "     ║");
+                System.out.println("                                                                   ║    " +  "   │    ●    │"  + "     ║");
+                System.out.println("                                                                   ║    " +  "   │         │"  + "     ║");
+                            return "                                                                   ║    " +  "   └─────────┘"  + "     ║";
             case 2:
-                System.out.println("                                                  ║    " + i + ") " + "┌─────────┐"  + "     ║");
-                System.out.println("                                                  ║    " +  "   │  ●      │"  + "     ║");
-                System.out.println("                                                  ║    " +  "   │         │"  + "     ║");
-                System.out.println("                                                  ║    " +  "   │      ●  │"  + "     ║");
-                            return "                                                  ║    " +  "   └─────────┘"  + "     ║";
+                System.out.println("                                                                   ║    " + i + ") " + "┌─────────┐"  + "     ║");
+                System.out.println("                                                                   ║    " +  "   │  ●      │"  + "     ║");
+                System.out.println("                                                                   ║    " +  "   │         │"  + "     ║");
+                System.out.println("                                                                   ║    " +  "   │      ●  │"  + "     ║");
+                            return "                                                                   ║    " +  "   └─────────┘"  + "     ║";
             case 3:
-                System.out.println("                                                  ║    " + i + ") " + "┌─────────┐"  + "     ║");
-                System.out.println("                                                  ║    " +  "   │  ●      │"  + "     ║");
-                System.out.println("                                                  ║    " +  "   │    ●    │"  + "     ║");
-                System.out.println("                                                  ║    " +  "   │      ●  │"  + "     ║");
-                            return "                                                  ║    " +  "   └─────────┘"  + "     ║";
+                System.out.println("                                                                   ║    " + i + ") " + "┌─────────┐"  + "     ║");
+                System.out.println("                                                                   ║    " +  "   │  ●      │"  + "     ║");
+                System.out.println("                                                                   ║    " +  "   │    ●    │"  + "     ║");
+                System.out.println("                                                                   ║    " +  "   │      ●  │"  + "     ║");
+                            return "                                                                   ║    " +  "   └─────────┘"  + "     ║";
             case 4:                 
-                System.out.println("                                                  ║    " + i + ") " + "┌─────────┐"  + "     ║");
-                System.out.println("                                                  ║    " +  "   │  ●   ●  │"  + "     ║");
-                System.out.println("                                                  ║    " +  "   │         │"  + "     ║");
-                System.out.println("                                                  ║    " +  "   │  ●   ●  │"  + "     ║");
-                            return "                                                  ║    " +  "   └─────────┘"  + "     ║";
+                System.out.println("                                                                   ║    " + i + ") " + "┌─────────┐"  + "     ║");
+                System.out.println("                                                                   ║    " +  "   │  ●   ●  │"  + "     ║");
+                System.out.println("                                                                   ║    " +  "   │         │"  + "     ║");
+                System.out.println("                                                                   ║    " +  "   │  ●   ●  │"  + "     ║");
+                            return "                                                                   ║    " +  "   └─────────┘"  + "     ║";
             case 5:
-                System.out.println("                                                  ║    " + i + ") " + "┌─────────┐"  + "     ║");
-                System.out.println("                                                  ║    " +  "   │  ●   ●  │"  + "     ║");
-                System.out.println("                                                  ║    " +  "   │    ●    │"  + "     ║");
-                System.out.println("                                                  ║    " +  "   │  ●   ●  │"  + "     ║");
-                            return "                                                  ║    " +  "   └─────────┘"  + "     ║";
+                System.out.println("                                                                   ║    " + i + ") " + "┌─────────┐"  + "     ║");
+                System.out.println("                                                                   ║    " +  "   │  ●   ●  │"  + "     ║");
+                System.out.println("                                                                   ║    " +  "   │    ●    │"  + "     ║");
+                System.out.println("                                                                   ║    " +  "   │  ●   ●  │"  + "     ║");
+                            return "                                                                   ║    " +  "   └─────────┘"  + "     ║";
             case 6:
-                System.out.println("                                                  ║    " + i + ") " + "┌─────────┐"  + "     ║");
-                System.out.println("                                                  ║    " +  "   │  ●   ●  │"  + "     ║");
-                System.out.println("                                                  ║    " +  "   │  ●   ●  │"  + "     ║");
-                System.out.println("                                                  ║    " +  "   │  ●   ●  │"  + "     ║");
-                            return "                                                  ║    " +  "   └─────────┘"  + "     ║";
+                System.out.println("                                                                   ║    " + i + ") " + "┌─────────┐"  + "     ║");
+                System.out.println("                                                                   ║    " +  "   │  ●   ●  │"  + "     ║");
+                System.out.println("                                                                   ║    " +  "   │  ●   ●  │"  + "     ║");
+                System.out.println("                                                                   ║    " +  "   │  ●   ●  │"  + "     ║");
+                            return "                                                                   ║    " +  "   └─────────┘"  + "     ║";
             default:
                 return"";
                 

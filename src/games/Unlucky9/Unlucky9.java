@@ -30,7 +30,7 @@ public class Unlucky9 extends Game {
     }
 
     // ===== MAIN GAME LOOP =====
-   @Override
+    @Override
     public void startGame(Player currentPlayer, PlayerDatabase playerDatabase) {
         this.player = currentPlayer;
         this.playerDatabase = playerDatabase;
@@ -45,7 +45,8 @@ public class Unlucky9 extends Game {
     }
 
     // ===== GAME LOGIC =====
-    private void resolveRound(Player player, double bet, int playerValue, int dealerValue, PlayerDatabase playerDatabase) {
+    private void resolveRound(Player player, double bet, int playerValue, int dealerValue,
+            PlayerDatabase playerDatabase) {
         double payout = logic.resolvePayout(bet, playerValue, dealerValue);
 
         ui.loadingAnimation("Calculating result", 14, 160);
@@ -118,7 +119,8 @@ public class Unlucky9 extends Game {
 
                 if (logic.handValue(playerCards) == 9) {
                     player.setBalance(player.getBalance() + (bet * 3));
-                    Transaction.log(player.getUsername(), player.getPlayerId(), "Unlucky9", "WIN", bet * 3, player.getBalance());
+                    Transaction.log(player.getUsername(), player.getPlayerId(), "Unlucky9", "WIN", bet * 3,
+                            player.getBalance());
                     playerDatabase.updatePlayer(player);
                     ui.boxedMessage("JACKPOT! WON " + Formatter.formatCurrency(bet * 3));
                     ui.waitForInput("Press Enter...");
@@ -135,7 +137,8 @@ public class Unlucky9 extends Game {
                 }
 
                 player.setBalance(player.getBalance() - bet);
-                Transaction.log(player.getUsername(), player.getPlayerId(), "Unlucky9", "BET_PLACED", -bet, player.getBalance());
+                Transaction.log(player.getUsername(), player.getPlayerId(), "Unlucky9", "BET_PLACED", -bet,
+                        player.getBalance());
                 playerDatabase.updatePlayer(player);
 
                 ui.loadingAnimation("Revealing dealer", 10, 140);
@@ -173,9 +176,6 @@ public class Unlucky9 extends Game {
     }
 
     @Override
-    public double calculatePayout() { return 0; }
-
-    @Override
     public void displayRules() {
         ConsoleDisplay.clearConsole();
         ui.printTop();
@@ -190,8 +190,12 @@ public class Unlucky9 extends Game {
     }
 
     @Override
-    public String getGameName() { return "Unlucky9"; }
+    public String getGameName() {
+        return "Unlucky9";
+    }
 
     @Override
-    public void updateBalance(double amt) { balance += amt; }
+    public void updateBalance(double amt) {
+        balance += amt;
+    }
 }
