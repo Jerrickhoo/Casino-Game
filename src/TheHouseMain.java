@@ -300,35 +300,21 @@ public class TheHouseMain {
                         System.out.println(
                                         "                                                 ╚══════════════════════════════════════════════════════════╝");
                         System.out.println("");
-                        System.out.println(
-                                        "                                                     ╔══════════════════════╗ ╔══════════════════════╗");
-                        System.out.println(
-                                        "                                                     ║    1. UNLUCKY        ║ ║    2. TWENTY WON     ║");
-                        System.out.println(
-                                        "                                                     ║    ┌─────────┐       ║ ║    ┌─────────┐       ║");
-                        System.out.println(
-                                        "                                                     ║    │    9    │       ║ ║    │ K Q J A │       ║");
-                        System.out.println(
-                                        "                                                     ║    │   WIN   │       ║ ║    │  BJACK  │       ║");
-                        System.out.println(
-                                        "                                                     ║    └─────────┘       ║ ║    └─────────┘       ║");
-                        System.out.println(
-                                        "                                                     ╚══════════════════════╝ ╚══════════════════════╝");
+                        System.out.println("                                                      ╔══════════════════════╗ ╔══════════════════════╗");
+                        System.out.println("                                                      ║    1. UNLUCKY        ║ ║    2. TWENTY WON     ║");
+                        System.out.println("                                                      ║    ┌─────────┐       ║ ║    ┌─────────┐       ║");
+                        System.out.println("                                                      ║    │    9    │       ║ ║    │ K Q J A │       ║");
+                        System.out.println("                                                      ║    │   WIN   │       ║ ║    │  BJACK  │       ║");
+                        System.out.println("                                                      ║    └─────────┘       ║ ║    └─────────┘       ║");
+                        System.out.println("                                                      ╚══════════════════════╝ ╚══════════════════════╝");
                         System.out.println("");
-                        System.out.println(
-                                        "                                                     ╔══════════════════════╗ ╔══════════════════════╗");
-                        System.out.println(
-                                        "                                                     ║   3. MOSES BONANZA   ║ ║   4. Ace Roll        ║");
-                        System.out.println(
-                                        "                                                     ║     ┌─────────┐      ║ ║     ┌─────────┐      ║");
-                        System.out.println(
-                                        "                                                     ║     │  7 7 7  │      ║ ║     │I II III │      ║");
-                        System.out.println(
-                                        "                                                     ║     │ JACKPOT │      ║ ║     │  DICE   │      ║");
-                        System.out.println(
-                                        "                                                     ║     └─────────┘      ║ ║     └─────────┘      ║");
-                        System.out.println(
-                                        "                                                     ╚══════════════════════╝ ╚══════════════════════╝");
+                        System.out.println("                                                      ╔══════════════════════╗ ╔══════════════════════╗");
+                        System.out.println("                                                      ║   3. MOSES BONANZA   ║ ║   4. Ace Roll        ║");
+                        System.out.println("                                                      ║     ┌─────────┐      ║ ║     ┌─────────┐      ║");
+                        System.out.println("                                                      ║     │  7 7 7  │      ║ ║     │I II III │      ║");
+                        System.out.println("                                                      ║     │ JACKPOT │      ║ ║     │  DICE   │      ║");
+                        System.out.println("                                                      ║     └─────────┘      ║ ║     └─────────┘      ║");
+                        System.out.println("                                                      ╚══════════════════════╝ ╚══════════════════════╝");
                         System.out.println("");
                         System.out.println(
                                         "                                                      ╔══════════════════════╗ ╔══════════════════════╗");

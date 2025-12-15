@@ -299,15 +299,20 @@ public class PlayerDatabase {
                 "                 └──────┴────────────────┴────────────────────┴─────────────────┴──────────┘");
     }
 
+    /**
+     * Helper method to handle common transaction pattern: update balance, log, and persist.
+     */
+    private void processTransaction(Player player, String action, double amount) {
+        Transaction.log(player.getUsername(), player.getPlayerId(), "SYSTEM", action, amount, player.getBalance());
+        updatePlayer(player);
+    }
+
     public boolean cashIn(Player player, double amount) {
         if (player == null || amount < MIN_CASH || amount > MAX_CASH_IN) {
             return false;
         }
-        // Update balance
         player.setBalance(player.getBalance() + amount);
-        // Log and persist
-        Transaction.log(player.getUsername(), player.getPlayerId(), "SYSTEM", "CASH_IN", amount, player.getBalance());
-        updatePlayer(player); // saves players
+        processTransaction(player, "CASH_IN", amount);
         return true;
     }
 
@@ -344,9 +349,7 @@ public class PlayerDatabase {
             return 0.0;
 
         player.setBalance(0.0);
-        Transaction.log(player.getUsername(), player.getPlayerId(), "SYSTEM", "CASH_OUT_ALL", amount,
-                player.getBalance());
-        updatePlayer(player);
+        processTransaction(player, "CASH_OUT_ALL", amount);
         return amount;
     }
 
