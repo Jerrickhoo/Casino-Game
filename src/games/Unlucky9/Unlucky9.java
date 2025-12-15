@@ -30,7 +30,7 @@ public class Unlucky9 extends Game {
     }
 
     // ===== MAIN GAME LOOP =====
-   @Override
+    @Override
     public void startGame(Player currentPlayer, PlayerDatabase playerDatabase) {
         this.player = currentPlayer;
         this.playerDatabase = playerDatabase;
@@ -45,7 +45,8 @@ public class Unlucky9 extends Game {
     }
 
     // ===== GAME LOGIC =====
-    private void resolveRound(Player player, double bet, int playerValue, int dealerValue, PlayerDatabase playerDatabase) {
+    private void resolveRound(Player player, double bet, int playerValue, int dealerValue,
+            PlayerDatabase playerDatabase) {
         double payout = logic.resolvePayout(bet, playerValue, dealerValue);
 
         ui.loadingAnimation("Calculating result", 14, 160);
@@ -59,7 +60,7 @@ public class Unlucky9 extends Game {
             player.setBalance(player.getBalance() + bet);
             Transaction.log(player.getUsername(), player.getPlayerId(), "Unlucky9", "WIN", bet, player.getBalance());
             playerDatabase.updatePlayer(player);
-            ui.boxedMessage("PUSH — BET RETURNED");
+            ui.boxedMessage("PUSH - BET RETURNED");
         } else {
             ui.boxedMessage("YOU LOST " + Formatter.formatCurrency(bet));
         }
@@ -118,14 +119,15 @@ public class Unlucky9 extends Game {
 
                 if (logic.handValue(playerCards) == 9) {
                     player.setBalance(player.getBalance() + (bet * 3));
-                    Transaction.log(player.getUsername(), player.getPlayerId(), "Unlucky9", "WIN", bet * 3, player.getBalance());
+                    Transaction.log(player.getUsername(), player.getPlayerId(), "Unlucky9", "WIN", bet * 3,
+                            player.getBalance());
                     playerDatabase.updatePlayer(player);
                     ui.boxedMessage("JACKPOT! WON " + Formatter.formatCurrency(bet * 3));
                     ui.waitForInput("Press Enter...");
                     return;
                 }
 
-                boolean drawMore = ui.boxedYesNoInput("Draw 3rd card? (Y/N): ");
+                boolean drawMore = ui.boxedYesNoInput("Draw 3rd card? (Y/N)");
 
                 if (drawMore) {
                     int card = logic.drawSingle();
@@ -135,7 +137,8 @@ public class Unlucky9 extends Game {
                 }
 
                 player.setBalance(player.getBalance() - bet);
-                Transaction.log(player.getUsername(), player.getPlayerId(), "Unlucky9", "BET_PLACED", -bet, player.getBalance());
+                Transaction.log(player.getUsername(), player.getPlayerId(), "Unlucky9", "BET_PLACED", -bet,
+                        player.getBalance());
                 playerDatabase.updatePlayer(player);
 
                 ui.loadingAnimation("Revealing dealer", 10, 140);
@@ -158,14 +161,11 @@ public class Unlucky9 extends Game {
                 ui.waitForInput("Press Enter...");
 
             } else if (choice == 2) {
-
                 displayRules();
-
             } else if (choice == 3) {
                 exitGame = true;
             }
         } catch (Exception e) {
-            // Debug: Print error to help identify issues
             ConsoleDisplay.clearConsole();
             ui.printTop();
             ui.printLine("ERROR: " + e.getMessage());
@@ -176,23 +176,17 @@ public class Unlucky9 extends Game {
     }
 
     @Override
-    public double calculatePayout() {
-        return 0;
-    }
-
-    @Override
     public void displayRules() {
-         ConsoleDisplay.clearConsole();
-                    ui.printTop();
-                    ui.printLine("UNLUCKY 9 - RULES");
-                    ui.printMid();
-                    ui.printLine("> Cards are digits 1-9");
-                    ui.printLine("> Hand value = sum % 10");
-                    ui.printLine("> Closest to 9 wins");
-                    ui.printLine("> Exact 9 pays 3x");
-                    ui.printBot();
-
-                    ui.waitForInput("Press Enter...");
+        ConsoleDisplay.clearConsole();
+        ui.printTop();
+        ui.printLine("UNLUKY 9 - RULES");
+        ui.printMid();
+        ui.printLine("> Cards are digits 1-9");
+        ui.printLine("> Hand value = sum % 10");
+        ui.printLine("> Closest to 9 wins");
+        ui.printLine("> Exact 9 pays 3x");
+        ui.printBot();
+        ui.waitForInput("Press Enter...");
     }
 
     @Override

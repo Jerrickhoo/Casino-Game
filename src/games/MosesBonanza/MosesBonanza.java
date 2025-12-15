@@ -233,10 +233,7 @@ public class MosesBonanza extends Game {
         return win;
     }
 
-    @Override
-    public double calculatePayout() {
-        return 0;
-    }
+ 
 
     @Override
     public void updateBalance(double amount) {

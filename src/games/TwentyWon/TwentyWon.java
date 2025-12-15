@@ -17,7 +17,7 @@ public class TwentyWon extends Game {
     private static final int BOX_WIDTH = 70; // wider box widths to match CasinoMain centering
 
     // Fixed left margin to visually match CasinoMain's spacing
-    private static final String LEFT_MARGIN = "                                                ";
+    private static final String LEFT_MARGIN = "                                         ";
 
     public TwentyWon(double startingBalance) {
         this.balance = startingBalance;
@@ -40,7 +40,8 @@ public class TwentyWon extends Game {
         displayRules();
 
         printCentered("");
-        printMenuBox(new String[] { "[1] Continue to Game", "[2] Return to The House" });
+        printMenuBox(new String[] 
+            { "[1] Continue to Game", "[2] Return to The House" });
         printCentered("");
         int menu = readChoice(1, 2);
         if (menu == 2)
@@ -59,12 +60,11 @@ public class TwentyWon extends Game {
             playRoundWithBet(bet);
 
             if (balance < 1.0) {
-                printCenteredBox("YOU'RE OUT OF CHIPS - RETURNING TO THE HOUSE");
+                printCenteredBox("          YOU'RE OUT OF MONEY - RETURNING TO THE HOUSE");
                 waitForEnterAndClear();
                 break;
             }
 
-            // After each round, ask play again or return
             printCentered("");
             printMenuBox(new String[] { "[1] Play another hand", "[2] Return to The House" });
             printCentered("");
@@ -91,10 +91,7 @@ public class TwentyWon extends Game {
             playRoundWithBet(bet);
     }
 
-    @Override
-    public double calculatePayout() {
-        return lastRoundPayout;
-    }
+ 
 
     @Override
     public void displayRules() {
@@ -102,22 +99,30 @@ public class TwentyWon extends Game {
         printCentered("");
 
         String[] lines = new String[] {
-                "       TWENTY WON! RULES       ",
+                "      TWENTY WON! RULES       ",
                 "",
-                "OBJECTIVE: Beat the dealer without going over 21",
+                "  OBJECTIVE: Beat the dealer without going over 21",
                 "",
-                "RULES:",
+                "  RULES:",
                 "  * Face cards = 10; Aces = 1 or 11",
+                "  * If card is 21 = TWENTY WON!",
                 "  * TWENTY WON! pays 1.5x",
                 "  * Dealer hits only when the value of the card is 17 or below",
                 "  * Double is only allowed on first decision",
                 "",
                 "PLAY OPTIONS:",
-                "  Hit    - Take another card.You may hit repeatedly until you go over 21.",
-                "  Stand  - End your turn and dealer will then play their hand.",
-                "  Double - Only allowed on your first decision when you have exactly 2",
-                "           cards.Double your bet, receive exactly one card, and ",
-                "           then automatically stand.",
+                "===========",
+                "Hit",
+                "------",
+                "Stand",    
+                "-------",
+                "Double",
+                "",
+                "Double rules:",
+                "  * Only allowed on first decision",
+                "  * You must have exactly 2 cards",
+                "  * Bet is doubled, one card is drawn",
+
         };
         printBoxLines(lines);
 
@@ -161,7 +166,7 @@ public class TwentyWon extends Game {
         if (!playerAlive) {
             balance -= player.lastBet;
             lastRoundPayout = -player.lastBet;
-            printCentered(formatMessage("LOSS: ", "You busted! -" + Formatter.formatCurrency(player.lastBet)));
+            printCentered(formatMessage("LOSS: ", "Busted! -" + Formatter.formatCurrency(player.lastBet)));
             waitForEnterAndClear();
             return;
         }
@@ -442,7 +447,7 @@ public class TwentyWon extends Game {
         printCentered("");
 
         String[] lines = new String[] {
-                "       WELCOME TO TWENTY WON!       ",
+                "      WELCOME TO TWENTY WON!       ",
                 "",
                 "Enjoy the classic card game!",
                 ""
@@ -483,9 +488,13 @@ public class TwentyWon extends Game {
             String display = line;
             if (display.length() > contentWidth)
                 display = display.substring(0, contentWidth);
-            int paddingWidth = contentWidth - display.length();
-            String paddedLine = " " + display + " ".repeat(Math.max(0, paddingWidth + 1));
+            int leftPad = Math.max(0, (contentWidth - display.length()) / 2);
+            int rightPad = Math.max(0, contentWidth - display.length() - leftPad);
+
+            String paddedLine = " " + " ".repeat(leftPad) + display + " ".repeat(rightPad + 1);
+
             System.out.println(padding + "║" + paddedLine + "║");
+
         }
         System.out.println(padding + bottom);
     }
@@ -568,7 +577,7 @@ public class TwentyWon extends Game {
 
             // print prompt area and read input (cursor will be inside the box)
             int promptPos = Math.max(0, (inner - 12) / 2);
-            System.out.print(padding + "║" + " ".repeat(promptPos));
+            System.out.print(padding + "║  ");
             System.out.flush();
 
             String input = InputValidator.readString();
@@ -611,7 +620,7 @@ public class TwentyWon extends Game {
         System.out.println(padding + "║" + padded + "║");
 
         int promptPos = Math.max(0, (inner - 2) / 2);
-        System.out.print(padding + "║" + " ".repeat(promptPos));
+        System.out.print(padding + "║  ");
         System.out.flush();
 
         InputValidator.waitForUserInput("");
