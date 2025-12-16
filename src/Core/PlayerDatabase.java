@@ -142,7 +142,7 @@ public class PlayerDatabase {
      * This replaces the older bubble-sort implementation with a Comparator based
      * sort.
      */
-    public List<Player> getLeaderboard(SortKey sortKey, boolean ascending) {
+    public List<Player> getLeaderboard(SortKey sortKey, boolean isAscending) {
 
         // Convert players to a LinkedList
         LinkedList<Player> leaderboard = new LinkedList<>(players.values());
@@ -152,7 +152,7 @@ public class PlayerDatabase {
             Player current = leaderboard.get(i);
             int j = i - 1;
 
-            while (j >= 0 && shouldSwap(leaderboard.get(j), current, sortKey, ascending)) {
+            while (j >= 0 && shouldSwap(leaderboard.get(j), current, sortKey, isAscending)) {
                 leaderboard.set(j + 1, leaderboard.get(j));
                 j--;
             }
@@ -161,7 +161,7 @@ public class PlayerDatabase {
         return leaderboard;
     }
 
-    private boolean shouldSwap(Player player1, Player player2, SortKey key, boolean ascending) {
+    private boolean shouldSwap(Player player1, Player player2, SortKey key, boolean isAscending) {
         int result = 0;
 
         switch (key) {
@@ -183,8 +183,8 @@ public class PlayerDatabase {
         if (result == 0) {
             result = player1.getUsername().compareToIgnoreCase(player2.getUsername());
         }
-        // Ascending or descending
-        return ascending ? result > 0 : result < 0;
+        // IsAscending or descending
+        return isAscending ? result > 0 : result < 0;
     }
 
     /**
