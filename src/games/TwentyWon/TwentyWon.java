@@ -254,19 +254,30 @@ public class TwentyWon extends Game {
                 } else if (choice == 2) {
                     return true;
                 } else if (canDouble) {
-                    balance -= hand.lastBet;
-                    hand.lastBet *= 2;
-                    Card drawn = deck.draw();
-                    hand.add(drawn);
-                    printCentered(formatMessage("-> ", "You double and draw: " + drawn));
-                    ConsoleDisplay.pause(2000);
-                    return hand.getValue() <= 21;
+                    // Safely check if player can afford doubling
+                    double additionalBet = hand.lastBet; // only add the extra bet, not the whole
+                    if (balance >= additionalBet) {
+                        balance -= additionalBet; // subtract only what is needed
+                        hand.lastBet *= 2;
+                        Card drawn = deck.draw();
+                        hand.add(drawn);
+                        printCentered(formatMessage("-> ", "You double and draw: " + drawn));
+                        ConsoleDisplay.pause(2000);
+                        return hand.getValue() <= 21;
+                    } else {
+                        // Inform user they cannot afford to double
+                        printCenteredBox("ERROR: You cannot afford to double your bet.");
+                        ConsoleDisplay.pause(1200);
+                        continue; // go back to choice
+                    }
                 }
             } else {
-                printCenteredBox("Double is unavailable due to insufficient balance.");
+                printCenteredBox("Double is unavailable after first decision.");
                 ConsoleDisplay.pause(900);
             }
-}
+
+            firstDecision = false;
+        }
     }
 
     private void playDealerHand(Hand dealer, Hand player) {
@@ -596,8 +607,6 @@ public class TwentyWon extends Game {
             String padded = " " + display + " ".repeat(Math.max(0, inner - display.length() + 1));
             System.out.println(padding + "║" + padded + "║");
 
-            // print prompt area and read input (cursor will be inside the box)
-            int promptPos = Math.max(0, (inner - 12) / 2);
             System.out.print(padding + "║  ");
             System.out.flush();
 
@@ -640,7 +649,6 @@ public class TwentyWon extends Game {
         String padded = " " + display + " ".repeat(Math.max(0, inner - display.length() + 1));
         System.out.println(padding + "║" + padded + "║");
 
-        int promptPos = Math.max(0, (inner - 2) / 2);
         System.out.print(padding + "║  ");
         System.out.flush();
 
